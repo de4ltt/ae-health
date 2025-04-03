@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "AE.Health"
 include(":app")
 include(":data")
+include(":domain")
