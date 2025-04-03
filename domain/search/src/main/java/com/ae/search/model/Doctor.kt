@@ -1,9 +1,11 @@
 package com.ae.search.model
 
 data class Doctor(
-    val id: Int,
-    val uri: String,
-    val name: String,
-    val experience: Int,
-    val photoUri: String,
-)
+    override val id: Long,
+    override val title: String,
+    override val subtitle: String?,
+    override val imageUri: String?
+) : ISearchItem {
+    override val category: SearchItemCategory = SearchItemCategory.DOCTOR
+        private set
+}

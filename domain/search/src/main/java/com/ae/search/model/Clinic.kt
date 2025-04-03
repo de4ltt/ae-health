@@ -1,9 +1,11 @@
 package com.ae.search.model
 
 data class Clinic(
-    val id: Int,
-    val name: String,
-    val amenity: String,
-    val address: String,
-    val imageUri: String
-)
+    override val id: Long,
+    override val title: String,
+    override val subtitle: String?,
+    override val imageUri: String?
+) : ISearchItem {
+    override val category: SearchItemCategory = SearchItemCategory.LPU
+        private set
+}
