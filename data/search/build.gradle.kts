@@ -14,4 +14,6 @@ kotlin {
 
 dependencies {
     implementation(project(":domain:search"))
+
+    implementation(libs.kotlinx.coroutines.android)
 }
