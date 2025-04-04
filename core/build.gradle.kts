@@ -15,5 +15,5 @@ kotlin {
 
 dependencies {
     implementation(libs.retrofit)
-
+    ksp(libs.dagger.compiler)
 }
