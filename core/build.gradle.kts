@@ -17,4 +17,5 @@ dependencies {
     implementation(libs.retrofit)
     ksp(libs.dagger.compiler)
     implementation(libs.dagger)
+    implementation(libs.jsoup)
 }
