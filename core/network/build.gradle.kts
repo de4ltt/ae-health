@@ -2,6 +2,7 @@ plugins {
     id("java-library")
     alias(libs.plugins.jetbrains.kotlin.jvm)
     id("com.google.devtools.ksp")
+    kotlin("plugin.serialization")
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -20,4 +21,5 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.converter.gson)
+    implementation(libs.kotlinx.serialization.json)
 }
