@@ -1,7 +1,6 @@
 package com.ae.search.model
 
-data class Service(
-    override val id: Long,
+data class ServiceItem(
     override val title: String,
     override val subtitle: String?,
     override val imageUri: String?
