@@ -5,5 +5,6 @@ import com.ae.search.model.SearchParams
 import kotlinx.coroutines.flow.Flow
 
 interface ISearchRepository {
-    fun search(searchParams: SearchParams): Flow<List<ISearchItem>>
+    suspend fun searchWithFilters(searchParams: SearchParams): List<ISearchItem>
+    suspend fun searchNearby(searchParams: SearchParams): List<ISearchItem>
 }
