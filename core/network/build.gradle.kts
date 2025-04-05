@@ -19,5 +19,5 @@ dependencies {
     implementation(libs.dagger)
     implementation(libs.jsoup)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.gson)
+    implementation(libs.converter.gson)
 }
