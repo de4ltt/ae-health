@@ -7,7 +7,7 @@ class SearchWithFiltersUseCase(
     private val searchRepository: ISearchRepository
 ) {
 
-    operator fun invoke(
+    suspend operator fun invoke(
         searchParams: SearchParams
-    ) = searchRepository.search(searchParams)
+    ) = searchRepository.searchWithFilters(searchParams)
 }
