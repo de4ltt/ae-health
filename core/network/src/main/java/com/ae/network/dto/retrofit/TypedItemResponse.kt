@@ -1,6 +1,6 @@
-package com.ae.network.dto
+package com.ae.network.dto.retrofit
 
-data class TypedItemDTO(
+data class TypedItemResponse(
     val title: String,
     val subtitle: String?,
     val category: String,
