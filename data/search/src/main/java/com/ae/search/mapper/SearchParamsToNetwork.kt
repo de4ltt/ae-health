@@ -1,12 +1,13 @@
 package com.ae.search.mapper
 
+import com.ae.network.model.SearchItemCategory
 import com.ae.network.model.SearchParamsNetwork
 import com.ae.search.model.SearchParams
 
-fun SearchParams.toNetwork(): SearchParamsNetwork =
+internal fun SearchParams.toNetwork(): SearchParamsNetwork =
     SearchParamsNetwork(
         query = query,
-        itemsFilters = itemsFilters.map { it.toString() },
+        itemFilters = itemsFilters as List<SearchItemCategory>,
         radius = radius,
         lat = lat,
         lon = lon
