@@ -1,5 +1,7 @@
 package com.ae.network.model
 
-interface ISecretProperties {
-    val searchBaseURL: String
+internal interface ISecretProperties {
+    val apiBaseUri: String
+    val defaultUri: String
+    val mapBaseUri: String
 }
