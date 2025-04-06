@@ -1,9 +1,8 @@
 package com.ae.network.data_source
 
+import com.ae.annotations.IoDispatcher
 import com.ae.network.ISearchDataSource
-import com.ae.network.dto.retrofit.LocatedItemResponse
 import com.ae.network.dto.retrofit.TypedItemResponse
-import com.ae.network.dto.retrofit.TypedItemsResponse
 import com.ae.network.jsoup.IJsoupApi
 import com.ae.network.model.CoordinatedArea
 import com.ae.network.model.ISecretProperties
@@ -11,36 +10,21 @@ import com.ae.network.model.NetworkRequestError
 import com.ae.network.model.NetworkRequestResult
 import com.ae.network.model.SearchItemCategory
 import com.ae.network.model.SearchParamsNetwork
-import com.ae.network.retrofit.SearchDataApi
-import com.ae.network.retrofit.SearchDataNearbyApi
+import com.ae.network.retrofit.ISearchApi
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
 internal class SearchDataSource @Inject constructor(
-    private val secretProperties: ISecretProperties,
-    private val ioDispatcher: CoroutineDispatcher,
-    private val jsoupApi: IJsoupApi
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val jsoupApi: IJsoupApi,
+    private val searchApi: ISearchApi
 ) : ISearchDataSource {
-
-    private val searchRetrofit = Retrofit.Builder()
-        .baseUrl(secretProperties.apiBaseUri)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(SearchDataApi::class.java)
-
-    private val mapRetrofit = Retrofit.Builder()
-        .baseUrl(secretProperties.mapBaseUri)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(SearchDataNearbyApi::class.java)
 
     override suspend fun searchWithFilters(searchParams: SearchParamsNetwork): NetworkRequestResult<List<TypedItemResponse>> =
         withContext(ioDispatcher) {
             val result = handleNetworkRequest {
-                searchRetrofit.searchWithFilters(query = searchParams.query)
+                searchApi.searchWithFilters(query = searchParams.query)
             }
 
             if (result is NetworkRequestResult.Success)
@@ -66,7 +50,7 @@ internal class SearchDataSource @Inject constructor(
             )
 
             val mapResult = handleNetworkRequest {
-                mapRetrofit.searchNearby(bbox = coordinatedArea.toString())
+                searchApi.searchNearby(bbox = coordinatedArea.toString())
             }
 
             if (mapResult is NetworkRequestResult.Success) {
