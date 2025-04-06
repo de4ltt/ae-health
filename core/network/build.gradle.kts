@@ -15,6 +15,7 @@ kotlin {
 
 dependencies {
     implementation(libs.retrofit)
+    implementation(project(":core:di"))
     ksp(libs.dagger.compiler)
     implementation(libs.dagger)
     implementation(libs.jsoup)
