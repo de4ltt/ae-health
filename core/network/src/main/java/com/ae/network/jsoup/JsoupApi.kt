@@ -11,13 +11,14 @@ import com.ae.network.util.isFuzzyMatch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.lang.StrictMath.pow
+import javax.inject.Inject
 import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.streams.asSequence
 
-internal class JsoupApi(
+internal class JsoupApi @Inject constructor(
     private val secretProperties: ISecretProperties,
 ) : IJsoupApi {
     override suspend fun findClinic(
