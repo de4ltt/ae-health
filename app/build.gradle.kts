@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ae.health"
-        minSdk = 34
+        minSdk = 31
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain:search"))
+    implementation(project(":feature:home"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

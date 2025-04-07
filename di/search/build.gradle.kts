@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
     alias(libs.plugins.jetbrains.kotlin.jvm)
+    id("com.google.devtools.ksp")
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -13,5 +14,11 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.kotlinx.coroutines.android)
+    implementation(project(":data:search"))
+    implementation(project(":domain:search"))
+    implementation(project(":core:network"))
+
+
+    ksp(libs.dagger.compiler)
+    implementation(libs.dagger)
 }
