@@ -7,8 +7,9 @@ import com.ae.search.mapper.toDomain
 import com.ae.search.mapper.toNetwork
 import com.ae.search.model.ISearchItem
 import com.ae.search.model.SearchParams
+import javax.inject.Inject
 
-internal class SearchRepository(
+class SearchRepository @Inject constructor(
     private val searchDataSource: ISearchDataSource
 ) : ISearchRepository {
 
