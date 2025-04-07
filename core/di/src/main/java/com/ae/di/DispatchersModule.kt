@@ -2,11 +2,13 @@ package com.ae.di
 
 import com.ae.annotations.DefaultDispatcher
 import com.ae.annotations.IoDispatcher
+import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-abstract class DispatchersModule {
+@Module
+object DispatchersModule {
 
     @IoDispatcher
     @Provides
