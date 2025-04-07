@@ -6,5 +6,4 @@ data class ServiceItem(
     override val imageUri: String?
 ) : ISearchItem {
     override val category: SearchItemCategory = SearchItemCategory.SERVICES
-        private set
 }

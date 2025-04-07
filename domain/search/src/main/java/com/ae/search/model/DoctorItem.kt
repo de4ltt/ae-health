@@ -6,5 +6,4 @@ data class DoctorItem(
     override val imageUri: String?
 ) : ISearchItem {
     override val category: SearchItemCategory = SearchItemCategory.DOCTOR
-        private set
 }

@@ -6,5 +6,4 @@ data class ClinicItem(
     override val imageUri: String?
 ) : ISearchItem {
     override val category: SearchItemCategory = SearchItemCategory.LPU
-        private set
 }
