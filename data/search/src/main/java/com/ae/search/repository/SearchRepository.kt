@@ -8,8 +8,9 @@ import com.ae.search.mapper.toNetwork
 import com.ae.search.model.ISearchItem
 import com.ae.search.model.SearchParams
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class SearchRepository @Inject constructor(
+internal class SearchRepository @Inject constructor(
     private val searchDataSource: ISearchDataSource
 ) : ISearchRepository {
 

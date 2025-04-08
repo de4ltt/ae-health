@@ -1,23 +1,28 @@
 package com.ae.health
 
-import android.content.Context
-import dagger.BindsInstance
+import android.app.Application
+import com.ae.home.di.HomeComponent
+import com.ae.home.viewmodel.SearchViewModelFactory
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [])
+@Component(dependencies = [HomeComponent::class])
 interface AppComponent {
 
-    fun inject(activity: MainActivity)
+    fun inject(app: Application)
+
+    fun searchViewModelFactory(): SearchViewModelFactory
 
     @Component.Builder
-    abstract class AppComponentBuilder {
+    interface Builder {
 
-        @BindsInstance
-        abstract fun bindContext(context: Context): AppComponentBuilder
+        /*        @BindsInstance
+                fun bindContext(context: Context): Builder*/
 
-        abstract fun build(): AppComponent
+        fun bindHomeComponent(homeComponent: HomeComponent): Builder
+
+        fun build(): AppComponent
+
     }
-
 }

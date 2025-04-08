@@ -6,6 +6,7 @@ import com.ae.annotations.DefaultDispatcher
 import com.ae.search.use_case.ISearchWithFiltersUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
+import javax.inject.Singleton
 
 class SearchViewModelFactory @Inject constructor(
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,

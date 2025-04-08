@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ae.annotations.DefaultDispatcher
 import com.ae.network.model.NetworkRequestError
 import com.ae.search.model.ISearchItem
+import com.ae.search.model.SearchItemCategory
 import com.ae.search.model.SearchParams
 import com.ae.search.use_case.ISearchWithFiltersUseCase
 import kotlinx.coroutines.CoroutineDispatcher
@@ -28,7 +29,7 @@ class SearchViewModel @Inject constructor(
         try {
             val results = searchWithFiltersUseCase.invoke(
                 SearchParams(
-                    "", emptyList(), null, 0.0, 0.0
+                    "Гор", listOf(SearchItemCategory.LPU), null, 0.0, 0.0
                 )
             )
 

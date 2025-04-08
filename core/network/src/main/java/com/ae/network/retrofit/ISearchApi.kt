@@ -10,13 +10,13 @@ private const val DEFAULT_TOWN = "krasnodar"
 
 internal interface ISearchApi {
     @POST("/api/search")
-    fun searchWithFilters(
+    suspend fun searchWithFilters(
         @Query("query") query: String,
         @Query("town") town: String = DEFAULT_TOWN
     ): Response<List<TypedItemsResponse>>
 
     @POST("/ajax/map/yamap_get_json")
-    fun searchNearby(
+    suspend fun searchNearby(
         @Query("bbox") bbox: String
     ): Response<FeatureCollectionResponse>
 }

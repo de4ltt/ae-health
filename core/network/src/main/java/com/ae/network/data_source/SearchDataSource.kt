@@ -5,10 +5,8 @@ import com.ae.network.ISearchDataSource
 import com.ae.network.dto.retrofit.TypedItemResponse
 import com.ae.network.jsoup.IJsoupApi
 import com.ae.network.model.CoordinatedArea
-import com.ae.network.model.ISecretProperties
 import com.ae.network.model.NetworkRequestError
 import com.ae.network.model.NetworkRequestResult
-import com.ae.network.model.SearchItemCategory
 import com.ae.network.model.SearchParamsNetwork
 import com.ae.network.retrofit.ISearchApi
 import kotlinx.coroutines.CoroutineDispatcher
@@ -64,78 +62,7 @@ internal class SearchDataSource @Inject constructor(
                 }
 
                 searchParams.itemFilters.forEach { param ->
-                    when (param) {
-                        SearchItemCategory.DOCTOR -> {
-                            orgsLinks.forEach { link ->
-                                val doctorsResult = jsoupApi.getClinicDoctorsByQuery(
-                                    query = searchParams.query,
-                                    link = link
-                                )
-
-                                if (doctorsResult is NetworkRequestResult.Success) {
-                                    doctorsResult.data.forEach { doctor ->
-                                        doctor.apply {
-                                            results.add(
-                                                TypedItemResponse(
-                                                    title = fullName,
-                                                    subtitle = speciality,
-                                                    category = speciality,
-                                                    image = imageUri,
-                                                    link = uri
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        SearchItemCategory.LPU -> {
-                            orgsLinks.forEach { link ->
-
-                                val clinicResult = jsoupApi.getClinicInfo(link)
-
-                                if (clinicResult is NetworkRequestResult.Success)
-                                    clinicResult.data.apply {
-                                        results.add(
-                                            TypedItemResponse(
-                                                title = name,
-                                                subtitle = address,
-                                                category = type ?: "LPU",
-                                                image = imageUri,
-                                                link = link
-                                            )
-                                        )
-                                    }
-                            }
-                        }
-
-                        SearchItemCategory.SERVICES -> {
-
-                            orgsLinks.forEach { link ->
-
-                                val servicesRes =
-                                    jsoupApi.isContainingService(link, searchParams.query)
-
-                                if (servicesRes is NetworkRequestResult.Success && servicesRes.data) {
-                                    val clinicResult = jsoupApi.getClinicInfo(link)
-
-                                    if (clinicResult is NetworkRequestResult.Success)
-                                        clinicResult.data.apply {
-                                            results.add(
-                                                TypedItemResponse(
-                                                    title = name,
-                                                    subtitle = address,
-                                                    category = type ?: "LPU",
-                                                    image = imageUri,
-                                                    link = link
-                                                )
-                                            )
-                                        }
-                                }
-                            }
-                        }
-                    }
+                    results += param.searchFunction(searchParams, orgsLinks, jsoupApi)
                 }
 
                 NetworkRequestResult.Success(results.toList())
