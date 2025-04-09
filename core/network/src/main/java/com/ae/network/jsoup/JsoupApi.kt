@@ -26,7 +26,7 @@ internal class JsoupApi @Inject constructor(
         lat: Double,
         lon: Double
     ): NetworkRequestResult<String> {
-        val uri = "${secretProperties.defaultUri}krasnodar/find/?q=$query&filter=lpus"
+        val uri = "${secretProperties.defaultUri}/krasnodar/find/?q=$query&filter=lpus"
 
         fun getDistance(lat0: Double, lon0: Double, lat1: Double, lon1: Double) =
             2 * 3956 * asin(
