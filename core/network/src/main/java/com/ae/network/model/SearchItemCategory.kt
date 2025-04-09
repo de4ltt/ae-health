@@ -1,7 +1,8 @@
 package com.ae.network.model
 
 import com.ae.network.dto.retrofit.TypedItemResponse
-import com.ae.network.jsoup.implementation.IJsoupMapApi
+import com.ae.network.jsoup.IJsoupMapApi
+import com.ae.network.request_result.NetworkRequestResult
 
 internal typealias SearchFunction =
         suspend (SearchParamsNetwork, List<String>, IJsoupMapApi) -> List<TypedItemResponse>

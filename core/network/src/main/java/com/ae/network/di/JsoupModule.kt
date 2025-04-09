@@ -1,7 +1,7 @@
 package com.ae.network.di
 
-import com.ae.network.jsoup.implementation.IJsoupMapApi
-import com.ae.network.jsoup.JsoupMapApi
+import com.ae.network.jsoup.IJsoupMapApi
+import com.ae.network.jsoup.implementation.JsoupMapApi
 import dagger.Binds
 import dagger.Module
 

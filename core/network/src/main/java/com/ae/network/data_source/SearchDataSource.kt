@@ -3,10 +3,10 @@ package com.ae.network.data_source
 import com.ae.annotations.IoDispatcher
 import com.ae.network.ISearchDataSource
 import com.ae.network.dto.retrofit.TypedItemResponse
-import com.ae.network.jsoup.implementation.IJsoupMapApi
+import com.ae.network.jsoup.IJsoupMapApi
 import com.ae.network.model.CoordinatedArea
-import com.ae.network.model.NetworkRequestError
-import com.ae.network.model.NetworkRequestResult
+import com.ae.network.request_result.NetworkRequestError
+import com.ae.network.request_result.NetworkRequestResult
 import com.ae.network.model.SearchParamsNetwork
 import com.ae.network.retrofit.ISearchApi
 import kotlinx.coroutines.CoroutineDispatcher

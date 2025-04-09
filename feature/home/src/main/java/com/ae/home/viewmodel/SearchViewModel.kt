@@ -3,7 +3,7 @@ package com.ae.home.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ae.annotations.DefaultDispatcher
-import com.ae.network.model.NetworkRequestError
+import com.ae.network.request_result.NetworkRequestError
 import com.ae.search.model.ISearchItem
 import com.ae.search.model.SearchItemCategory
 import com.ae.search.model.SearchParams

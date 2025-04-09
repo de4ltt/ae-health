@@ -1,16 +1,15 @@
-package com.ae.network.jsoup
+package com.ae.network.jsoup.implementation
 
 import com.ae.network.dto.jsoup.ClinicDoctor
 import com.ae.network.dto.jsoup.ClinicMainInfo
 import com.ae.network.dto.jsoup.LocatedClinicLink
-import com.ae.network.jsoup.implementation.IJsoupMapApi
+import com.ae.network.jsoup.IJsoupMapApi
 import com.ae.network.model.ISecretProperties
-import com.ae.network.model.NetworkRequestError
-import com.ae.network.model.NetworkRequestResult
+import com.ae.network.request_result.NetworkRequestError
+import com.ae.network.request_result.NetworkRequestResult
 import com.ae.network.util.isFuzzyMatch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import java.lang.StrictMath.pow
 import javax.inject.Inject
 import kotlin.math.asin
 import kotlin.math.cos
@@ -30,10 +29,10 @@ internal class JsoupMapApi @Inject constructor(
         fun getDistance(lat0: Double, lon0: Double, lat1: Double, lon1: Double) =
             2 * 3956 * asin(
                 sqrt(
-                    pow(
+                    StrictMath.pow(
                         sin((lat1 - lat0) / 2),
                         2.0
-                    ) + cos(lat0) * cos(lat1) * pow(sin((lon1 - lon0) / 2), 2.0)
+                    ) + cos(lat0) * cos(lat1) * StrictMath.pow(sin((lon1 - lon0) / 2), 2.0)
                 )
             )
 

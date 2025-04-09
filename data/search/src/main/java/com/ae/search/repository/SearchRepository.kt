@@ -2,13 +2,12 @@ package com.ae.search.repository
 
 import com.ae.network.ISearchDataSource
 import com.ae.network.dto.retrofit.TypedItemResponse
-import com.ae.network.model.NetworkRequestResult
+import com.ae.network.request_result.NetworkRequestResult
 import com.ae.search.mapper.toDomain
 import com.ae.search.mapper.toNetwork
 import com.ae.search.model.ISearchItem
 import com.ae.search.model.SearchParams
 import javax.inject.Inject
-import javax.inject.Singleton
 
 internal class SearchRepository @Inject constructor(
     private val searchDataSource: ISearchDataSource
