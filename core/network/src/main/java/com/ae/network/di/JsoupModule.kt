@@ -9,7 +9,7 @@ import javax.inject.Singleton
 @Module
 internal abstract class JsoupModule {
 
-//    @Singleton
+    @NetworkScope
     @Binds
     abstract fun bindJsoupApi(jsoupApi: JsoupApi): IJsoupApi
 
