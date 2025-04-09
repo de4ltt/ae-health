@@ -2,8 +2,7 @@ package com.ae.network.dto.retrofit
 
 data class TypedItemResponse(
     val title: String,
-    val subtitle: String?,
-    val category: String,
-    val image: String?,
+    val subtitle: String? = null,
+    val image: String? = null,
     val link: String
 )
