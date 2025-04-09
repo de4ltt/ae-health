@@ -7,9 +7,10 @@ import javax.inject.Singleton
 
 internal class SearchWithFiltersUseCase @Inject constructor(
     private val searchRepository: ISearchRepository
-): ISearchWithFiltersUseCase {
+) : ISearchWithFiltersUseCase {
 
     override suspend operator fun invoke(
         searchParams: SearchParams
-    ) = searchRepository.searchWithFilters(searchParams)
+    ) = if (searchParams.radius == null) searchRepository.searchWithFilters(searchParams)
+    else searchRepository.searchNearby(searchParams)
 }
