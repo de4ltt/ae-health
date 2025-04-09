@@ -6,6 +6,7 @@ import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
+@DispatchersScope
 @Component(modules = [DispatchersModule::class])
 abstract class DispatchersComponent {
 
