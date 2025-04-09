@@ -9,6 +9,7 @@ import javax.inject.Singleton
 @Module
 internal abstract class SearchModule {
 
+    @SearchDataScope
     @Binds
     abstract fun bindSearchRepository(searchRepository: SearchRepository): ISearchRepository
 
