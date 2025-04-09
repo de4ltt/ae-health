@@ -9,6 +9,7 @@ import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
+@NetworkScope
 @Component(modules = [DataSourceModule::class, JsoupModule::class, RetrofitModule::class, SecretPropertiesModule::class], dependencies = [DispatchersComponent::class])
 interface NetworkComponent {
 
