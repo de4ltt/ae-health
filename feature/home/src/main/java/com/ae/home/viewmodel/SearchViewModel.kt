@@ -26,6 +26,9 @@ class SearchViewModel @Inject constructor(
     val exception = _exception.asStateFlow()
 
     fun onRegularSearch() = viewModelScope.launch(defaultDispatcher) {
+
+        _exception.value = "Loading"
+
         try {
             val results = searchWithFiltersUseCase.invoke(
                 SearchParams(
@@ -34,20 +37,25 @@ class SearchViewModel @Inject constructor(
             )
 
             _foundObjects.value = results
+            _exception.value = null
         } catch (e: NetworkRequestError) {
             _exception.value = e.message
         }
     }
 
     fun onNearbySearch() = viewModelScope.launch(defaultDispatcher) {
+
+        _exception.value = "Loading"
+
         try {
             val results = searchWithFiltersUseCase.invoke(
                 SearchParams(
-                    "", emptyList(), 0, 0.0, 0.0
+                    "Гор", listOf(SearchItemCategory.SERVICES), 100, 45.018952, 39.030092
                 )
             )
 
             _foundObjects.value = results
+            _exception.value = null
         } catch (e: NetworkRequestError) {
             _exception.value = e.message
         }
