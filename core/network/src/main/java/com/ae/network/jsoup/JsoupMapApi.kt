@@ -2,8 +2,8 @@ package com.ae.network.jsoup
 
 import com.ae.network.dto.jsoup.ClinicDoctor
 import com.ae.network.dto.jsoup.ClinicMainInfo
-import com.ae.network.dto.jsoup.ClinicService
 import com.ae.network.dto.jsoup.LocatedClinicLink
+import com.ae.network.jsoup.implementation.IJsoupMapApi
 import com.ae.network.model.ISecretProperties
 import com.ae.network.model.NetworkRequestError
 import com.ae.network.model.NetworkRequestResult
@@ -16,11 +16,10 @@ import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
-import kotlin.streams.asSequence
 
-internal class JsoupApi @Inject constructor(
+internal class JsoupMapApi @Inject constructor(
     private val secretProperties: ISecretProperties,
-) : IJsoupApi {
+) : IJsoupMapApi {
     override suspend fun findClinic(
         query: String,
         lat: Double,

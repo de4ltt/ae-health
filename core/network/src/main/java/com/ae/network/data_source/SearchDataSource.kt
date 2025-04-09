@@ -3,7 +3,7 @@ package com.ae.network.data_source
 import com.ae.annotations.IoDispatcher
 import com.ae.network.ISearchDataSource
 import com.ae.network.dto.retrofit.TypedItemResponse
-import com.ae.network.jsoup.IJsoupApi
+import com.ae.network.jsoup.implementation.IJsoupMapApi
 import com.ae.network.model.CoordinatedArea
 import com.ae.network.model.NetworkRequestError
 import com.ae.network.model.NetworkRequestResult
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 internal class SearchDataSource @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val jsoupApi: IJsoupApi,
+    private val jsoupApi: IJsoupMapApi,
     private val searchApi: ISearchApi
 ) : ISearchDataSource {
 

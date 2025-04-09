@@ -1,10 +1,10 @@
 package com.ae.network.model
 
 import com.ae.network.dto.retrofit.TypedItemResponse
-import com.ae.network.jsoup.IJsoupApi
+import com.ae.network.jsoup.implementation.IJsoupMapApi
 
 internal typealias SearchFunction =
-        suspend (SearchParamsNetwork, List<String>, IJsoupApi) -> List<TypedItemResponse>
+        suspend (SearchParamsNetwork, List<String>, IJsoupMapApi) -> List<TypedItemResponse>
 
 enum class SearchItemCategory(internal val searchFunction: SearchFunction) {
     DOCTOR(::searchForDoctor),
@@ -15,7 +15,7 @@ enum class SearchItemCategory(internal val searchFunction: SearchFunction) {
 internal suspend fun searchForDoctor(
     searchParams: SearchParamsNetwork,
     orgsLinks: List<String>,
-    jsoupApi: IJsoupApi
+    jsoupApi: IJsoupMapApi
 ): List<TypedItemResponse> {
 
     val results = mutableListOf<TypedItemResponse>()
@@ -51,7 +51,7 @@ internal suspend fun searchForDoctor(
 internal suspend fun searchForLpu(
     searchParams: SearchParamsNetwork,
     orgsLinks: List<String>,
-    jsoupApi: IJsoupApi
+    jsoupApi: IJsoupMapApi
 ): List<TypedItemResponse> {
 
     val results = mutableListOf<TypedItemResponse>()
@@ -81,7 +81,7 @@ internal suspend fun searchForLpu(
 internal suspend fun searchForServices(
     searchParams: SearchParamsNetwork,
     orgsLinks: List<String>,
-    jsoupApi: IJsoupApi
+    jsoupApi: IJsoupMapApi
 ): List<TypedItemResponse> {
 
     val results = mutableListOf<TypedItemResponse>()

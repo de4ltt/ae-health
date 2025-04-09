@@ -1,16 +1,15 @@
 package com.ae.network.di
 
-import com.ae.network.jsoup.IJsoupApi
-import com.ae.network.jsoup.JsoupApi
+import com.ae.network.jsoup.implementation.IJsoupMapApi
+import com.ae.network.jsoup.JsoupMapApi
 import dagger.Binds
 import dagger.Module
-import javax.inject.Singleton
 
 @Module
 internal abstract class JsoupModule {
 
     @NetworkScope
     @Binds
-    abstract fun bindJsoupApi(jsoupApi: JsoupApi): IJsoupApi
+    abstract fun bindJsoupApi(jsoupApi: JsoupMapApi): IJsoupMapApi
 
 }
