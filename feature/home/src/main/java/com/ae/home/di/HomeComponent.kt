@@ -7,6 +7,7 @@ import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
+@HomeScope
 @Component(
     modules = [HomeModule::class],
     dependencies = [DispatchersComponent::class, SearchDataComponent::class]
