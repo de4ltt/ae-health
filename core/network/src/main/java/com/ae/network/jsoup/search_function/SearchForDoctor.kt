@@ -27,7 +27,6 @@ internal suspend fun searchForDoctor(
                         TypedItemResponse(
                             title = fullName,
                             subtitle = speciality,
-                            category = speciality,
                             image = imageUri,
                             link = uri
                         )
