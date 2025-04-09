@@ -34,8 +34,8 @@ fun BasicBox(
     searchViewModel: SearchViewModel
 ) {
 
-    val items by searchViewModel.foundObjects.collectAsStateWithLifecycle()
-    val exception by searchViewModel.exception.collectAsStateWithLifecycle()
+    val items by searchViewModel.foundObjects.collectAsState()
+    val exception by searchViewModel.exception.collectAsState()
 
     Column(
         modifier = Modifier
@@ -76,18 +76,18 @@ fun BasicBox(
                 item {
                     Text(text = it, color = Color.Red)
                 }
+            }
 
-                items(items) {
+            items(items) {
 
-                    val text = """
+                val text = """
         title: ${it.title},
         subtitle: ${it.subtitle},
         category: ${it.category.toString()},
-        imageUri: ${it.imageUri}
+        imageUri: ${it.imageUri},
     """
 
-                    Text(text = text, color = Color.Black)
-                }
+                Text(text = text, color = Color.Black)
             }
         }
     }
