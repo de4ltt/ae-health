@@ -7,6 +7,7 @@ import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
+@SearchDataScope
 @Component(modules = [SearchModule::class, SearchUseCaseModule::class], dependencies = [NetworkComponent::class])
 interface SearchDataComponent {
 
