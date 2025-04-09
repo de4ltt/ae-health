@@ -14,17 +14,29 @@ import javax.inject.Singleton
 @Module
 internal class RetrofitModule {
 
+    @NetworkScope
     @Provides
     fun provideGsonConverterFactory(): GsonConverterFactory = GsonConverterFactory.create()
 
+    @NetworkScope
     @Provides
-    fun provideInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor()
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor()
 
+    @NetworkScope
     @Provides
     fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
-        OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
+        OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("Referer", "https://prodoctorov.ru/")
+                    .addHeader("X-Requested-With", "XMLHttpRequest")
+                    .addHeader("Origin", "https://prodoctorov.ru")
+//                    .addHeader("Cookie", "csrftoken=...; sessionid=...") // если нужно
+                    .build()
+                chain.proceed(request)
+            }.addInterceptor(loggingInterceptor).build()
 
-    //    @Singleton
+    @NetworkScope
     @Provides
     fun provideRetrofit(
         client: OkHttpClient,
@@ -37,7 +49,7 @@ internal class RetrofitModule {
             .client(client)
             .build()
 
-    //    @Singleton
+    @NetworkScope
     @Provides
     fun provideSearchApi(retrofit: Retrofit): ISearchApi =
         retrofit.create(ISearchApi::class.java)
