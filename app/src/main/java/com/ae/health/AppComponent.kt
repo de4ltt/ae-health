@@ -18,9 +18,6 @@ interface AppComponent {
     @Component.Builder
     interface Builder {
 
-        /*        @BindsInstance
-                fun bindContext(context: Context): Builder*/
-
         fun bindHomeComponent(homeComponent: HomeComponent): Builder
 
         fun build(): AppComponent
