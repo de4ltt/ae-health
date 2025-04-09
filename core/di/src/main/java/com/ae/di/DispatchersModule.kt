@@ -11,10 +11,12 @@ import javax.inject.Singleton
 @Module
 internal object DispatchersModule {
 
+    @DispatchersScope
     @IoDispatcher
     @Provides
     fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
+    @DispatchersScope
     @DefaultDispatcher
     @Provides
     fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
