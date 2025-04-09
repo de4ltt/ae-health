@@ -14,6 +14,7 @@ import javax.inject.Singleton
 @Module
 internal class HomeModule {
 
+    @HomeScope
     @Provides
     fun provideSearchViewModelFactory(
         @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
