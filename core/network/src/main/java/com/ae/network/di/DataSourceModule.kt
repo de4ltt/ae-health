@@ -10,7 +10,7 @@ import javax.inject.Singleton
 @Module
 internal abstract class DataSourceModule {
 
-//    @Singleton
+    @NetworkScope
     @Binds
     abstract fun bindDataSource(dataSource: SearchDataSource): ISearchDataSource
 
