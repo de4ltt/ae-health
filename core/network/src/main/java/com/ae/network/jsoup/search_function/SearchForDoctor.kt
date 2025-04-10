@@ -28,6 +28,7 @@ internal suspend fun searchForDoctor(
                             title = fullName,
                             subtitle = speciality,
                             image = imageUri,
+                            category = "DOCTOR",
                             link = uri
                         )
                     )

@@ -7,7 +7,7 @@ import com.ae.search.model.SearchParams
 
 internal fun List<CategoriesDomain>.toNetwork(): List<CategoriesNetwork> {
 
-    val entriesString = this.map { el -> el.toString() }
+    val entriesString = this.map { it.toString() }
 
     return CategoriesNetwork.entries.filter {
         entriesString.contains(it.toString())

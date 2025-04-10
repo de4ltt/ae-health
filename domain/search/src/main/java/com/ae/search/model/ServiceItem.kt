@@ -5,5 +5,5 @@ data class ServiceItem(
     override val subtitle: String?,
     override val imageUri: String?
 ) : ISearchItem {
-    override val category: SearchItemCategory = SearchItemCategory.SERVICES
+    override val category: SearchItemCategory = SearchItemCategory.Services
 }

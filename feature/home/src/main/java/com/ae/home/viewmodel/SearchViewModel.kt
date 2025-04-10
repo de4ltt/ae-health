@@ -11,6 +11,7 @@ import com.ae.search.use_case.ISearchWithFiltersUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,19 +26,21 @@ class SearchViewModel @Inject constructor(
     private val _exception: MutableStateFlow<String?> = MutableStateFlow(null)
     val exception = _exception.asStateFlow()
 
-    fun onRegularSearch() = viewModelScope.launch(defaultDispatcher) {
+    fun onRegularSearch() = viewModelScope.launch {
 
         _exception.value = "Loading"
 
         try {
             val results = searchWithFiltersUseCase.invoke(
                 SearchParams(
-                    "Гор", listOf(SearchItemCategory.LPU), null, 0.0, 0.0
+                    "Гор", SearchItemCategory.values, null, 0.0, 0.0
                 )
             )
 
+            print("VIEWMODEL-RESULTS: $results")
+
             _foundObjects.value = results
-            _exception.value = null
+            _exception.value = if (results.isEmpty()) "Nothing was found" else null
         } catch (e: NetworkRequestError) {
             _exception.value = e.message
         }
@@ -50,14 +53,17 @@ class SearchViewModel @Inject constructor(
         try {
             val results = searchWithFiltersUseCase.invoke(
                 SearchParams(
-                    "Гор", listOf(SearchItemCategory.SERVICES), 100, 45.018952, 39.030092
+                    "Гор", listOf(SearchItemCategory.Doctor), 1000, 45.018952, 39.030092
                 )
             )
 
+            print(results)
+
             _foundObjects.value = results
-            _exception.value = null
+            _exception.value = if (results.isEmpty()) "Nothing was found" else null
         } catch (e: NetworkRequestError) {
             _exception.value = e.message
         }
     }
+
 }

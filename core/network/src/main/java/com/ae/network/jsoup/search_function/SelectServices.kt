@@ -5,7 +5,7 @@ import org.jsoup.nodes.Document
 
 internal suspend fun selectServices(
     doc: Document
-): Pair<String, List<TypedItemResponse>>? {
+): List<TypedItemResponse> {
 
     val serviceElements = doc.select("a.b-list-icon-link.b-section-box__elem")
 
@@ -15,12 +15,11 @@ internal suspend fun selectServices(
         val service = TypedItemResponse(
             title = serviceElement.selectFirst("span.b-list-icon-link__text.ui-text.ui-text_body-1]")!!.text().trim(),
             link = serviceElement.attr("href"),
+            category = "SERVICES"
         )
 
         results += service
     }
 
-    return if (results.isNotEmpty()) {
-        Pair("SERVICES", results)
-    } else null
+    return results
 }

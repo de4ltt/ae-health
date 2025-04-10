@@ -16,7 +16,7 @@ internal class SearchRepository @Inject constructor(
     override suspend fun searchWithFilters(searchParams: SearchParams): List<ISearchItem> {
         val response = searchDataSource.searchWithFilters(searchParams.toNetwork())
 
-        if (response is NetworkRequestResult.Success<List<TypedItemResponse>>)
+        if (response is NetworkRequestResult.Success)
             return response.data.toDomain()
         else
             throw ((response as NetworkRequestResult.Error).error)
@@ -25,7 +25,7 @@ internal class SearchRepository @Inject constructor(
     override suspend fun searchNearby(searchParams: SearchParams): List<ISearchItem> {
         val response = searchDataSource.searchNearbyWithFilters(searchParams.toNetwork())
 
-        if (response is NetworkRequestResult.Success<List<TypedItemResponse>>)
+        if (response is NetworkRequestResult.Success)
             return response.data.toDomain()
         else
             throw ((response as NetworkRequestResult.Error).error)
