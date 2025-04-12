@@ -53,7 +53,7 @@ class SearchViewModel @Inject constructor(
         try {
             val results = searchWithFiltersUseCase.invoke(
                 SearchParams(
-                    "Гор", listOf(SearchItemCategory.Doctor), 1000, 45.018952, 39.030092
+                    "Гор", listOf(SearchItemCategory.Doctor), 400, 45.018952, 39.030092
                 )
             )
 

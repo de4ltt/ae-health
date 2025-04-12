@@ -25,9 +25,8 @@ internal class JsoupFindApi @Inject constructor(
 
             val results: MutableList<TypedItemResponse> = mutableListOf()
 
-            for (category in searchParams.itemFilters) {
+            searchParams.itemFilters.forEach { category ->
                 results.addAll(category.selectFunction(doc))
-                println(results.size)
             }
 
             NetworkRequestResult.Success(results)
@@ -47,23 +46,26 @@ internal class JsoupFindApi @Inject constructor(
 
             val results: MutableList<TypedItemResponse> = mutableListOf()
 
-            val doctorElements = doc.select("div.b-results__item")
+            val doctorElements = doc.select("article[class=\"b-card b-card_list-item b-section-box__elem\"]")
 
-            for (doctorElement in doctorElements) {
+            doctorElements.forEach { doctorElement ->
+
                 val doctor = TypedItemResponse(
-                    title = doctorElement.selectFirst("div.ui-text.ui-text_subtitle-1.ui-kit-color-primary.mb-1")!!
+                    title = doctorElement.selectFirst("a.b-card__name-link.b-link.ui-text.ui-text_h6.ui-kit-color-text")!!
                         .text().trim(),
-                    subtitle = doctorElement.selectFirst("ui-text.ui-text_body-2.ui-kit-color-text-info.mb-2")!!
+                    subtitle = doctorElement.selectFirst("p.b-card__category.ui-text.ui-text_body-1.ui-kit-color-text-secondary")!!
                         .text().trim(),
                     category = "DOCTOR",
-                    image = doctorElement.selectFirst("img.b-avatar.b-avatar_xl.b-avatar_border mr-4")!!
+                    image = doctorElement.selectFirst("img.b-card__avatar-img")!!
                         .attr("src"),
-                    link = doctorElement.selectFirst("div.b-results__redirect.b-card.b-card_reset-radius.b-card_border_new-grey.b-card_padding_normal.px-2.pt-6.pb-4")!!
-                        .attr("data-redirect-path")
+                    link = doctorElement.selectFirst("a.b-card__name-link.b-link.ui-text.ui-text_h6.ui-kit-color-text")!!
+                        .attr("href")
                 )
 
                 results += doctor
             }
+
+            println("MY RESULTS: $results")
 
             NetworkRequestResult.Success(results)
         } catch (e: Throwable) {
@@ -80,14 +82,19 @@ internal class JsoupFindApi @Inject constructor(
                 .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
                 .get()
 
+            println(doc)
+
             val results: MutableList<TypedItemResponse> = mutableListOf()
 
             val serviceElements =
-                doc.select("a.b-results__link.b-link.ui-text.ui-text_body-1.ui-kit-color-text")
+                doc.select("a.b-list-icon-link.b-section-box__elem")
 
-            for (serviceElement in serviceElements) {
+            println(serviceElements)
+
+            serviceElements.forEach { serviceElement ->
+
                 val service = TypedItemResponse(
-                    title = serviceElement.text().trim(),
+                    title = serviceElement.selectFirst("span.b-list-icon-link__text.ui-text.ui-text_body-1")!!.text().trim(),
                     category = "SERVICES",
                     link = serviceElement.attr("href")
                 )
@@ -112,9 +119,12 @@ internal class JsoupFindApi @Inject constructor(
 
             val results: MutableList<TypedItemResponse> = mutableListOf()
 
-            val clinicElements = doc.select("div.b-card.pb-4")
+            val clinicElements = doc.select("div.b-section-box__elem.d-flex.py-6")
 
-            for (clinicElement in clinicElements) {
+            println(clinicElements)
+
+            clinicElements.forEach { clinicElement ->
+
                 val clinic = TypedItemResponse(
                     title = clinicElement.selectFirst("span[data-qa=\"lpu_card_heading_lpu_name\"]")!!
                         .text().trim(),

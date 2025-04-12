@@ -1,4 +1,3 @@
 package com.ae.core
 
-class MyClass {
-}
+class MyClass

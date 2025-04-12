@@ -1,7 +1,5 @@
-package com.ae.network.data_source
+package com.ae.network.request_result
 
-import com.ae.network.request_result.NetworkRequestError
-import com.ae.network.request_result.NetworkRequestResult
 import retrofit2.Response
 
 internal suspend fun <T> handleNetworkRequest(

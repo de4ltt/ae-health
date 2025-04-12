@@ -1,4 +1,3 @@
 package com.ae.data
 
-class MyClass {
-}
+class MyClass
