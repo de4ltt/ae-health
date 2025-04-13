@@ -85,6 +85,6 @@ class AEHeathApp : Application() {
 
     private fun initializeViewModels() {
         ViewModelRegister
-            .register(SearchViewModel::class, appComponent.searchViewModelFactory())
+            .register<SearchViewModel>(appComponent.searchViewModelFactory())
     }
 }
