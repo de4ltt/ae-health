@@ -1,4 +1,4 @@
-package com.ae.search.network.search_function
+package com.ae.search.network.search_function.select
 
 import com.ae.search.network.dto.retrofit.TypedItemResponse
 import org.jsoup.nodes.Document

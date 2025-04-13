@@ -1,6 +1,6 @@
 package com.ae.search.network.retrofit
 
-import com.ae.network.dto.retrofit.FeatureCollectionResponse
+import com.ae.search.network.dto.retrofit.FeatureCollectionResponse
 import retrofit2.Response
 import retrofit2.http.POST
 import retrofit2.http.Query

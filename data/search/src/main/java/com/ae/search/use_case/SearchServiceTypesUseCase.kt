@@ -1,10 +1,9 @@
 package com.ae.search.use_case
 
-import com.ae.network_request.NetworkRequestResult
+import com.ae.network.model.NetworkRequestResult
 import com.ae.search.model.interfaces.ISearchItem
 import com.ae.search.model.search.SearchParams
 import com.ae.search.repository.ISearchRepository
-import com.ae.search.repository.SearchRepository
 import javax.inject.Inject
 
 internal class SearchServiceTypesUseCase @Inject constructor(

@@ -17,6 +17,8 @@ dependencies {
     implementation(project(":domain:search"))
     implementation(project(":network"))
     implementation(project(":core:util"))
+    implementation(project(":network:search"))
+    implementation(project(":core:network"))
 
     ksp(libs.dagger.compiler)
     implementation(libs.dagger)

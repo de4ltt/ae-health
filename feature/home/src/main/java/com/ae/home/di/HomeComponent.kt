@@ -3,9 +3,7 @@ package com.ae.home.di
 import com.ae.di.DispatchersComponent
 import com.ae.home.viewmodel.SearchViewModelFactory
 import com.ae.search.di.SearchDataComponent
-import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Singleton
 
 @HomeScope
 @Component(
@@ -19,7 +17,7 @@ interface HomeComponent {
     @Component.Builder
     interface Builder {
 
-        fun bindDispatchersComponent(dispatchersComponent: DispatchersComponent): Builder
+        fun bindUtilComponent(dispatchersComponent: DispatchersComponent): Builder
 
         fun bindSearchDataComponent(searchDataComponent: SearchDataComponent): Builder
 

@@ -1,11 +1,11 @@
-package com.ae.search.network.search_function
+package com.ae.search.network.search_function.select
 
-import com.ae.network.dto.retrofit.TypedItemResponse
+import com.ae.search.network.dto.retrofit.TypedItemResponse
 import org.jsoup.nodes.Document
 
 internal suspend fun selectLpus(
     doc: Document
-): List<TypedItemResponse> {
+    ): List<TypedItemResponse> {
 
     val lpuElements = doc.select("div.b-section-box__elem.d-flex.py-6")
 

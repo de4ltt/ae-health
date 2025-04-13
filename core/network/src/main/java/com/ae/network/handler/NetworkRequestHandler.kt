@@ -1,5 +1,7 @@
-package com.ae.network_request
+package com.ae.network.handler
 
+import com.ae.network.model.NetworkRequestError
+import com.ae.network.model.NetworkRequestResult
 import retrofit2.Response
 
 suspend fun <T> handleNetworkRequest(

@@ -1,16 +1,16 @@
 package com.ae.search.network.data_source
 
 import com.ae.annotations.IoDispatcher
-import com.ae.network.ISearchDataSource
-import com.ae.network.dto.retrofit.TypedItemResponse
-import com.ae.network.jsoup.IJsoupFindApi
-import com.ae.network.search_function.searchFor
-import com.ae.network.mapper.toTypedItems
-import com.ae.network.model.CoordinatedArea
-import com.ae.network_request.NetworkRequestError
-import com.ae.network_request.NetworkRequestResult
-import com.ae.network.model.SearchParamsNetwork
-import com.ae.network.retrofit.IMapSearchApi
+import com.ae.network.model.NetworkRequestError
+import com.ae.network.model.NetworkRequestResult
+import com.ae.search.network.search_function.search.searchFor
+import com.ae.search.network.ISearchDataSource
+import com.ae.search.network.dto.retrofit.TypedItemResponse
+import com.ae.search.network.jsoup.IJsoupFindApi
+import com.ae.search.network.mapper.toTypedItems
+import com.ae.search.network.model.CoordinatedArea
+import com.ae.search.network.model.SearchParamsNetwork
+import com.ae.search.network.retrofit.IMapSearchApi
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

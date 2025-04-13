@@ -1,16 +1,14 @@
 package com.ae.search.di
 
-import com.ae.network.di.NetworkComponent
+import com.ae.search.network.di.NetworkSearchComponent
 import com.ae.search.repository.ISearchRepository
 import com.ae.search.use_case.ISearchServiceTypesUseCase
 import com.ae.search.use_case.ISearchWithFiltersUseCase
 import com.ae.search.use_case.ISearchWithinRadiusUseCase
-import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Singleton
 
 @SearchDataScope
-@Component(modules = [SearchModule::class, SearchUseCaseModule::class], dependencies = [NetworkComponent::class])
+@Component(modules = [SearchModule::class, SearchUseCaseModule::class], dependencies = [NetworkSearchComponent::class])
 interface SearchDataComponent {
 
     fun searchRepository(): ISearchRepository
@@ -24,7 +22,7 @@ interface SearchDataComponent {
     @Component.Builder
     interface Builder {
 
-        fun bindNetworkComponent(networkComponent: NetworkComponent): Builder
+        fun bindNetworkSearchComponent(networkComponent: NetworkSearchComponent): Builder
 
         fun build(): SearchDataComponent
     }

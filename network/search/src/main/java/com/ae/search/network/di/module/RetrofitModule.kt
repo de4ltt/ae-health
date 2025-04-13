@@ -1,12 +1,11 @@
 package com.ae.search.network.di.module
 
-import com.ae.network.model.interfaces.ISecretProperties
-import com.ae.network.retrofit.IMapSearchApi
+import com.ae.config.di.annotation.SecretProperty
 import com.ae.search.network.di.scope.NetworkScope
+import com.ae.search.network.retrofit.IMapSearchApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -17,11 +16,11 @@ internal class RetrofitModule {
     @Provides
     fun provideRetrofit(
         client: OkHttpClient,
-        secretProperties: ISecretProperties,
+        @SecretProperty("base_url") baseUrl: String,
         converterFactory: GsonConverterFactory
     ): Retrofit =
         Retrofit.Builder()
-            .baseUrl(secretProperties.defaultUri)
+            .baseUrl(baseUrl)
             .addConverterFactory(converterFactory)
             .client(client)
             .build()

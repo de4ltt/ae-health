@@ -1,4 +1,6 @@
-package com.ae.network_request
+package com.ae.network.handler
+
+import com.ae.network.model.NetworkRequestResult
 
 fun <T> NetworkRequestResult<T>.handleResult(): NetworkRequestResult<T> =
     if (this is NetworkRequestResult.Success)

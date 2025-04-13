@@ -1,4 +1,4 @@
-package com.ae.network_request
+package com.ae.network.model
 
 sealed class NetworkRequestError(message: String?) : Throwable() {
 

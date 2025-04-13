@@ -15,4 +15,6 @@ kotlin {
 dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(project(":core:util"))
+    implementation(project(":core:network"))
+    implementation(project(":core:network"))
 }

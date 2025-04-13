@@ -1,4 +1,4 @@
-package com.ae.config
+package com.ae.config.di.scope
 
 import javax.inject.Scope
 

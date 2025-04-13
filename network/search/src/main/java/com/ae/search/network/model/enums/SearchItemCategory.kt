@@ -1,16 +1,17 @@
 package com.ae.search.network.model.enums
 
-import com.ae.network.search_function.type.searchDoctorTypes
-import com.ae.network.search_function.searchForDoctor
+import com.ae.search.network.search_function.search.searchForDoctor
 import com.ae.network.search_function.searchForLpu
-import com.ae.network.search_function.searchForServices
-import com.ae.network.search_function.type.searchLpuTypes
-import com.ae.network.search_function.type.searchServiceType
-import com.ae.network.search_function.selectDoctors
-import com.ae.network.search_function.selectLpus
-import com.ae.network.`typealias`.SearchFunction
-import com.ae.network.`typealias`.SearchTypeFunction
-import com.ae.network.`typealias`.SelectFunction
+import com.ae.search.network.search_function.search.searchForServices
+import com.ae.search.network.search_function.select.selectDoctors
+import com.ae.search.network.search_function.select.selectLpus
+import com.ae.search.network.search_function.select.selectServices
+import com.ae.search.network.search_function.type.searchDoctorTypes
+import com.ae.search.network.search_function.type.searchLpuTypes
+import com.ae.search.network.search_function.type.searchServiceType
+import com.ae.search.network.`typealias`.SearchFunction
+import com.ae.search.network.`typealias`.SearchTypeFunction
+import com.ae.search.network.`typealias`.SelectFunction
 
 enum class SearchItemCategory(
     internal val searchFunction: SearchFunction,
@@ -24,7 +25,7 @@ enum class SearchItemCategory(
     ),
     SERVICES(
         searchFunction = ::searchForServices,
-        selectFunction = ::selectLpus,
+        selectFunction = ::selectServices,
         searchTypeFunction = ::searchServiceType
     ),
     LPU(

@@ -1,21 +1,21 @@
 package com.ae.search.network.jsoup.implementation
 
-import com.ae.network.dto.retrofit.TypedItemResponse
-import com.ae.network.jsoup.IJsoupFindApi
-import com.ae.network.model.interfaces.ISecretProperties
-import com.ae.network.model.SearchParamsNetwork
-import com.ae.network_request.NetworkRequestError
-import com.ae.network_request.NetworkRequestResult
+import com.ae.config.di.annotation.SecretProperty
+import com.ae.network.model.NetworkRequestError
+import com.ae.network.model.NetworkRequestResult
+import com.ae.search.network.dto.retrofit.TypedItemResponse
+import com.ae.search.network.jsoup.IJsoupFindApi
+import com.ae.search.network.model.SearchParamsNetwork
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import javax.inject.Inject
 
 internal class JsoupFindApi @Inject constructor(
-    private val secretProperties: ISecretProperties
+    @SecretProperty("find_url") private val findUrl: String
 ) : IJsoupFindApi {
 
     override suspend fun find(searchParams: SearchParamsNetwork): NetworkRequestResult<List<TypedItemResponse>> {
-        val uri = "${secretProperties.defaultUri}/krasnodar/find/?q=${searchParams.query}"
+        val uri = "$findUrl/?q=${searchParams.query}"
 
         return try {
 
@@ -36,7 +36,7 @@ internal class JsoupFindApi @Inject constructor(
     }
 
     override suspend fun findDoctors(query: String): NetworkRequestResult<List<TypedItemResponse>> {
-        val uri = "${secretProperties.defaultUri}/krasnodar/find/?q=$query&filter=doctors"
+        val uri = "$findUrl/?q=$query&filter=doctors"
 
         return try {
 
@@ -74,7 +74,7 @@ internal class JsoupFindApi @Inject constructor(
     }
 
     override suspend fun findServices(query: String): NetworkRequestResult<List<TypedItemResponse>> {
-        val uri = "${secretProperties.defaultUri}/krasnodar/find/?q=$query&filter=services"
+        val uri = "$findUrl/?q=$query&filter=services"
 
         return try {
 
@@ -109,7 +109,7 @@ internal class JsoupFindApi @Inject constructor(
     }
 
     override suspend fun findClinics(query: String): NetworkRequestResult<List<TypedItemResponse>> {
-        val uri = "${secretProperties.defaultUri}/krasnodar/find/?q=$query&filter=lpus"
+        val uri = "$findUrl/?q=$query&filter=lpus"
 
         return try {
 

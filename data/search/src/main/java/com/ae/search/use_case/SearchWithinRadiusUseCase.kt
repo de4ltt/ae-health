@@ -1,7 +1,6 @@
 package com.ae.search.use_case
 
-import com.ae.network_request.NetworkRequestResult
-import com.ae.search.di.SearchDataScope
+import com.ae.network.model.NetworkRequestResult
 import com.ae.search.model.interfaces.ISearchItem
 import com.ae.search.model.search.SearchParams
 import com.ae.search.repository.ISearchRepository

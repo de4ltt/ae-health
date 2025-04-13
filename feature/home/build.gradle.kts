@@ -39,8 +39,11 @@ android {
 
 dependencies {
     implementation(project(":domain:search"))
+
     implementation(project(":data:search"))
+
     implementation(project(":core:util"))
+    implementation(project(":core:network"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

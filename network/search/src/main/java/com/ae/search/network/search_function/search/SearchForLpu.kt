@@ -1,11 +1,11 @@
 package com.ae.network.search_function
 
-import com.ae.network.dto.retrofit.LocatedItemResponse
-import com.ae.network.dto.retrofit.TypedItemResponse
-import com.ae.network.model.CoordinatedArea
-import com.ae.network_request.NetworkRequestResult
-import com.ae.network_request.handleNetworkRequest
-import com.ae.network.retrofit.IMapSearchApi
+import com.ae.network.handler.handleNetworkRequest
+import com.ae.network.model.NetworkRequestResult
+import com.ae.search.network.dto.retrofit.LocatedItemResponse
+import com.ae.search.network.dto.retrofit.TypedItemResponse
+import com.ae.search.network.model.CoordinatedArea
+import com.ae.search.network.retrofit.IMapSearchApi
 
 internal suspend fun searchForLpu(
     lpuType: String,

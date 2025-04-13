@@ -1,7 +1,7 @@
 package com.ae.search.network.mapper
 
-import com.ae.network.dto.retrofit.LocatedItemResponse
-import com.ae.network.dto.retrofit.TypedItemResponse
+import com.ae.search.network.dto.retrofit.LocatedItemResponse
+import com.ae.search.network.dto.retrofit.TypedItemResponse
 
 internal fun LocatedItemResponse.toTypedItem() = TypedItemResponse(
     title = this.name,

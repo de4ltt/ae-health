@@ -14,13 +14,15 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":core:util"))
+    implementation(project(":core:network"))
 
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.retrofit)
+    implementation(project(":core:util"))
+    implementation(project(":core:config"))
     ksp(libs.dagger.compiler)
     implementation(libs.dagger)
     implementation(libs.jsoup)
-    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 }
