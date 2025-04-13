@@ -1,4 +1,4 @@
-package com.ae.network.model
+package com.ae.network.model.interfaces
 
 internal interface ISecretProperties {
     val apiBaseUri: String

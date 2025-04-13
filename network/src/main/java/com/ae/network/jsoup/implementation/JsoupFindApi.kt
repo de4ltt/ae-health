@@ -2,7 +2,7 @@ package com.ae.network.jsoup.implementation
 
 import com.ae.network.dto.retrofit.TypedItemResponse
 import com.ae.network.jsoup.IJsoupFindApi
-import com.ae.network.model.ISecretProperties
+import com.ae.network.model.interfaces.ISecretProperties
 import com.ae.network.model.SearchParamsNetwork
 import com.ae.network_request.NetworkRequestError
 import com.ae.network_request.NetworkRequestResult

@@ -1,6 +1,6 @@
 package com.ae.network.di
 
-import com.ae.network.model.ISecretProperties
+import com.ae.network.model.interfaces.ISecretProperties
 import com.ae.network.retrofit.IMapSearchApi
 import dagger.Module
 import dagger.Provides
