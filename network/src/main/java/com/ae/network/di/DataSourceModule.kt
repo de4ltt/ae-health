@@ -2,7 +2,6 @@ package com.ae.network.di
 
 import com.ae.network.ISearchDataSource
 import com.ae.network.data_source.SearchDataSource
-import com.ae.network.data_source.SearchDataSourceMocked
 import dagger.Binds
 import dagger.Module
 import javax.inject.Singleton
