@@ -44,8 +44,11 @@ android {
 dependencies {
 
     implementation(project(":core:util"))
+
     implementation(project(":data:search"))
-    
+
+    implementation(project(":network"))
+
     implementation(project(":feature:home"))
 
     implementation(libs.androidx.core.ktx)

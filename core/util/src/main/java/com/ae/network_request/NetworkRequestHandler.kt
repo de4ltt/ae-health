@@ -2,7 +2,7 @@ package com.ae.network_request
 
 import retrofit2.Response
 
-internal suspend fun <T> handleNetworkRequest(
+suspend fun <T> handleNetworkRequest(
     request: suspend () -> Response<T>
 ): NetworkRequestResult<T> = try {
     val response = request()
@@ -14,6 +14,7 @@ internal suspend fun <T> handleNetworkRequest(
         NetworkRequestResult.Success(response.body()!!)
     else NetworkRequestResult.Error(
         error = when (response.code()) {
+            in 300..399 -> NetworkRequestError.Redirect(response.code().toString())
             in 400..499 -> NetworkRequestError.ClientError(response.code().toString())
             in 500..599 -> NetworkRequestError.ServerError(response.code().toString())
             else -> NetworkRequestError.UnknownError(response.code().toString())

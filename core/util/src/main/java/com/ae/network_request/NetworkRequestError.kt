@@ -1,6 +1,11 @@
 package com.ae.network_request
 
 sealed class NetworkRequestError(message: String?) : Throwable() {
+
+    data class Redirect(override val message: String? = null) : NetworkRequestError(message) {
+        private fun readResolve(): Any = Redirect(message)
+    }
+
     data class ClientError(override val message: String? = null) : NetworkRequestError(message) {
         private fun readResolve(): Any = ClientError(message)
     }
@@ -12,4 +17,5 @@ sealed class NetworkRequestError(message: String?) : Throwable() {
     data class UnknownError(override val message: String? = null) : NetworkRequestError(message) {
         private fun readResolve(): Any = UnknownError(message)
     }
+
 }

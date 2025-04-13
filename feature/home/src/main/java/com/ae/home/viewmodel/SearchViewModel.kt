@@ -3,7 +3,6 @@ package com.ae.home.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ae.annotations.DefaultDispatcher
-import com.ae.network.request_result.NetworkRequestError
 import com.ae.network_request.NetworkRequestError
 import com.ae.network_request.NetworkRequestResult
 import com.ae.search.model.ISearchItem
@@ -35,18 +34,21 @@ class SearchViewModel @Inject constructor(
 
         _exception.value = "Loading"
 
-        try {
-            val results = searchWithFiltersUseCase.invoke(
-                SearchParams(
-                    "Гор", SearchItemCategory.categoryValues, null, 0.0, 0.0
-                )
+        val results = searchWithFiltersUseCase.invoke(
+            SearchParams(
+                "Гор", SearchItemCategory.categoryValues, null, 0.0, 0.0
             )
+        )
 
-            _foundObjects.value = results
-            _exception.value = if (results.isEmpty()) "Nothing was found" else null
-        } catch (e: Throwable) {
-            _exception.value = e.message
+        if (results is NetworkRequestResult.Success) {
+            _foundObjects.value = results.data
+            _exception.value = if (results.data.isEmpty()) "Nothing was found" else null
+
+        } else {
+            _exception.value = (results as NetworkRequestResult.Error).error.message
         }
+
+
     }
 
     fun onServiceTypeSearch(
@@ -67,11 +69,11 @@ class SearchViewModel @Inject constructor(
 
         if (results is NetworkRequestResult.Success) {
 
-            val typeString = results[0].link!!.substring(
-                results[0].link!!.subSequence(
+            val typeString = results.data[0].link!!.substring(
+                results.data[0].link!!.subSequence(
                     0,
-                    results[0].link!!.length - 1
-                ).indexOfLast { it == '/' } + 1, results[0].link!!.length - 1
+                    results.data[0].link!!.length - 1
+                ).indexOfLast { it == '/' } + 1, results.data[0].link!!.length - 1
             )
 
             onNearbySearch(typeString, category = searchParams.itemsFilters[0])
@@ -84,21 +86,20 @@ class SearchViewModel @Inject constructor(
 
         _exception.value = "Loading"
 
-        try {
-
-            val results = searchWithinRadiusUseCase.invoke(
-                SearchParams(
-                    query = type, listOf(category),
-                    radius = 400,
-                    lat = 45.019061,
-                    lon = 39.030742
-                )
+        val results = searchWithinRadiusUseCase.invoke(
+            SearchParams(
+                query = type, listOf(category),
+                radius = 400,
+                lat = 45.019061,
+                lon = 39.030742
             )
+        )
 
-            _foundObjects.value = results
+        if (results is NetworkRequestResult.Success) {
+            _foundObjects.value = results.data
             _exception.value = null
-        } catch (e: Throwable) {
-            _exception.value = e.message
+        } else {
+            _exception.value = (results as NetworkRequestResult.Error).error.message
         }
     }
 
