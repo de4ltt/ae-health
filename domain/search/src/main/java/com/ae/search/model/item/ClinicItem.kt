@@ -1,4 +1,7 @@
-package com.ae.search.model
+package com.ae.search.model.item
+
+import com.ae.search.model.ISearchItem
+import com.ae.search.model.SearchItemCategory
 
 data class ClinicItem(
     override val title: String,

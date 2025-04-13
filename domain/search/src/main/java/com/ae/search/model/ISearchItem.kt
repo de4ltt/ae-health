@@ -1,6 +1,6 @@
 package com.ae.search.model
 
-sealed interface ISearchItem {
+interface ISearchItem {
     val title: String
     val subtitle: String?
     val category: SearchItemCategory
