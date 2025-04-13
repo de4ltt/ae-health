@@ -1,7 +1,7 @@
 package com.ae.search.mapper
 
 import com.ae.search.model.item.util.SearchItemCategory as CategoriesDomain
-import com.ae.network.model.SearchItemCategory as CategoriesNetwork
+import com.ae.network.model.enums.SearchItemCategory as CategoriesNetwork
 import com.ae.network.model.SearchParamsNetwork
 import com.ae.search.model.search.SearchParams
 

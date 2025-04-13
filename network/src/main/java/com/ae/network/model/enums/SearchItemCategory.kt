@@ -1,4 +1,4 @@
-package com.ae.network.model
+package com.ae.network.model.enums
 
 import com.ae.network.search_function.searchDoctorTypes
 import com.ae.network.search_function.searchForDoctor

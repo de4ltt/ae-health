@@ -1,6 +1,6 @@
 package com.ae.network.dto.retrofit
 
-import com.ae.network.model.SearchItemCategory
+import com.ae.network.model.enums.SearchItemCategory
 
 data class TypedItemResponse(
     val title: String,
