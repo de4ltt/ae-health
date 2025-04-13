@@ -33,16 +33,25 @@ class AEHeathApp : Application() {
 
     private fun initializeComponents() {
 
-        dispatchersComponent = DaggerDispatchersComponent.create()
+        dispatchersComponent =
+            DaggerDispatchersComponent.create()
         networkComponent =
-            DaggerNetworkComponent.builder().bindDispatchersComponent(dispatchersComponent).build()
+            DaggerNetworkComponent.builder()
+                .bindDispatchersComponent(dispatchersComponent)
+                .build()
         searchDataComponent =
-            DaggerSearchDataComponent.builder().bindNetworkComponent(networkComponent).build()
-        homeComponent = DaggerHomeComponent.builder().bindSearchDataComponent(searchDataComponent)
-            .bindDispatchersComponent(dispatchersComponent).build()
+            DaggerSearchDataComponent.builder()
+                .bindNetworkComponent(networkComponent)
+                .build()
+        homeComponent = DaggerHomeComponent.builder()
+            .bindSearchDataComponent(searchDataComponent)
+            .bindDispatchersComponent(dispatchersComponent)
+            .build()
 
         appComponent =
-            DaggerAppComponent.builder().bindHomeComponent(homeComponent).build()
+            DaggerAppComponent.builder()
+                .bindHomeComponent(homeComponent)
+                .build()
 
     }
 }
