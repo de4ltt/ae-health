@@ -1,7 +1,5 @@
 package com.ae.network_request
 
-import com.ae.network_request.NetworkRequestResult
-
 fun <T> NetworkRequestResult<T>.handleResult(): NetworkRequestResult<T> =
     if (this is NetworkRequestResult.Success)
         NetworkRequestResult.Success(this.data)
