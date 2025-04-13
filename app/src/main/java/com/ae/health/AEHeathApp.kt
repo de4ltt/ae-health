@@ -4,6 +4,7 @@ import android.app.Application
 import com.ae.di.DaggerDispatchersComponent
 import com.ae.di.DispatchersComponent
 import com.ae.health.di.AppComponent
+import com.ae.health.di.DaggerAppComponent
 import com.ae.home.di.DaggerHomeComponent
 import com.ae.home.di.HomeComponent
 import com.ae.network.di.DaggerNetworkComponent

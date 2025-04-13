@@ -4,8 +4,7 @@ import com.ae.annotations.IoDispatcher
 import com.ae.network.ISearchDataSource
 import com.ae.network.dto.retrofit.TypedItemResponse
 import com.ae.network.jsoup.IJsoupFindApi
-import com.ae.network.jsoup.IJsoupMapApi
-import com.ae.network.jsoup.search_function.searchFor
+import com.ae.network.search_function.searchFor
 import com.ae.network.mapper.toTypedItems
 import com.ae.network.model.CoordinatedArea
 import com.ae.network_request.NetworkRequestError
@@ -20,9 +19,8 @@ import javax.inject.Inject
 
 internal class SearchDataSource @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val jsoupMapApi: IJsoupMapApi,
     private val jsoupFindApi: IJsoupFindApi,
-    private val searchApi: IMapSearchApi,
+    private val mapSearchApi: IMapSearchApi
 ) : ISearchDataSource {
 
     override suspend fun searchWithFilters(searchParams: SearchParamsNetwork): NetworkRequestResult<List<TypedItemResponse>> =
@@ -56,13 +54,13 @@ internal class SearchDataSource @Inject constructor(
                     CoordinatedArea(searchParams.lat, searchParams.lon, searchParams.radius)
 
                 val results = (if (searchParams.itemFilters.isEmpty())
-                    searchFor(coordinatedArea, searchApi)
+                    searchFor(coordinatedArea, mapSearchApi)
                 else
                     searchParams.itemFilters[0]
                         .searchFunction(
                             searchParams.query,
                             coordinatedArea,
-                            searchApi
+                            mapSearchApi
                         )).toTypedItems()
 
                 NetworkRequestResult.Success(results)

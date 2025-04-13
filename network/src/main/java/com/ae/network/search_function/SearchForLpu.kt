@@ -1,4 +1,4 @@
-package com.ae.network.jsoup.search_function
+package com.ae.network.search_function
 
 import com.ae.network.dto.retrofit.LocatedItemResponse
 import com.ae.network.dto.retrofit.TypedItemResponse

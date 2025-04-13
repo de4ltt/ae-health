@@ -1,4 +1,4 @@
-package com.ae.network.jsoup.`typealias`
+package com.ae.network.`typealias`
 
 import com.ae.network.dto.retrofit.TypedItemResponse
 import org.jsoup.nodes.Document

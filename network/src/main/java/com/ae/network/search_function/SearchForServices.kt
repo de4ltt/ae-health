@@ -1,4 +1,4 @@
-package com.ae.network.jsoup.search_function
+package com.ae.network.search_function
 
 import com.ae.network.dto.retrofit.LocatedItemResponse
 import com.ae.network.dto.retrofit.TypedItemResponse
@@ -7,8 +7,8 @@ import com.ae.network_request.NetworkRequestResult
 import com.ae.network_request.handleNetworkRequest
 import com.ae.network.retrofit.IMapSearchApi
 
-internal suspend fun searchForDoctor(
-    speciality: String,
+internal suspend fun searchForServices(
+    service: String,
     coordinatedArea: CoordinatedArea,
     searchApi: IMapSearchApi
 ): List<LocatedItemResponse> {
@@ -17,7 +17,7 @@ internal suspend fun searchForDoctor(
         val results = mutableListOf<TypedItemResponse>()
 
         val result = handleNetworkRequest {
-            searchApi.findBySpeciality(speciality = speciality, bbox = coordinatedArea.toString())
+            searchApi.findByService(service = service, bbox = coordinatedArea.toString())
         }
 
         if (result is NetworkRequestResult.Success)

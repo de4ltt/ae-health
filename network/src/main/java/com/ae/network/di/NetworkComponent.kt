@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @NetworkScope
 @Component(
-    modules = [DataSourceModule::class, JsoupModule::class, RetrofitModule::class, SecretPropertiesModule::class],
+    modules = [DataSourceModule::class, JsoupModule::class, RetrofitModule::class],
     dependencies = [DispatchersComponent::class]
 )
 interface NetworkComponent {

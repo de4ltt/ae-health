@@ -1,6 +1,16 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
+}
+
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        load(localFile.inputStream())
+    }
 }
 
 android {
@@ -12,6 +22,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("String", "BASE_URL", "${localProperties["SEARCH_BASE_URL"]}")
     }
 
     buildTypes {
@@ -37,6 +49,9 @@ android {
 }
 
 dependencies {
+
+    ksp(libs.dagger.compiler)
+    implementation(libs.dagger)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
