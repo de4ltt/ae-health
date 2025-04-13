@@ -46,7 +46,7 @@ dependencies {
 
     implementation(project(":data:search"))
 
-    implementation(project(":network"))
+    implementation(project(":network:search"))
 
     implementation(project(":feature:home"))
 
