@@ -46,7 +46,7 @@ class AEHeathApp : Application() {
     private fun initializeComponents() {
 
         configComponent = DaggerConfigComponent.builder()
-            .bindSecretProperties(SecretProperties)
+            .bindSecretProperties(ConfigProperties)
             .build()
         utilComponent =
             DaggerDispatchersComponent.create()

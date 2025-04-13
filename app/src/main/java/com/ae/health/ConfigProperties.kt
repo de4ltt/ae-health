@@ -1,8 +1,8 @@
 package com.ae.health
 
-import com.ae.config.di.ISecretProperties
+import com.ae.IConfigProperties
 
-object SecretProperties: ISecretProperties {
+object ConfigProperties: IConfigProperties {
     override val baseUrl: String
         get() = BuildConfig.BASE_URL
     override val findUrl: String

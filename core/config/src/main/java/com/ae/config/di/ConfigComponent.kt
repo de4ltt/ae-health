@@ -1,12 +1,13 @@
 package com.ae.config.di
 
+import com.ae.IConfigProperties
 import com.ae.config.di.annotation.SecretProperty
 import com.ae.config.di.module.ConfigModule
 import com.ae.config.di.scope.ConfigScope
 import dagger.Component
 
 @ConfigScope
-@Component(modules = [ConfigModule::class], dependencies = [ISecretProperties::class])
+@Component(modules = [ConfigModule::class], dependencies = [IConfigProperties::class])
 interface ConfigComponent {
 
     @SecretProperty("base_url")
@@ -18,7 +19,7 @@ interface ConfigComponent {
     @Component.Builder
     interface Builder {
 
-        fun bindSecretProperties(secretProperties: ISecretProperties): Builder
+        fun bindSecretProperties(secretProperties: IConfigProperties): Builder
 
         fun build(): ConfigComponent
     }
