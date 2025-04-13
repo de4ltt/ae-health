@@ -8,8 +8,10 @@ import com.ae.di.DispatchersComponent
 import com.ae.health.config.ConfigProperties
 import com.ae.health.di.AppComponent
 import com.ae.health.di.DaggerAppComponent
+import com.ae.health.viewmodel_provider.ViewModelRegister
 import com.ae.home.di.DaggerHomeComponent
 import com.ae.home.di.HomeComponent
+import com.ae.home.viewmodel.SearchViewModel
 import com.ae.network.di.CoreNetworkComponent
 import com.ae.network.di.DaggerCoreNetworkComponent
 import com.ae.search.di.DaggerSearchDataComponent
@@ -42,6 +44,7 @@ class AEHeathApp : Application() {
         super.onCreate()
         initializeComponents()
         appComponent.inject(this)
+        initializeViewModels()
     }
 
     private fun initializeComponents() {
@@ -78,5 +81,10 @@ class AEHeathApp : Application() {
                 .bindHomeComponent(homeComponent)
                 .build()
 
+    }
+
+    private fun initializeViewModels() {
+        ViewModelRegister
+            .register(SearchViewModel::class, appComponent.searchViewModelFactory())
     }
 }
