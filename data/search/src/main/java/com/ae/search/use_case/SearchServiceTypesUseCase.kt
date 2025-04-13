@@ -1,5 +1,6 @@
 package com.ae.search.use_case
 
+import com.ae.network_request.NetworkRequestResult
 import com.ae.search.model.ISearchItem
 import com.ae.search.model.SearchParams
 import com.ae.search.repository.ISearchRepository
@@ -9,6 +10,6 @@ import javax.inject.Inject
 internal class SearchServiceTypesUseCase @Inject constructor(
     private val searchRepository: ISearchRepository
 ): ISearchServiceTypesUseCase {
-    override suspend fun invoke(searchParams: SearchParams): List<ISearchItem> =
+    override suspend fun invoke(searchParams: SearchParams): NetworkRequestResult<List<ISearchItem>> =
         searchRepository.searchServiceTypes(searchParams)
 }

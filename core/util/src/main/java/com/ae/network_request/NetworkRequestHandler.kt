@@ -1,4 +1,4 @@
-package com.ae.network.request_result
+package com.ae.network_request
 
 import retrofit2.Response
 

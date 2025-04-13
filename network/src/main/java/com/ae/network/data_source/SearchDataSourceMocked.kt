@@ -2,8 +2,8 @@ package com.ae.network.data_source
 
 import com.ae.network.ISearchDataSource
 import com.ae.network.dto.retrofit.TypedItemResponse
-import com.ae.network.request_result.NetworkRequestError
-import com.ae.network.request_result.NetworkRequestResult
+import com.ae.network_request.NetworkRequestError
+import com.ae.network_request.NetworkRequestResult
 import com.ae.network.model.SearchParamsNetwork
 import javax.inject.Inject
 import kotlin.random.Random

@@ -8,8 +8,8 @@ import com.ae.network.jsoup.IJsoupMapApi
 import com.ae.network.jsoup.search_function.searchFor
 import com.ae.network.mapper.toTypedItems
 import com.ae.network.model.CoordinatedArea
-import com.ae.network.request_result.NetworkRequestError
-import com.ae.network.request_result.NetworkRequestResult
+import com.ae.network_request.NetworkRequestError
+import com.ae.network_request.NetworkRequestResult
 import com.ae.network.model.SearchParamsNetwork
 import com.ae.network.retrofit.IMapSearchApi
 import kotlinx.coroutines.CoroutineDispatcher

@@ -5,8 +5,8 @@ import com.ae.network.dto.jsoup.ClinicMainInfo
 import com.ae.network.dto.jsoup.LocatedClinicLink
 import com.ae.network.jsoup.IJsoupMapApi
 import com.ae.network.model.ISecretProperties
-import com.ae.network.request_result.NetworkRequestError
-import com.ae.network.request_result.NetworkRequestResult
+import com.ae.network_request.NetworkRequestError
+import com.ae.network_request.NetworkRequestResult
 import com.ae.network.util.isFuzzyMatch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document

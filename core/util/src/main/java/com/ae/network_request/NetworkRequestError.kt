@@ -1,4 +1,4 @@
-package com.ae.network.request_result
+package com.ae.network_request
 
 sealed class NetworkRequestError(message: String?) : Throwable() {
     data class ClientError(override val message: String? = null) : NetworkRequestError(message) {

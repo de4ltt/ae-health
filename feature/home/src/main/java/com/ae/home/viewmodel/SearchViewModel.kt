@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ae.annotations.DefaultDispatcher
 import com.ae.network.request_result.NetworkRequestError
+import com.ae.network_request.NetworkRequestError
+import com.ae.network_request.NetworkRequestResult
 import com.ae.search.model.ISearchItem
 import com.ae.search.model.SearchItemCategory
 import com.ae.search.model.SearchParams
@@ -42,7 +44,7 @@ class SearchViewModel @Inject constructor(
 
             _foundObjects.value = results
             _exception.value = if (results.isEmpty()) "Nothing was found" else null
-        } catch (e: NetworkRequestError) {
+        } catch (e: Throwable) {
             _exception.value = e.message
         }
     }
@@ -59,11 +61,11 @@ class SearchViewModel @Inject constructor(
 
         _exception.value = "Loading"
 
-        try {
+        val results = searchServiceTypesUseCase.invoke(
+            searchParams
+        )
 
-            val results = searchServiceTypesUseCase.invoke(
-                searchParams
-            )
+        if (results is NetworkRequestResult.Success) {
 
             val typeString = results[0].link!!.substring(
                 results[0].link!!.subSequence(
@@ -75,9 +77,7 @@ class SearchViewModel @Inject constructor(
             onNearbySearch(typeString, category = searchParams.itemsFilters[0])
 
             _exception.value = null
-        } catch (e: Throwable) {
-            _exception.value = e.message
-        }
+        } else _exception.value = (results as NetworkRequestResult.Error).error.message
     }
 
     fun onNearbySearch(type: String, category: SearchItemCategory) = viewModelScope.launch {

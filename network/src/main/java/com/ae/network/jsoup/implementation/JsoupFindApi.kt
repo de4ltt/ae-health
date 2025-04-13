@@ -4,8 +4,8 @@ import com.ae.network.dto.retrofit.TypedItemResponse
 import com.ae.network.jsoup.IJsoupFindApi
 import com.ae.network.model.ISecretProperties
 import com.ae.network.model.SearchParamsNetwork
-import com.ae.network.request_result.NetworkRequestError
-import com.ae.network.request_result.NetworkRequestResult
+import com.ae.network_request.NetworkRequestError
+import com.ae.network_request.NetworkRequestResult
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import javax.inject.Inject

@@ -2,7 +2,7 @@ package com.ae.network.jsoup
 
 import com.ae.network.dto.retrofit.TypedItemResponse
 import com.ae.network.model.SearchParamsNetwork
-import com.ae.network.request_result.NetworkRequestResult
+import com.ae.network_request.NetworkRequestResult
 
 internal interface IJsoupFindApi {
     suspend fun find(searchParams: SearchParamsNetwork): NetworkRequestResult<List<TypedItemResponse>>
