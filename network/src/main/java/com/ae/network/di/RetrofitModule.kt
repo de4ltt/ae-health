@@ -18,25 +18,18 @@ internal class RetrofitModule {
 
     @NetworkScope
     @Provides
-    fun provideLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor()
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor { message ->
+        println("HTTP: $message")
+    }.apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
 
     @NetworkScope
     @Provides
     fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
         OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .addHeader("Referer", "https://prodoctorov.ru/")
-                    .addHeader("X-Requested-With", "XMLHttpRequest")
-                    .addHeader("Origin", "https://prodoctorov.ru")
-                    .addHeader(
-                        "Cookie",
-                        "csrftoken=FOHwJ1BTmN8UeRuEPdEDZpIVfJeZFtfc; sessionid=3hynnh4afmazx81qp9ehmldo1e8kyvvg; _ym_uid=1743608668443699950; _ym_d=1743608668; _ym_isad=1; _ym_visorc=b"
-                    )
-                    .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36")
-                    .build()
-                chain.proceed(request)
-            }.addInterceptor(loggingInterceptor).build()
+            .addInterceptor(loggingInterceptor)
+            .build()
 
     @NetworkScope
     @Provides
