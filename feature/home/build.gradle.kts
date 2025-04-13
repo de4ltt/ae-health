@@ -40,8 +40,7 @@ android {
 dependencies {
     implementation(project(":domain:search"))
     implementation(project(":data:search"))
-
-    implementation(project(":core:di"))
+    implementation(project(":core:util"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

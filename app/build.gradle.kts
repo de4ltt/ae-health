@@ -42,8 +42,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:di"))
 
+    implementation(project(":core:util"))
     implementation(project(":data:search"))
     
     implementation(project(":feature:home"))

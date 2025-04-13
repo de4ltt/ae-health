@@ -15,6 +15,7 @@ kotlin {
 
 dependencies {
     implementation(project(":domain:search"))
+    implementation(project(":network"))
 
     ksp(libs.dagger.compiler)
     implementation(libs.dagger)
