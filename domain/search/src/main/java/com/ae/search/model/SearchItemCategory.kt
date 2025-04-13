@@ -3,6 +3,9 @@ package com.ae.search.model
 import com.ae.search.model.item.ClinicItem
 import com.ae.search.model.item.DoctorItem
 import com.ae.search.model.item.ServiceItem
+import com.ae.search.model.type_item.ClinicTypeItem
+import com.ae.search.model.type_item.DoctorTypeItem
+import com.ae.search.model.type_item.ServiceTypeItem
 
 sealed class SearchItemCategory {
     abstract override fun toString(): String
