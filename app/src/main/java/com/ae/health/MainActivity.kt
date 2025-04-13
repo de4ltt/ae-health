@@ -12,10 +12,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appViewModelProvider = AppViewModelProvider(this, applicationContext)
+        val viewModelProvider = AppViewModelProvider(this)
 
         setContent {
-            HomeScreen(searchViewModel = appViewModelProvider.instanceOf<SearchViewModel>())
+            HomeScreen(searchViewModel = viewModelProvider<SearchViewModel>())
         }
     }
 }
