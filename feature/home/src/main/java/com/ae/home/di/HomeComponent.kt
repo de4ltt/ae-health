@@ -2,6 +2,7 @@ package com.ae.home.di
 
 import com.ae.di.DispatchersComponent
 import com.ae.home.di.module.HomeModule
+import com.ae.home.di.scope.HomeScope
 import com.ae.home.viewmodel.SearchViewModelFactory
 import com.ae.search.di.SearchDataComponent
 import dagger.Component
