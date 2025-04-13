@@ -61,7 +61,7 @@ fun BasicBox(
                 .fillMaxWidth(0.7f)
                 .height(40.dp)
                 .background(Color.Green)
-                .clickable(onClick = { searchViewModel.onNearbySearch() }),
+                .clickable(onClick = { searchViewModel.onServiceTypeSearch() }),
             contentAlignment = Alignment.Center,
             content = {
                 Text("PRESS ME FOR NEARBY SEARCH")
@@ -83,7 +83,7 @@ fun BasicBox(
                 val text = """
         title: ${it.title},
         subtitle: ${it.subtitle},
-        category: ${it.category.toString()},
+        category: ${it.category},
         imageUri: ${it.imageUri},
     """
 

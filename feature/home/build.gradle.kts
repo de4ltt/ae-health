@@ -42,8 +42,7 @@ dependencies {
     implementation(project(":data:search"))
 
     implementation(project(":core:di"))
-    implementation(project(":core:network"))
-    
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

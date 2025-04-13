@@ -11,5 +11,5 @@ internal fun List<TypedItemResponse>.toDomain(): List<ISearchItem> =
 
 private fun TypedItemResponse.toDomain(): ISearchItem? {
     val category = SearchItemCategory.fromString(this.category)
-    return category?.createItem(title, subtitle, image)
+    return category?.createItem(title, subtitle, image, link)
 }

@@ -7,17 +7,20 @@ import com.ae.network.request_result.NetworkRequestError
 import com.ae.search.model.ISearchItem
 import com.ae.search.model.SearchItemCategory
 import com.ae.search.model.SearchParams
+import com.ae.search.use_case.ISearchServiceTypesUseCase
 import com.ae.search.use_case.ISearchWithFiltersUseCase
+import com.ae.search.use_case.ISearchWithinRadiusUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
-    private val searchWithFiltersUseCase: ISearchWithFiltersUseCase
+    private val searchWithFiltersUseCase: ISearchWithFiltersUseCase,
+    private val searchWithinRadiusUseCase: ISearchWithinRadiusUseCase,
+    private val searchServiceTypesUseCase: ISearchServiceTypesUseCase
 ) : ViewModel() {
 
     private val _foundObjects: MutableStateFlow<List<ISearchItem>> = MutableStateFlow(emptyList())
@@ -33,11 +36,9 @@ class SearchViewModel @Inject constructor(
         try {
             val results = searchWithFiltersUseCase.invoke(
                 SearchParams(
-                    "Гор", SearchItemCategory.values, null, 0.0, 0.0
+                    "Гор", SearchItemCategory.categoryValues, null, 0.0, 0.0
                 )
             )
-
-            print("VIEWMODEL-RESULTS: $results")
 
             _foundObjects.value = results
             _exception.value = if (results.isEmpty()) "Nothing was found" else null
@@ -46,22 +47,57 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onNearbySearch() = viewModelScope.launch(defaultDispatcher) {
+    fun onServiceTypeSearch(
+        searchParams: SearchParams = SearchParams(
+            query = "Гинеколог",
+            itemsFilters = listOf(SearchItemCategory.Services),
+            radius = 400,
+            lat = 45.019061,
+            lon = 39.030742
+        )
+    ) = viewModelScope.launch {
 
         _exception.value = "Loading"
 
         try {
-            val results = searchWithFiltersUseCase.invoke(
+
+            val results = searchServiceTypesUseCase.invoke(
+                searchParams
+            )
+
+            val typeString = results[0].link!!.substring(
+                results[0].link!!.subSequence(
+                    0,
+                    results[0].link!!.length - 1
+                ).indexOfLast { it == '/' } + 1, results[0].link!!.length - 1
+            )
+
+            onNearbySearch(typeString, category = searchParams.itemsFilters[0])
+
+            _exception.value = null
+        } catch (e: Throwable) {
+            _exception.value = e.message
+        }
+    }
+
+    fun onNearbySearch(type: String, category: SearchItemCategory) = viewModelScope.launch {
+
+        _exception.value = "Loading"
+
+        try {
+
+            val results = searchWithinRadiusUseCase.invoke(
                 SearchParams(
-                    "Гор", listOf(SearchItemCategory.Doctor), 400, 45.018952, 39.030092
+                    query = type, listOf(category),
+                    radius = 400,
+                    lat = 45.019061,
+                    lon = 39.030742
                 )
             )
 
-            print(results)
-
             _foundObjects.value = results
-            _exception.value = if (results.isEmpty()) "Nothing was found" else null
-        } catch (e: NetworkRequestError) {
+            _exception.value = null
+        } catch (e: Throwable) {
             _exception.value = e.message
         }
     }

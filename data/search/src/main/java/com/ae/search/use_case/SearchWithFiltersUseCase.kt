@@ -11,6 +11,6 @@ internal class SearchWithFiltersUseCase @Inject constructor(
 
     override suspend operator fun invoke(
         searchParams: SearchParams
-    ) = if (searchParams.radius == null) searchRepository.searchWithFilters(searchParams)
-    else searchRepository.searchNearby(searchParams)
+    ) = searchRepository.searchWithFilters(searchParams)
+
 }

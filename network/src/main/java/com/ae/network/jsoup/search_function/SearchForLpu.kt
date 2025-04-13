@@ -1,0 +1,31 @@
+package com.ae.network.jsoup.search_function
+
+import com.ae.network.dto.retrofit.LocatedItemResponse
+import com.ae.network.dto.retrofit.TypedItemResponse
+import com.ae.network.model.CoordinatedArea
+import com.ae.network.request_result.NetworkRequestResult
+import com.ae.network.request_result.handleNetworkRequest
+import com.ae.network.retrofit.IMapSearchApi
+
+internal suspend fun searchForLpu(
+    lpuType: String,
+    coordinatedArea: CoordinatedArea,
+    searchApi: IMapSearchApi
+): List<LocatedItemResponse> {
+
+    return try {
+        val results = mutableListOf<TypedItemResponse>()
+
+        val result = handleNetworkRequest {
+            searchApi.findByLpuType(lpuType = lpuType, bbox = coordinatedArea.toString())
+        }
+
+        if (result is NetworkRequestResult.Success)
+            result.data.toLocatedItems()
+        else
+            throw ((result as NetworkRequestResult.Error).error)
+    } catch (e: Throwable) {
+        emptyList<LocatedItemResponse>()
+    }
+
+}

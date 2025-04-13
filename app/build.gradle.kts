@@ -43,7 +43,6 @@ android {
 
 dependencies {
     implementation(project(":core:di"))
-    implementation(project(":core:network"))
 
     implementation(project(":data:search"))
     

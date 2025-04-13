@@ -4,7 +4,9 @@ import android.icu.text.DisplayOptions
 import com.ae.annotations.DefaultDispatcher
 import com.ae.home.viewmodel.SearchViewModel
 import com.ae.home.viewmodel.SearchViewModelFactory
+import com.ae.search.use_case.ISearchServiceTypesUseCase
 import com.ae.search.use_case.ISearchWithFiltersUseCase
+import com.ae.search.use_case.ISearchWithinRadiusUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -18,7 +20,14 @@ internal class HomeModule {
     @Provides
     fun provideSearchViewModelFactory(
         @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
-        searchWithFiltersUseCase: ISearchWithFiltersUseCase
-    ): SearchViewModelFactory = SearchViewModelFactory(defaultDispatcher, searchWithFiltersUseCase)
+        searchWithFiltersUseCase: ISearchWithFiltersUseCase,
+        searchWithinRadiusUseCase: ISearchWithinRadiusUseCase,
+        searchServiceTypeUseCase: ISearchServiceTypesUseCase
+    ): SearchViewModelFactory = SearchViewModelFactory(
+        defaultDispatcher,
+        searchWithFiltersUseCase,
+        searchWithinRadiusUseCase,
+        searchServiceTypeUseCase
+    )
 
 }

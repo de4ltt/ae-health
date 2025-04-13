@@ -3,6 +3,7 @@ package com.ae.search.repository
 import com.ae.network.ISearchDataSource
 import com.ae.network.dto.retrofit.TypedItemResponse
 import com.ae.network.request_result.NetworkRequestResult
+import com.ae.network.request_result.NetworkRequestResult.Success
 import com.ae.search.mapper.toDomain
 import com.ae.search.mapper.toNetwork
 import com.ae.search.model.ISearchItem
@@ -24,6 +25,15 @@ internal class SearchRepository @Inject constructor(
 
     override suspend fun searchNearby(searchParams: SearchParams): List<ISearchItem> {
         val response = searchDataSource.searchNearbyWithFilters(searchParams.toNetwork())
+
+        if (response is NetworkRequestResult.Success)
+            return response.data.toDomain()
+        else
+            throw ((response as NetworkRequestResult.Error).error)
+    }
+
+    override suspend fun searchServiceTypes(searchParams: SearchParams): List<ISearchItem> {
+        val response = searchDataSource.searchServiceTypes(searchParams.toNetwork())
 
         if (response is NetworkRequestResult.Success)
             return response.data.toDomain()
