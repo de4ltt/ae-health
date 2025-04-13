@@ -1,5 +1,6 @@
-package com.ae.search.model
+package com.ae.search.model.item.util
 
+import com.ae.search.model.interfaces.ISearchItem
 import com.ae.search.model.item.ClinicItem
 import com.ae.search.model.item.DoctorItem
 import com.ae.search.model.item.ServiceItem

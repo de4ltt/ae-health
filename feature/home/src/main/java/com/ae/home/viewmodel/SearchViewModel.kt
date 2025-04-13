@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.ae.annotations.DefaultDispatcher
 import com.ae.network_request.NetworkRequestError
 import com.ae.network_request.NetworkRequestResult
-import com.ae.search.model.ISearchItem
-import com.ae.search.model.SearchItemCategory
-import com.ae.search.model.SearchParams
+import com.ae.search.model.interfaces.ISearchItem
+import com.ae.search.model.item.util.SearchItemCategory
+import com.ae.search.model.search.SearchParams
 import com.ae.search.use_case.ISearchServiceTypesUseCase
 import com.ae.search.use_case.ISearchWithFiltersUseCase
 import com.ae.search.use_case.ISearchWithinRadiusUseCase

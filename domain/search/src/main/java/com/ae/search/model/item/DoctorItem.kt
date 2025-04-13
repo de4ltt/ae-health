@@ -1,7 +1,7 @@
 package com.ae.search.model.item
 
-import com.ae.search.model.ISearchItem
-import com.ae.search.model.SearchItemCategory
+import com.ae.search.model.interfaces.ISearchItem
+import com.ae.search.model.item.util.SearchItemCategory
 
 data class DoctorItem(
     override val title: String,

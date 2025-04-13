@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.ae.home.viewmodel.SearchViewModel
-import com.ae.search.model.ISearchItem
+import com.ae.search.model.interfaces.ISearchItem
 import javax.inject.Inject
 import androidx.compose.runtime.getValue
 

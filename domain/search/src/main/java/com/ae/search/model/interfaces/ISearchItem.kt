@@ -1,4 +1,6 @@
-package com.ae.search.model
+package com.ae.search.model.interfaces
+
+import com.ae.search.model.item.util.SearchItemCategory
 
 interface ISearchItem {
     val title: String

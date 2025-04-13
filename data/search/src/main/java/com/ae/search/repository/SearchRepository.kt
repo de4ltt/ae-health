@@ -6,8 +6,8 @@ import com.ae.network_request.NetworkRequestResult
 import com.ae.network_request.handleResult
 import com.ae.search.mapper.toDomain
 import com.ae.search.mapper.toNetwork
-import com.ae.search.model.ISearchItem
-import com.ae.search.model.SearchParams
+import com.ae.search.model.interfaces.ISearchItem
+import com.ae.search.model.search.SearchParams
 import javax.inject.Inject
 
 internal class SearchRepository @Inject constructor(
