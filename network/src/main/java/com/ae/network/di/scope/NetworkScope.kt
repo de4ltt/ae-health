@@ -1,4 +1,4 @@
-package com.ae.network.di
+package com.ae.network.di.scope
 
 import javax.inject.Scope
 

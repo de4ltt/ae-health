@@ -1,13 +1,12 @@
 package com.ae.network.di
 
-import com.ae.annotations.DefaultDispatcher
-import com.ae.annotations.IoDispatcher
 import com.ae.di.DispatchersComponent
 import com.ae.network.ISearchDataSource
-import dagger.BindsInstance
+import com.ae.network.di.module.DataSourceModule
+import com.ae.network.di.module.JsoupModule
+import com.ae.network.di.module.RetrofitModule
+import com.ae.network.di.scope.NetworkScope
 import dagger.Component
-import kotlinx.coroutines.CoroutineDispatcher
-import javax.inject.Singleton
 
 @NetworkScope
 @Component(
