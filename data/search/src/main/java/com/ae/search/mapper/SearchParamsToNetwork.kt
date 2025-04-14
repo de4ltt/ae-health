@@ -2,8 +2,8 @@ package com.ae.search.mapper
 
 import com.ae.search.model.item.util.SearchItemCategory
 import com.ae.search.model.search.SearchParams
-import com.ae.search.network.model.SearchParamsNetwork
-import com.ae.search.network.model.enums.SearchItemCategory as CategoriesNetwork
+import com.ae.search.model.SearchParamsNetwork
+import com.ae.search.model.enums.SearchItemCategory as CategoriesNetwork
 
 internal fun List<SearchItemCategory>.toNetwork(): List<CategoriesNetwork> {
 

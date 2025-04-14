@@ -17,7 +17,7 @@ import com.ae.network.di.DaggerCoreNetworkComponent
 import com.ae.search.di.DaggerSearchDataComponent
 import com.ae.search.di.SearchDataComponent
 import com.ae.search.network.di.DaggerNetworkSearchComponent
-import com.ae.search.network.di.NetworkSearchComponent
+import com.ae.search.di.NetworkSearchComponent
 
 class AEHeathApp : Application() {
 

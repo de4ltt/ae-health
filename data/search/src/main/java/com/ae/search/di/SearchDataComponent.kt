@@ -1,6 +1,5 @@
 package com.ae.search.di
 
-import com.ae.search.network.di.NetworkSearchComponent
 import com.ae.search.repository.ISearchRepository
 import com.ae.search.use_case.ISearchServiceTypesUseCase
 import com.ae.search.use_case.ISearchWithFiltersUseCase
