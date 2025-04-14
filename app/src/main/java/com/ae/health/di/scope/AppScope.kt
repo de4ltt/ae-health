@@ -1,4 +1,4 @@
-package com.ae.health.di
+package com.ae.health.di.scope
 
 import javax.inject.Scope
 
