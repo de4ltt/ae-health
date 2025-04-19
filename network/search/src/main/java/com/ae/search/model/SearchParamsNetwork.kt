@@ -1,6 +1,6 @@
 package com.ae.search.model
 
-import com.ae.search.model.enums.SearchItemCategory
+import com.ae.search.model.SearchItemCategory
 
 data class SearchParamsNetwork(
     val query: String,

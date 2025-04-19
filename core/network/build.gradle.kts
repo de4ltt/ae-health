@@ -18,6 +18,8 @@ dependencies {
     ksp(libs.dagger.compiler)
     implementation(libs.dagger)
 
+    implementation(libs.kotlinx.coroutines.android)
+
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 }

@@ -5,19 +5,24 @@ import com.ae.di.DispatchersComponent
 import com.ae.network.di.CoreNetworkComponent
 import com.ae.search.ISearchDataSource
 import com.ae.search.di.module.DataSourceModule
-import com.ae.search.di.module.JsoupModule
+import com.ae.search.di.module.JsoupFindModule
+import com.ae.search.di.module.JsoupNearbySearchModule
 import com.ae.search.di.module.RetrofitModule
+import com.ae.search.di.module.SearchItemCategoryModule
 import com.ae.search.di.scope.NetworkScope
+import com.ae.search.model.SearchItemCategory
 import dagger.Component
 
 @NetworkScope
 @Component(
-    modules = [DataSourceModule::class, JsoupModule::class, RetrofitModule::class],
+    modules = [DataSourceModule::class, JsoupNearbySearchModule::class, JsoupFindModule::class, RetrofitModule::class, SearchItemCategoryModule::class],
     dependencies = [DispatchersComponent::class, ConfigComponent::class, CoreNetworkComponent::class]
 )
 interface NetworkSearchComponent {
 
     fun searchDataSource(): ISearchDataSource
+
+    fun searchItemCategories(): List<SearchItemCategory>
 
     @Component.Builder
     interface Builder {

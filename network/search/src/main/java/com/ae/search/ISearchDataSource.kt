@@ -1,7 +1,7 @@
 package com.ae.search
 
 import com.ae.network.model.NetworkRequestResult
-import com.ae.search.dto.retrofit.TypedItemResponse
+import com.ae.search.model.TypedItemResponse
 import com.ae.search.model.SearchParamsNetwork
 
 interface ISearchDataSource {

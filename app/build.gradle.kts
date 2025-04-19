@@ -55,6 +55,7 @@ android {
 dependencies {
 
     implementation(project(":core:util"))
+    implementation(project(":core:ui"))
     implementation(project(":core:config"))
     implementation(project(":core:network"))
 
@@ -82,4 +83,6 @@ dependencies {
 
     ksp(libs.dagger.compiler)
     implementation(libs.dagger)
+
+    implementation(libs.androidx.navigation.compose)
 }

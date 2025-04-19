@@ -1,5 +1,6 @@
 package com.ae.search.dto.retrofit
 
+import com.ae.search.mapper.toTypedItem
 import com.google.gson.annotations.SerializedName
 
 internal data class FeatureCollectionResponse(
@@ -26,4 +27,6 @@ internal data class FeatureCollectionResponse(
     }
 
     fun toLocatedItems() = features.map { it.toLocatedItems() }
+
+    fun toTypedItems() = this.toLocatedItems().map { it.toTypedItem() }
 }

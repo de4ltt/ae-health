@@ -2,7 +2,7 @@ package com.ae.search.mapper
 
 import com.ae.search.model.interfaces.ISearchItem
 import com.ae.search.model.item.util.SearchItemCategory
-import com.ae.search.dto.retrofit.TypedItemResponse
+import com.ae.search.model.TypedItemResponse
 
 internal fun List<TypedItemResponse>.toDomain(): List<ISearchItem> =
     this.mapNotNull { it.toDomain() }
