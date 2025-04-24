@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_bar_hint">Search</string>
+    <string name="name">Name</string>
+    <string name="rating">Rating</string>
+    <string name="experience">Experience</string>
+    <string name="distance">Distance</string>
+    <string name="unset">Unset</string>
+    <string name="m500">"500 m"</string>
+    <string name="km1">1 km</string>
+    <string name="km2">2 km</string>
+    <string name="categories_empty">Categories cannot be empty</string>
+    <string name="doctor">Doctor</string>
+    <string name="clinic">Clinic</string>
+    <string name="services">Services</string>
+</resources>
