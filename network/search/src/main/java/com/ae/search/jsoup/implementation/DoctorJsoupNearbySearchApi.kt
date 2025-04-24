@@ -18,7 +18,6 @@ internal class DoctorJsoupNearbySearchApi : IJsoupNearbySearchApi() {
         coordinatedArea: CoordinatedArea,
         searchApi: IMapSearchApi
     ): NetworkRequestResult<List<TypedItemResponse>> {
-        val results = mutableListOf<TypedItemResponse>()
 
         val result = handleNetworkRequest(
             request = {

@@ -15,8 +15,6 @@ internal abstract class IJsoupNearbySearchApi {
         searchApi: IMapSearchApi
     ): NetworkRequestResult<List<TypedItemResponse>> {
 
-        val results = mutableListOf<TypedItemResponse>()
-
         val result = handleNetworkRequest(
             request = { searchApi.find(bbox = coordinatedArea.toString()) },
             transform = FeatureCollectionResponse::toTypedItems
