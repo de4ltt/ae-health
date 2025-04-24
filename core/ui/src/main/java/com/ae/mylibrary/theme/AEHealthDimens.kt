@@ -7,6 +7,7 @@ object AEHealthDimens {
     val defaultEdgePadding = 16.dp
     val defaultContainerPadding = 10.dp
 
+    val verticalTextSpacing = 6.dp
     val containerTextPadding = 5.dp
 
     val snackbarBorderWidth = 3.dp

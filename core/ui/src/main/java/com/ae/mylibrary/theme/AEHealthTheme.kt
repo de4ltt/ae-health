@@ -4,10 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.text.font.FontFamily
+import com.ae.mylibrary.theme.AEHealthTypography
 
 val LocalColorScheme = compositionLocalOf { AEHealthColorScheme.lightColorScheme }
 val LocalShapes = compositionLocalOf { AEHealthShapes }
-val LocalTypography = compositionLocalOf { AEHealthTypography() }
+val LocalTypography = compositionLocalOf { AEHealthTypography }
 val LocalDimens = compositionLocalOf { AEHealthDimens }
 
 @Composable
