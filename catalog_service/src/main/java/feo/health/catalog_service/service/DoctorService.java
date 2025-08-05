@@ -1,0 +1,11 @@
+package feo.health.catalog_service.service;
+
+import feo.health.catalog_service.dto.DoctorDto;
+
+import java.util.List;
+
+public interface DoctorService {
+    List<DoctorDto> searchDoctors(String query);
+    DoctorDto getDoctorInfo(String doctorUri);
+    List<DoctorDto> getDoctorsBySpeciality(String specialityUri);
+}
