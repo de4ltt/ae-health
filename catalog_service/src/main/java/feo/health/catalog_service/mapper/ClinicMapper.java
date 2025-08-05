@@ -22,6 +22,7 @@ public class ClinicMapper {
         dto.setName(clinic.getName());
         dto.setAddress(clinic.getAddress());
         dto.setUri(clinic.getUri());
+        dto.setItemType("clinic");
 
         return dto;
     }
