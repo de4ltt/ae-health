@@ -29,25 +29,27 @@ public class SearchController {
     private final ServicesService servicesService;
 
     @GetMapping
-    ResponseEntity<?> search(@RequestParam String q, @RequestParam(defaultValue = "true") Boolean located) {
+    ResponseEntity<SearchDto> search(@RequestParam String q, @RequestParam(defaultValue = "true") Boolean located) {
         SearchDto result = generalSearchService.search(q, located);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/doctors")
-    ResponseEntity<?> searchDoctors(@RequestParam String q) {
+    ResponseEntity<List<DoctorDto>> searchDoctors(@RequestParam String q) {
         List<DoctorDto> result = doctorService.searchDoctors(q);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/clinics")
-    ResponseEntity<?> searchClinics(@RequestParam String q, @RequestParam(defaultValue = "true") Boolean located) {
+    ResponseEntity<List<ClinicDto>> searchClinics(
+            @RequestParam String q, @RequestParam(defaultValue = "true") Boolean located
+    ) {
         List<ClinicDto> result = clinicService.searchClinics(q, located);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/services")
-    ResponseEntity<?> searchServices(@RequestParam String q) {
+    ResponseEntity<List<ServiceDto>> searchServices(@RequestParam String q) {
         List<ServiceDto> result = servicesService.searchServices(q);
         return ResponseEntity.ok(result);
     }

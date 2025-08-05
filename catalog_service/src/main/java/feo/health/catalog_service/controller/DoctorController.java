@@ -18,7 +18,7 @@ public class DoctorController {
     private final DoctorService doctorService;
 
     @GetMapping
-    ResponseEntity<?> getDoctorInfo(@RequestParam String uri) {
+    ResponseEntity<DoctorDto> getDoctorInfo(@RequestParam String uri) {
         DoctorDto doctor = doctorService.getDoctorInfo(uri);
         return ResponseEntity.ok(doctor);
     }
