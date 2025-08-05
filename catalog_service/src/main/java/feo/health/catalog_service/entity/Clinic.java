@@ -3,6 +3,8 @@ package feo.health.catalog_service.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Table(name = "clinics")
 @Data
@@ -26,5 +28,8 @@ public class Clinic {
 
     @Column
     private String imageUri;
+
+    @OneToMany(mappedBy = "clinic", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ClinicReview> clinicReviews;
 
 }
