@@ -27,7 +27,7 @@ public class Doctor {
     private String imageUri;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews;
+    private List<DoctorReview> doctorReviews;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DoctorsService> services;

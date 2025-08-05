@@ -6,9 +6,9 @@ import lombok.Data;
 import java.sql.Date;
 
 @Entity
-@Table(name = "reviews")
+@Table(name = "doctor_reviews")
 @Data
-public class Review {
+public class DoctorReview {
 
     @Id
     @GeneratedValue

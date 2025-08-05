@@ -2,16 +2,8 @@ package feo.health.catalog_service.mapper;
 
 import feo.health.catalog_service.dto.*;
 import feo.health.catalog_service.entity.*;
-import feo.health.catalog_service.repository.ClinicRepository;
-import feo.health.catalog_service.repository.DoctorRepository;
-import feo.health.catalog_service.repository.SpecialityRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -33,7 +25,7 @@ public class DoctorMapper {
         dto.setItemType("doctor");
         dto.setExperience(doctor.getExperience());
         dto.setSpecialities(specialityMapper.toDto(doctor.getSpecialities()));
-        dto.setReviews(reviewMapper.toDto(doctor.getReviews()));
+        dto.setReviews(reviewMapper.toDto(doctor.getDoctorReviews()));
         dto.setServices(doctorsServiceMapper.toDto(doctor.getServices()));
         dto.setClinics(clinicMapper.toDto(doctor.getClinics()));
 
@@ -50,7 +42,7 @@ public class DoctorMapper {
         doctor.setExperience(doctorDto.getExperience());
         doctor.setImageUri(doctorDto.getImageUri());
         doctor.setSpecialities(specialityMapper.toEntity(doctorDto.getSpecialities()));
-        doctor.setReviews(reviewMapper.toEntity(doctorDto.getReviews(), doctor));
+        doctor.setDoctorReviews(reviewMapper.toEntity(doctorDto.getReviews(), doctor));
         doctor.setServices(doctorsServiceMapper.toEntity(doctorDto.getServices(), doctor));
         doctor.setClinics(clinicMapper.toEntity(doctorDto.getClinics()));
 
