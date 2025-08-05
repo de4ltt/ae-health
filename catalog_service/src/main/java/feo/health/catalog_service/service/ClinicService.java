@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ClinicService {
     List<ClinicDto> searchClinics(String query, Boolean located);
+    ClinicDto getClinicInfo(String query, Boolean located);
 }
