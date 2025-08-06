@@ -1,8 +1,11 @@
 package feo.health.catalog_service.service.impl;
 
 import feo.health.catalog_service.dto.ClinicDto;
+import feo.health.catalog_service.entity.Clinic;
 import feo.health.catalog_service.html.client.ClinicHtmlClient;
 import feo.health.catalog_service.html.parser.ClinicHtmlParser;
+import feo.health.catalog_service.mapper.ClinicMapper;
+import feo.health.catalog_service.service.ClinicDatabaseService;
 import feo.health.catalog_service.service.ClinicService;
 import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
@@ -19,6 +22,10 @@ public class ClinicServiceImpl implements ClinicService {
     private final ClinicHtmlClient htmlClient;
     private final ClinicHtmlParser htmlParser;
 
+    private final ClinicDatabaseService clinicDatabaseService;
+
+    private final ClinicMapper clinicMapper;
+
     @Override
     public List<ClinicDto> searchClinics(String query, Boolean located) {
         try {
@@ -32,7 +39,19 @@ public class ClinicServiceImpl implements ClinicService {
 
             result = located ? removeLocationFromNames(result) : result;
 
+            clinicMapper.toEntity(result);
+
             return result;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ClinicDto getClinicInfo(String query, Boolean located) {
+        try {
+            ClinicDto result = new ClinicDto();
+            throw new IOException();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

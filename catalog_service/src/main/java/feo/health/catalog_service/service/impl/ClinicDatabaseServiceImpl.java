@@ -1,6 +1,5 @@
 package feo.health.catalog_service.service.impl;
 
-import feo.health.catalog_service.dto.ClinicDto;
 import feo.health.catalog_service.entity.Clinic;
 import feo.health.catalog_service.repository.ClinicRepository;
 import feo.health.catalog_service.service.ClinicDatabaseService;

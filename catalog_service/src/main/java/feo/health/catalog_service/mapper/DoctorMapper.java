@@ -25,7 +25,7 @@ public class DoctorMapper {
         dto.setItemType("doctor");
         dto.setExperience(doctor.getExperience());
         dto.setSpecialities(specialityMapper.toDto(doctor.getSpecialities()));
-        dto.setReviews(reviewMapper.toDto(doctor.getDoctorReviews()));
+        dto.setReviews(reviewMapper.toDto(doctor.getReviews()));
         dto.setServices(doctorsServiceMapper.toDto(doctor.getServices()));
         dto.setClinics(clinicMapper.toDto(doctor.getClinics()));
 
@@ -42,7 +42,7 @@ public class DoctorMapper {
         doctor.setExperience(doctorDto.getExperience());
         doctor.setImageUri(doctorDto.getImageUri());
         doctor.setSpecialities(specialityMapper.toEntity(doctorDto.getSpecialities()));
-        doctor.setDoctorReviews(reviewMapper.toEntity(doctorDto.getReviews(), doctor));
+        doctor.setReviews(reviewMapper.toEntity(doctorDto.getReviews(), doctor));
         doctor.setServices(doctorsServiceMapper.toEntity(doctorDto.getServices(), doctor));
         doctor.setClinics(clinicMapper.toEntity(doctorDto.getClinics()));
 

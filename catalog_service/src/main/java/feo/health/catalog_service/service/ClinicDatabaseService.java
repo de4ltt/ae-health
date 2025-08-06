@@ -1,6 +1,5 @@
 package feo.health.catalog_service.service;
 
-import feo.health.catalog_service.dto.*;
 import feo.health.catalog_service.entity.Clinic;
 
 import java.util.Optional;

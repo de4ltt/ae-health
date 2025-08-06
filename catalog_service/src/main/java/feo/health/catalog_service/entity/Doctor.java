@@ -27,7 +27,7 @@ public class Doctor {
     private String imageUri;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DoctorReview> doctorReviews;
+    private List<Review> reviews;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DoctorsService> services;
@@ -47,5 +47,4 @@ public class Doctor {
             inverseJoinColumns = @JoinColumn(name = "clinic_id")
     )
     private List<Clinic> clinics;
-
 }

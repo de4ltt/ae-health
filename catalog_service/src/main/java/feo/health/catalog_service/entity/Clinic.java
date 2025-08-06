@@ -30,6 +30,6 @@ public class Clinic {
     private String imageUri;
 
     @OneToMany(mappedBy = "clinic", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ClinicReview> clinicReviews;
-
+    private List<Review> reviews;
 }
+
