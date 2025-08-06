@@ -18,4 +18,9 @@ public class ClinicHtmlClient {
         String uri = String.format("https://prodoctorov.ru/krasnodar/find/?q=%s&filter=lputypes", query);
         return Jsoup.connect(uri).get();
     }
+
+    public Document getClinicPage(String uri) throws IOException {
+        return Jsoup.connect(uri).get();
+    }
+
 }
