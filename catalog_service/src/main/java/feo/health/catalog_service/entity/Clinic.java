@@ -32,14 +32,6 @@ public class Clinic {
     @OneToMany(mappedBy = "clinic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 
-    @ManyToMany
-    @JoinTable(
-            name = "doctor_clinics",
-            joinColumns = @JoinColumn(name = "doctor_id"),
-            inverseJoinColumns = @JoinColumn(name = "clinic_id")
-    )
-    private List<Doctor> doctors;
-
     public boolean isFullInfo() {
         return address != null && imageUri != null;
     }

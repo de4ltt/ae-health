@@ -25,8 +25,6 @@ public class ClinicDto {
     @NotNull
     private String itemType;
 
-    private List<DoctorDto> doctors;
-
     private List<ReviewDto> reviews;
 
 }
