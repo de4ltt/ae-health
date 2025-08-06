@@ -5,6 +5,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ClinicDto {
 
@@ -22,5 +24,9 @@ public class ClinicDto {
 
     @NotNull
     private String itemType;
+
+    private List<DoctorDto> doctors;
+
+    private List<ReviewDto> reviews;
 
 }
