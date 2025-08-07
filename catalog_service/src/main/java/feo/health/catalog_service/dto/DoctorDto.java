@@ -1,7 +1,6 @@
 package feo.health.catalog_service.dto;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
