@@ -6,6 +6,7 @@ import feo.health.catalog_service.service.ClinicDatabaseService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +23,11 @@ public class ClinicDatabaseServiceImpl implements ClinicDatabaseService {
     @Override
     public Clinic saveClinic(Clinic clinic) {
         return clinicRepository.save(clinic);
+    }
+
+    @Override
+    public List<Clinic> saveClinics(List<Clinic> clinics) {
+        return clinicRepository.saveAll(clinics);
     }
 
     @Override
