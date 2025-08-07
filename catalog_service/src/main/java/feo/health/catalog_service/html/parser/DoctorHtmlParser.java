@@ -50,21 +50,8 @@ public class DoctorHtmlParser {
             Element img = doctorElem.selectFirst(".b-profile-card__img-wrap img");
             doctorDto.setImageUri(img != null ? "https://prodoctorov.ru" + img.attr("src") : null);
 
-            Function<Element, Float> extractDoctorRating = ratingElement -> {
-
-                System.out.println(ratingElement);
-                String style = ratingElement.attr("style"); // "width: 6.4400em"
-                Pattern pattern = Pattern.compile("width:\\s*([0-9.]+)em");
-                Matcher matcher = pattern.matcher(style);
-
-                if (matcher.find())
-                    return Float.parseFloat(matcher.group(1)) / 6.44f * 5;
-
-                return null;
-            };
-
             Element ratingElem = doctorElem.selectFirst("div.b-stars-rate__progress");
-            doctorDto.setRating(extractDoctorRating.apply(ratingElem));
+            doctorDto.setRating(ratingElem != null ? extractDoctorRating(ratingElem) : null);
 
             doctorDto.setItemType("doctor");
 
@@ -122,25 +109,40 @@ public class DoctorHtmlParser {
 
             DoctorDto doctorDto = new DoctorDto();
 
-            Element nameLink = el.selectFirst("a.b-card__name-link");
+            Element nameLink = el.selectFirst("a.b-card__name-link, a.b-doctor-card__name-link.text-wrap");
             doctorDto.setUri(nameLink != null ? "https://prodoctorov.ru" + nameLink.attr("href") : null);
             doctorDto.setName(nameLink != null ? nameLink.text().trim() : null);
 
-            Element img = el.selectFirst("img.b-card__avatar-img");
+            Element img = el.selectFirst("img.b-card__avatar-img, img[class=b-profile-card__img]");
             doctorDto.setImageUri(img != null ? "https://prodoctorov.ru" + img.attr("src") : null);
 
-            Element speciality = el.selectFirst("p.b-card__category");
-            SpecialityDto specialityDto = new SpecialityDto();
-            specialityDto.setName(speciality.text().toLowerCase());
-            specialityDto.setUri(speciality.attr("href"));
-            doctorDto.setSpecialities(List.of(specialityDto));
+            Element speciality = el.selectFirst("p.b-card__category, div.b-doctor-card__spec");
+            if (speciality != null && speciality.hasText()) {
+                List<SpecialityDto> specialityDtos = Stream.of(speciality.text().split(", "))
+                        .map(name -> {
+                            SpecialityDto specialityDto = new SpecialityDto();
+                            specialityDto.setName(name.toLowerCase());
+                            specialityDto.setUri(null);
+                            return specialityDto;
+                        }).toList();
+                doctorDto.setSpecialities(specialityDtos);
+            }
+
+            Element experienceElem = el.selectFirst("div.ui-text.ui-text_subtitle-1");
+            if (experienceElem != null) {
+                Matcher matcher = Pattern.compile("(\\d+)\\s+лет").matcher(experienceElem.text());
+                if (matcher.find())
+                    doctorDto.setExperience(Byte.parseByte(matcher.group(1)));
+            }
+            Element ratingElem = el.selectFirst("div.b-stars-rate__progress");
+            doctorDto.setRating(ratingElem != null ? extractDoctorRating(ratingElem) : null);
 
             doctorDto.setItemType("doctor");
 
             return doctorDto;
         };
 
-        return document.select("article.b-card.b-card_list-item.b-section-box__elem")
+        return document.select("article.b-card.b-card_list-item.b-section-box__elem, div.b-doctor-card")
                 .stream().map(extractSingleDoctors).toList();
     }
 
@@ -154,10 +156,16 @@ public class DoctorHtmlParser {
             doctorDto.setUri(uri);
 
             Element speciality = element.selectFirst("span.b-list-icon-link__text.ui-text.ui-text_body-1");
-            SpecialityDto specialityDto = new SpecialityDto();
-            specialityDto.setName(speciality.text().toLowerCase());
-            specialityDto.setUri(speciality.attr("href"));
-            doctorDto.setSpecialities(List.of(specialityDto));
+            if (speciality != null && speciality.hasText()) {
+                List<SpecialityDto> specialityDtos = Stream.of(speciality.text().split(", "))
+                        .map(name -> {
+                            SpecialityDto specialityDto = new SpecialityDto();
+                            specialityDto.setName(name.toLowerCase());
+                            specialityDto.setUri(null);
+                            return specialityDto;
+                        }).toList();
+                doctorDto.setSpecialities(specialityDtos);
+            }
 
             doctorDto.setItemType("speciality");
 
@@ -212,4 +220,15 @@ public class DoctorHtmlParser {
         return doctorDto;
     }
 
+    private Float extractDoctorRating(Element ratingElement) {
+
+        String style = ratingElement.attr("style"); // "width: 6.4400em"
+        Pattern pattern = Pattern.compile("width:\\s*([0-9.]+)em");
+        Matcher matcher = pattern.matcher(style);
+
+        if (matcher.find())
+            return Float.parseFloat(matcher.group(1)) / 6.44f * 5;
+
+        return null;
+    };
 }
