@@ -60,7 +60,12 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<DoctorDto> getDoctorsBySpeciality(String specialityUri) {
-        throw new RuntimeException("Not implemented");
+        try {
+            final Document doctorsDocument = doctorHtmlClient.getDoctorsBySpecialityPage(specialityUri);
+            return doctorHtmlParser.parseDoctors(doctorsDocument);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
