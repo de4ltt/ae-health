@@ -21,6 +21,8 @@ public class DoctorDto {
 
     private String imageUri;
 
+    private Float rating;
+
     @NotNull
     private String itemType;
 

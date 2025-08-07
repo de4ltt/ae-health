@@ -26,6 +26,9 @@ public class Doctor {
     @Column(unique = true)
     private String imageUri;
 
+    @Column
+    private Float rating;
+
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 
