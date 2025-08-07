@@ -1,23 +1,15 @@
 package feo.health.catalog_service.html.parser;
 
 import feo.health.catalog_service.dto.ClinicDto;
-import feo.health.catalog_service.dto.DoctorDto;
 import feo.health.catalog_service.dto.ReviewDto;
-import feo.health.catalog_service.dto.SpecialityDto;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import javax.print.Doc;
 import java.sql.Date;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Function;
 
 @Component
