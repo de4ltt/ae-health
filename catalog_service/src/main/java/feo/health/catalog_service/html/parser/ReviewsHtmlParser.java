@@ -34,7 +34,7 @@ public class ReviewsHtmlParser {
             if (ratingElem != null) {
                 try {
                     float rating = Float.parseFloat(ratingElem.text().replace(',', '.'));
-                    dto.setRating((byte) Math.round(rating));
+                    dto.setRating(rating);
                 } catch (Exception ignored) {
                 }
             }
