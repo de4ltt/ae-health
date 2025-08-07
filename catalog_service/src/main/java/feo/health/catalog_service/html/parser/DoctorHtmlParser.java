@@ -207,7 +207,7 @@ public class DoctorHtmlParser {
 
         Element speciality = element.selectFirst("span.b-list-icon-link__text.ui-text.ui-text_body-1");
 
-        doctorDto.setName(speciality != null ? speciality.text() : null);
+        doctorDto.setName(speciality != null ? speciality.text().toLowerCase() : null);
         doctorDto.setItemType("speciality");
 
         return doctorDto;
