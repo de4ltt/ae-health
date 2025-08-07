@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -48,10 +49,22 @@ public class ClinicServiceImpl implements ClinicService {
     }
 
     @Override
-    public ClinicDto getClinicInfo(String query, Boolean located) {
+    public ClinicDto getClinicInfo(String uri, Boolean located) {
         try {
-            ClinicDto result = new ClinicDto();
-            throw new IOException();
+
+            Optional<Clinic> clinic = clinicDatabaseService.getClinicByUri(uri);
+
+            if (clinic.isPresent() && clinic.get().isFullInfo())
+                return clinicMapper.toDto(clinic.get());
+
+            Document clinicDocument = htmlClient.getClinicPage(uri);
+            Document clinicReviewsDocument = htmlClient.getClinicReviewsPage(uri);
+
+            ClinicDto clinicDto = htmlParser.parseClinic(clinicDocument, clinicReviewsDocument);
+            clinicDto.setUri(uri);
+            clinicDto.setItemType("clinic");
+
+            return clinicDto;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
