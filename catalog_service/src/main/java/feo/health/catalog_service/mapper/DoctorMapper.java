@@ -1,6 +1,6 @@
 package feo.health.catalog_service.mapper;
 
-import feo.health.catalog_service.dto.*;
+import feo.health.catalog_service.dto.DoctorDto;
 import feo.health.catalog_service.entity.*;
 import feo.health.catalog_service.service.DoctorDatabaseService;
 import lombok.RequiredArgsConstructor;
