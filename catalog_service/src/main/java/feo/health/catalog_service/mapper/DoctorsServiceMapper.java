@@ -29,6 +29,7 @@ public class DoctorsServiceMapper {
     }
 
     public List<DoctorsService> toEntity(List<DoctorsServiceDto> doctorsServiceDtos, Doctor doctor) {
+        if (doctorsServiceDtos == null) return List.of();
         return doctorsServiceDtos.stream()
                 .map(doctorsServiceDto -> this.toEntity(doctorsServiceDto, doctor)).toList();
     }
