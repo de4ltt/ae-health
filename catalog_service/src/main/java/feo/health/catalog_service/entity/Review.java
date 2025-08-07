@@ -22,7 +22,7 @@ public class Review {
     private String text;
 
     @Column
-    private Byte rating;
+    private Float rating;
 
     @ManyToOne
     private Doctor doctor;

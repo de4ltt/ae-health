@@ -11,6 +11,6 @@ public class ReviewDto {
 
     private Date date;
 
-    private Byte rating;
+    private Float rating;
 
 }
