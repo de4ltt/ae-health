@@ -1,6 +1,7 @@
 package feo.health.catalog_service.controller;
 
 import feo.health.catalog_service.dto.*;
+import feo.health.catalog_service.entity.Doctor;
 import feo.health.catalog_service.service.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +30,12 @@ public class SearchController {
     @GetMapping("/doctors")
     ResponseEntity<List<DoctorDto>> searchDoctors(@RequestParam String q) {
         List<DoctorDto> result = doctorService.searchDoctors(q);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("doctors/speciality")
+    ResponseEntity<List<DoctorDto>> searchDoctorsBySpeciality(@RequestParam String uri) {
+        List<DoctorDto> result = doctorService.getDoctorsBySpeciality(uri);
         return ResponseEntity.ok(result);
     }
 
