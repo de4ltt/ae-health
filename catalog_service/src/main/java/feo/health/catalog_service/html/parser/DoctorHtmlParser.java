@@ -1,18 +1,20 @@
 package feo.health.catalog_service.html.parser;
 
+import feo.health.catalog_service.dto.ClinicDto;
 import feo.health.catalog_service.dto.DoctorDto;
 import feo.health.catalog_service.dto.SpecialityDto;
-import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.WebDriver;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 @Component
 public class DoctorHtmlParser {
@@ -29,6 +31,61 @@ public class DoctorHtmlParser {
                     }
                 })
                 .toList();
+    }
+
+    public List<DoctorDto> parseClinicDoctors(Document document) {
+
+        List<DoctorDto> doctors = new ArrayList<>();
+        for (Element doctorElem : document.select(".b-doctor-card")) {
+            DoctorDto doctorDto = new DoctorDto();
+
+            Element nameElement = doctorElem.selectFirst(".b-doctor-card__name-surname");
+            doctorDto.setName(nameElement != null ? nameElement.text().trim() : null);
+
+            Element uriElement = doctorElem.selectFirst("a.b-doctor-card__name-link");
+            doctorDto.setUri(uriElement != null ? "https://prodoctorov.ru" + uriElement.attr("href") : null);
+
+            String experienceStr = doctorElem.attr("data-experience");
+            doctorDto.setExperience(experienceStr != null ? Byte.parseByte(experienceStr) : null);
+
+            Element img = doctorElem.selectFirst(".b-profile-card__img-wrap img");
+            doctorDto.setImageUri(img != null ? "https://prodoctorov.ru" + img.attr("src") : null);
+
+            Function<Element, Float> extractDoctorRating = ratingElement -> {
+
+                System.out.println(ratingElement);
+                String style = ratingElement.attr("style"); // "width: 6.4400em"
+                Pattern pattern = Pattern.compile("width:\\s*([0-9.]+)em");
+                Matcher matcher = pattern.matcher(style);
+
+                if (matcher.find())
+                    return Float.parseFloat(matcher.group(1)) / 6.44f * 5;
+
+                return null;
+            };
+
+            Element ratingElem = doctorElem.selectFirst("div.b-stars-rate__progress");
+            doctorDto.setRating(extractDoctorRating.apply(ratingElem));
+
+            doctorDto.setItemType("doctor");
+
+            List<SpecialityDto> specialities = new ArrayList<>();
+            Element specElement = doctorElem.selectFirst(".b-doctor-card__spec");
+            if (specElement != null) {
+                List<String> specs = Arrays.stream(specElement.text().split(",\\s*")).map(String::toLowerCase).toList();
+                for (String s : specs) {
+                    SpecialityDto spec = new SpecialityDto();
+                    spec.setName(s.trim());
+                    specialities.add(spec);
+                }
+            }
+
+            doctorDto.setSpecialities(specialities);
+
+            doctors.add(doctorDto);
+        }
+
+        return doctors;
     }
 
     public DoctorDto parseDoctor(Document document) {
@@ -125,11 +182,18 @@ public class DoctorHtmlParser {
         Element img = element.selectFirst("img.b-card__avatar-img");
         dto.setImageUri(img != null ? "https://prodoctorov.ru" + img.attr("src") : null);
 
-        Element speciality = element.selectFirst("p.b-card__category");
-        SpecialityDto specialityDto = new SpecialityDto();
-        specialityDto.setName(speciality.text());
-        specialityDto.setName(speciality.attr("href"));
-        dto.setSpecialities(List.of(specialityDto));
+        Element speciality = element.selectFirst("p.b-card__category.ui-text.ui-text_body-1.ui-kit-color-text-secondary");
+        if (speciality != null && speciality.hasText()) {
+            List<SpecialityDto> specialityDtos = Stream.of(speciality.text().split(", "))
+                    .map(name -> {
+                        SpecialityDto specialityDto = new SpecialityDto();
+                        specialityDto.setName(name.toLowerCase());
+                        specialityDto.setUri(null);
+                        return specialityDto;
+                    }).toList();
+            dto.setSpecialities(specialityDtos);
+        }
+
         dto.setItemType("doctor");
 
         return dto;
@@ -141,12 +205,9 @@ public class DoctorHtmlParser {
 
         doctorDto.setUri("https://prodoctorov.ru" + element.attr("href"));
 
-        Element speciality = element.selectFirst("span.b-list-icon-link__text");
-        SpecialityDto specialityDto = new SpecialityDto();
-        specialityDto.setName(speciality.text());
-        specialityDto.setName(speciality.attr("href"));
-        doctorDto.setSpecialities(List.of(specialityDto));
+        Element speciality = element.selectFirst("span.b-list-icon-link__text.ui-text.ui-text_body-1");
 
+        doctorDto.setName(speciality != null ? speciality.text() : null);
         doctorDto.setItemType("speciality");
 
         return doctorDto;
