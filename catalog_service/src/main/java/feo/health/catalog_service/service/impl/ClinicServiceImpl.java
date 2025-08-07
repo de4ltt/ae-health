@@ -40,7 +40,23 @@ public class ClinicServiceImpl implements ClinicService {
 
             result = located ? removeLocationFromNames(result) : result;
 
-            clinicMapper.toEntity(result);
+            List<Clinic> clinics = clinicMapper.toEntity(result);
+            clinicDatabaseService.saveClinics(clinics);
+
+            return result;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<ClinicDto> getClinicsByService(String uri) {
+        try {
+            Document clinicsPage = htmlClient.getClinicsByServicesPage(uri);
+            List<ClinicDto> result = htmlParser.parseClinics(clinicsPage);
+
+            List<Clinic> clinics = clinicMapper.toEntity(result);
+            clinicDatabaseService.saveClinics(clinics);
 
             return result;
         } catch (IOException e) {
