@@ -33,10 +33,12 @@ public class SpecialityMapper {
     }
 
     public List<Speciality> toEntity(List<SpecialityDto> specialityDtos) {
+        if (specialityDtos == null) return List.of();
         return specialityDtos.stream().map(this::toEntity).toList();
     }
 
     public List<SpecialityDto> toDto(List<Speciality> specialities) {
+        if (specialities == null) return List.of();
         return specialities.stream().map(this::toDto).toList();
     }
 
