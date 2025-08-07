@@ -23,6 +23,10 @@ public class ClinicHtmlClient {
         return Jsoup.connect(uri).get();
     }
 
+    public Document getClinicsByServicesPage(String uri) throws IOException {
+        return Jsoup.connect(uri).get();
+    }
+
     public Document getClinicReviewsPage(String clinicUri) throws IOException {
         String uri = clinicUri + "otzivi";
         return Jsoup.connect(uri).get();
