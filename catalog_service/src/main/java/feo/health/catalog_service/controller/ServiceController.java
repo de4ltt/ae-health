@@ -1,7 +1,6 @@
 package feo.health.catalog_service.controller;
 
 import feo.health.catalog_service.dto.ClinicDto;
-import feo.health.catalog_service.entity.Clinic;
 import feo.health.catalog_service.service.ClinicService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
