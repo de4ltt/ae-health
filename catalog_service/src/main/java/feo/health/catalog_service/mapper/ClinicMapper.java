@@ -36,11 +36,12 @@ public class ClinicMapper {
                     clinic.setAddress(clinicDto.getAddress());
                     clinic.setPhoneNumber(clinicDto.getPhoneNumber());
                     clinic.setImageUri(clinicDto.getImageUri());
-                    return clinicDatabaseService.saveClinic(clinic);
+                    return clinic;
                 });
     }
 
     public List<Clinic> toEntity(List<ClinicDto> clinicDtos) {
+        if (clinicDtos == null) return List.of();
         return clinicDtos.stream().map(this::toEntity).toList();
     }
 
