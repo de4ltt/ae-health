@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/catalog/clinics")
+@RequestMapping("/api/v1/catalog/clinic")
 @AllArgsConstructor
 public class ClinicController {
 
