@@ -36,6 +36,7 @@ public class ReviewMapper {
     }
 
     public List<Review> toEntity(List<ReviewDto> reviewDtos, Doctor doctor) {
+        if (reviewDtos == null) return List.of();
         return reviewDtos.stream().map(reviewDto -> this.toEntity(reviewDto, doctor)).toList();
     }
 
