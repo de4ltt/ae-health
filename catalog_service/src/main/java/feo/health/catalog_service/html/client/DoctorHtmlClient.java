@@ -46,4 +46,8 @@ public class DoctorHtmlClient {
         final String uri = String.format("https://prodoctorov.ru/krasnodar/find/?q=%s&filter=specialities", query);
         return Jsoup.connect(uri).get();
     }
+
+    public Document getDoctorsBySpecialityPage(String uri) throws IOException {
+        return Jsoup.connect(uri).get();
+    }
 }
