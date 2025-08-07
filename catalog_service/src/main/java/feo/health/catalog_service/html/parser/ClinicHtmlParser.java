@@ -1,17 +1,66 @@
 package feo.health.catalog_service.html.parser;
 
 import feo.health.catalog_service.dto.ClinicDto;
+import feo.health.catalog_service.dto.DoctorDto;
+import feo.health.catalog_service.dto.ReviewDto;
+import feo.health.catalog_service.dto.SpecialityDto;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import javax.print.Doc;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 @Component
 public class ClinicHtmlParser {
+
+    public ClinicDto parseClinic(Document document, Document reviewsDocument) {
+        ClinicDto clinicDto = new ClinicDto();
+
+        Element nameElem = document.selectFirst("[data-qa=lpu_card_heading_lpu_name]");
+        clinicDto.setName(nameElem != null ? nameElem.text().trim() : null);
+
+        Element addressElem = document.selectFirst("[data-qa=lpu_card_btn_addr_text]");
+        clinicDto.setAddress(addressElem != null ? addressElem.text().trim() : null);
+
+        Element phoneElem = document.selectFirst("[data-qa=lpu_card_btn_phone_text]");
+        clinicDto.setPhoneNumber(phoneElem != null ? phoneElem.text().trim() : null);
+
+        Element imageElem = document.selectFirst("img[data-qa=lpu_card_logo_image]");
+        clinicDto.setImageUri(imageElem != null ? "https://prodoctorov.ru" + imageElem.attr("src") : null);
+
+        List<ReviewDto> reviews = new ArrayList<>();
+        for (Element reviewElement : reviewsDocument.select("div.b-review-card[itemprop=review]")) {
+            ReviewDto reviewDto = new ReviewDto();
+
+            Element textElement = reviewElement.selectFirst(".b-review-card__comment-wrapper .b-review-card__comment");
+            reviewDto.setText(textElement != null ? textElement.text().trim() : null);
+
+            Element dateElement = reviewElement.selectFirst("[itemprop=datePublished]");
+            reviewDto.setDate(dateElement != null ? Date.valueOf(dateElement.attr("content")) : null);
+
+            Element ratingMeta = reviewElement.selectFirst("meta[itemprop=ratingValue]");
+            if (ratingMeta != null) {
+                float ratingFloat = Float.parseFloat(ratingMeta.attr("content"));
+                reviewDto.setRating(ratingFloat / 20);
+            }
+
+            reviews.add(reviewDto);
+        }
+        clinicDto.setReviews(reviews);
+
+        return clinicDto;
+    }
+
 
     public List<ClinicDto> parseDoctorClinics(Document document) {
         List<ClinicDto> clinics = new ArrayList<>();
