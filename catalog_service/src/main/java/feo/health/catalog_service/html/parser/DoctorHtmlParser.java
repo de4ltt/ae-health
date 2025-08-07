@@ -1,6 +1,5 @@
 package feo.health.catalog_service.html.parser;
 
-import feo.health.catalog_service.dto.ClinicDto;
 import feo.health.catalog_service.dto.DoctorDto;
 import feo.health.catalog_service.dto.SpecialityDto;
 import org.jsoup.nodes.Document;
