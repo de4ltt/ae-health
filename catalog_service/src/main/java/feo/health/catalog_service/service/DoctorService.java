@@ -8,4 +8,5 @@ public interface DoctorService {
     List<DoctorDto> searchDoctors(String query);
     DoctorDto getDoctorInfo(String doctorUri);
     List<DoctorDto> getDoctorsBySpeciality(String specialityUri);
+    List<DoctorDto> getClinicDoctors(String clinicUri);
 }
