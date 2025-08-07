@@ -1,20 +1,11 @@
 package feo.health.catalog_service.controller;
 
-import feo.health.catalog_service.dto.ClinicDto;
-import feo.health.catalog_service.dto.DoctorDto;
-import feo.health.catalog_service.dto.SearchDto;
-import feo.health.catalog_service.dto.ServiceDto;
-import feo.health.catalog_service.service.ClinicService;
-import feo.health.catalog_service.service.DoctorService;
-import feo.health.catalog_service.service.GeneralSearchService;
-import feo.health.catalog_service.service.ServicesService;
+import feo.health.catalog_service.dto.*;
+import feo.health.catalog_service.service.*;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Data;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,6 +18,7 @@ public class SearchController {
     private final DoctorService doctorService;
     private final ClinicService clinicService;
     private final ServicesService servicesService;
+    private final PharmacyService pharmacyService;
 
     @GetMapping
     ResponseEntity<SearchDto> search(@RequestParam String q, @RequestParam(defaultValue = "true") Boolean located) {
@@ -53,4 +45,15 @@ public class SearchController {
         List<ServiceDto> result = servicesService.searchServices(q);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/pharmacies")
+    ResponseEntity<List<PharmacyDto>> searchPharmacies(
+            @RequestParam Double lat,
+            @RequestParam Double lon,
+            @RequestParam(defaultValue = "500") Integer radius
+    ) {
+        List<PharmacyDto> result = pharmacyService.searchPharmacies(radius, lat, lon);
+        return ResponseEntity.ok(result);
+    }
+
 }
