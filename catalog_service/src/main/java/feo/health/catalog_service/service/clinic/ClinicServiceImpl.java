@@ -1,12 +1,11 @@
-package feo.health.catalog_service.service.impl;
+package feo.health.catalog_service.service.clinic;
 
 import feo.health.catalog_service.dto.ClinicDto;
 import feo.health.catalog_service.entity.Clinic;
 import feo.health.catalog_service.html.client.ClinicHtmlClient;
 import feo.health.catalog_service.html.parser.ClinicHtmlParser;
 import feo.health.catalog_service.mapper.ClinicMapper;
-import feo.health.catalog_service.service.ClinicDatabaseService;
-import feo.health.catalog_service.service.ClinicService;
+import feo.health.catalog_service.service.db.clinic.ClinicDatabaseService;
 import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;

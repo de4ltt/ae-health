@@ -1,4 +1,4 @@
-package feo.health.catalog_service.service;
+package feo.health.catalog_service.service.pharmacy;
 
 import feo.health.catalog_service.dto.PharmacyDto;
 

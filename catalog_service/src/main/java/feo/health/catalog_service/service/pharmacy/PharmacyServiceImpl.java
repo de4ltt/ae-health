@@ -1,9 +1,8 @@
-package feo.health.catalog_service.service.impl;
+package feo.health.catalog_service.service.pharmacy;
 
 import feo.health.catalog_service.dto.OverpassPharmaciesResponse;
 import feo.health.catalog_service.dto.PharmacyDto;
 import feo.health.catalog_service.mapper.PharmacyMapper;
-import feo.health.catalog_service.service.PharmacyService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

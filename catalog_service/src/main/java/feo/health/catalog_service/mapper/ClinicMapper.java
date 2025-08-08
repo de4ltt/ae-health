@@ -2,7 +2,7 @@ package feo.health.catalog_service.mapper;
 
 import feo.health.catalog_service.dto.ClinicDto;
 import feo.health.catalog_service.entity.Clinic;
-import feo.health.catalog_service.service.ClinicDatabaseService;
+import feo.health.catalog_service.service.db.clinic.ClinicDatabaseService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

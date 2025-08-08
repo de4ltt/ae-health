@@ -2,8 +2,8 @@ package feo.health.catalog_service.controller;
 
 import feo.health.catalog_service.dto.ClinicDto;
 import feo.health.catalog_service.dto.ServiceDto;
-import feo.health.catalog_service.service.ClinicService;
-import feo.health.catalog_service.service.ServicesService;
+import feo.health.catalog_service.service.clinic.ClinicService;
+import feo.health.catalog_service.service.services.ServicesService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

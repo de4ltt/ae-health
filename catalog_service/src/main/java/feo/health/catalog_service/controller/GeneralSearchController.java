@@ -1,7 +1,7 @@
 package feo.health.catalog_service.controller;
 
 import feo.health.catalog_service.dto.SearchDto;
-import feo.health.catalog_service.service.GeneralSearchService;
+import feo.health.catalog_service.service.general_search.GeneralSearchService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

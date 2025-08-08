@@ -1,7 +1,7 @@
 package feo.health.catalog_service.controller;
 
 import feo.health.catalog_service.dto.DoctorDto;
-import feo.health.catalog_service.service.DoctorService;
+import feo.health.catalog_service.service.doctor.DoctorService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

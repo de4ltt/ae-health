@@ -1,8 +1,7 @@
-package feo.health.catalog_service.service.impl;
+package feo.health.catalog_service.service.db.doctor_service;
 
 import feo.health.catalog_service.entity.DoctorsService;
 import feo.health.catalog_service.repository.DoctorsServiceRepository;
-import feo.health.catalog_service.service.DoctorsServiceDatabaseService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

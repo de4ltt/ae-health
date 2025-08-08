@@ -1,4 +1,4 @@
-package feo.health.catalog_service.service;
+package feo.health.catalog_service.service.db.speciality;
 
 import feo.health.catalog_service.entity.Speciality;
 
