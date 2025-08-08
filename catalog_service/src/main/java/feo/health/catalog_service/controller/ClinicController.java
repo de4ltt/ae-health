@@ -6,15 +6,12 @@ import feo.health.catalog_service.service.ClinicService;
 import feo.health.catalog_service.service.DoctorService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/catalog/clinic")
+@RequestMapping("/api/v1/catalog/clinics")
 @AllArgsConstructor
 public class ClinicController {
 
@@ -22,18 +19,24 @@ public class ClinicController {
     private final DoctorService doctorService;
 
     @GetMapping
-    ResponseEntity<ClinicDto> getClinicInfo(
-            @RequestParam String uri,
+    public ResponseEntity<List<ClinicDto>> searchClinics(
+            @RequestParam String q,
             @RequestParam(defaultValue = "true") Boolean located
     ) {
-        ClinicDto clinic = clinicService.getClinicInfo(uri, located);
-        return ResponseEntity.ok(clinic);
+        return ResponseEntity.ok(clinicService.searchClinics(q, located));
     }
 
-    @GetMapping("/doctors")
-    ResponseEntity<List<DoctorDto>> getClinicDoctors(@RequestParam String uri) {
-        List<DoctorDto> clinicDtos = doctorService.getClinicDoctors(uri);
-        return ResponseEntity.ok(clinicDtos);
+    @GetMapping("/{uri}")
+    public ResponseEntity<ClinicDto> getClinic(
+            @PathVariable String uri,
+            @RequestParam(defaultValue = "true") Boolean located
+    ) {
+        return ResponseEntity.ok(clinicService.getClinicInfo(uri, located));
     }
 
+    @GetMapping("/{uri}/doctors")
+    public ResponseEntity<List<DoctorDto>> getClinicDoctors(@PathVariable String uri) {
+        return ResponseEntity.ok(doctorService.getClinicDoctors(uri));
+    }
 }
+

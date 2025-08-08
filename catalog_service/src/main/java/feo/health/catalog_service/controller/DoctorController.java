@@ -4,22 +4,29 @@ import feo.health.catalog_service.dto.DoctorDto;
 import feo.health.catalog_service.service.DoctorService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/catalog/doctor")
+@RequestMapping("/api/v1/catalog/doctors")
 @AllArgsConstructor
 public class DoctorController {
 
     private final DoctorService doctorService;
 
     @GetMapping
-    ResponseEntity<DoctorDto> getDoctorInfo(@RequestParam String uri) {
-        DoctorDto doctor = doctorService.getDoctorInfo(uri);
-        return ResponseEntity.ok(doctor);
+    public ResponseEntity<List<DoctorDto>> searchDoctors(@RequestParam(required = false) String q) {
+        return ResponseEntity.ok(doctorService.searchDoctors(q));
     }
 
+    @GetMapping("/speciality/{uri}")
+    public ResponseEntity<List<DoctorDto>> getBySpeciality(@PathVariable String uri) {
+        return ResponseEntity.ok(doctorService.getDoctorsBySpeciality(uri));
+    }
+
+    @GetMapping("/{uri}")
+    public ResponseEntity<DoctorDto> getDoctor(@PathVariable String uri) {
+        return ResponseEntity.ok(doctorService.getDoctorInfo(uri));
+    }
 }
