@@ -45,7 +45,7 @@ public class DoctorHtmlParser {
             doctorDto.setUri(uriElement != null ? "https://prodoctorov.ru" + uriElement.attr("href") : null);
 
             String experienceStr = doctorElem.attr("data-experience");
-            doctorDto.setExperience(experienceStr != null ? Byte.parseByte(experienceStr) : null);
+            doctorDto.setExperience(!experienceStr.isEmpty() ? Byte.parseByte(experienceStr) : null);
 
             Element img = doctorElem.selectFirst(".b-profile-card__img-wrap img");
             doctorDto.setImageUri(img != null ? "https://prodoctorov.ru" + img.attr("src") : null);
@@ -230,5 +230,5 @@ public class DoctorHtmlParser {
             return Float.parseFloat(matcher.group(1)) / 6.44f * 5;
 
         return null;
-    };
+    }
 }

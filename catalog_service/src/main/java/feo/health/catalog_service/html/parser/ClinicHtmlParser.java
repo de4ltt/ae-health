@@ -91,8 +91,10 @@ public class ClinicHtmlParser {
             ClinicDto clinicDto = new ClinicDto();
 
             Element nameLink = el.selectFirst("a[data-qa=lpu_card_heading]");
-            clinicDto.setUri("https://prodoctorov.ru" + nameLink.attr("href"));
-            clinicDto.setName(nameLink.text().trim());
+            if (null != nameLink) {
+                clinicDto.setUri("https://prodoctorov.ru" + nameLink.attr("href"));
+                clinicDto.setName(nameLink.text().trim());
+            }
 
             Element image = el.selectFirst("img[data-qa=lpu_card_logo_image]");
             clinicDto.setImageUri(image != null ? "https://prodoctorov.ru" + image.attr("src") : null);

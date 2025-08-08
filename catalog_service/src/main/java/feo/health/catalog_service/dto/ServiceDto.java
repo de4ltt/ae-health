@@ -7,12 +7,12 @@ import lombok.Data;
 public class ServiceDto {
 
     @NotNull
+    final String itemType = "service";
+
+    @NotNull
     String name;
 
     @NotNull
     String uri;
-
-    @NotNull
-    final String itemType = "service";
 
 }

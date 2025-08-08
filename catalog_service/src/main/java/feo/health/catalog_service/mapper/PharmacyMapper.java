@@ -35,15 +35,15 @@ public class PharmacyMapper {
     private List<String> transformOpeningHours(String openingHours) {
         if (openingHours == null) return null;
         return Arrays.stream(openingHours
-                        .replaceAll("Mo", "Пн")
-                        .replaceAll("Tu", "Вт")
-                        .replaceAll("We", "Ср")
-                        .replaceAll("Th", "Чт")
-                        .replaceAll("Fr", "Пт")
-                        .replaceAll("Sa", "Сб")
-                        .replaceAll("Su", "Вс")
-                        .split("; ")
-                ).toList();
+                .replaceAll("Mo", "Пн")
+                .replaceAll("Tu", "Вт")
+                .replaceAll("We", "Ср")
+                .replaceAll("Th", "Чт")
+                .replaceAll("Fr", "Пт")
+                .replaceAll("Sa", "Сб")
+                .replaceAll("Su", "Вс")
+                .split("; ")
+        ).toList();
     }
 
 }
