@@ -1,4 +1,4 @@
-package feo.health.catalog_service.dto;
+package feo.health.catalog_service.model.dto;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ public class DrugDto {
     private String name;
     private String latinName;
 
-    private String uri;
+    private String link;
     private String imageUri;
 
     private Double effectiveness;
@@ -37,6 +37,35 @@ public class DrugDto {
     public static class InstructionSectionDto {
         private String title;
         private String text;
+    }
+
+    public static String clearDrugLink(String link) {
+        return link
+                .replaceAll("//protabletky.ru/", "")
+                .replaceAll("/", "");
+    }
+
+    public static Double calculateRating(DrugDto drugDto) {
+
+        int count = 0;
+        double score = 0d;
+
+        if (drugDto.getEffectiveness() != null) {
+            count++;
+            score += drugDto.getEffectiveness();
+        }
+
+        if (drugDto.getPriceQuality() != null) {
+            count++;
+            score += drugDto.getPriceQuality();
+        }
+
+        if (drugDto.getSideEffects() != null) {
+            count++;
+            score += drugDto.getSideEffects();
+        }
+
+        return count > 0 ? score / count : null;
     }
 
 }

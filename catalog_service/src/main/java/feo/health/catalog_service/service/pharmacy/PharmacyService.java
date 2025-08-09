@@ -1,6 +1,6 @@
 package feo.health.catalog_service.service.pharmacy;
 
-import feo.health.catalog_service.dto.PharmacyDto;
+import feo.health.catalog_service.model.dto.PharmacyDto;
 
 import java.util.List;
 

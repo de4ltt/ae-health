@@ -1,4 +1,4 @@
-package feo.health.catalog_service.dto;
+package feo.health.catalog_service.model.dto;
 
 import lombok.Data;
 
@@ -16,5 +16,4 @@ public class OverpassPharmaciesResponse {
         private double lon;
         private Map<String, String> tags;
     }
-
 }

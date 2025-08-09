@@ -1,6 +1,6 @@
 package feo.health.catalog_service.service.db.speciality;
 
-import feo.health.catalog_service.entity.Speciality;
+import feo.health.catalog_service.model.entity.Speciality;
 import feo.health.catalog_service.repository.SpecialityRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,5 +22,4 @@ public class SpecialityDatabaseServiceImpl implements SpecialityDatabaseService 
     public Optional<Speciality> findByNameIgnoreCase(String name) {
         return specialityRepository.findByNameIgnoreCase(name);
     }
-
 }

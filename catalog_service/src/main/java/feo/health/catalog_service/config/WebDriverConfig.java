@@ -43,5 +43,4 @@ public class WebDriverConfig {
     public void destroy() {
         if (this.webDriver != null) this.webDriver.quit();
     }
-
 }

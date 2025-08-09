@@ -1,4 +1,4 @@
-package feo.health.catalog_service.entity;
+package feo.health.catalog_service.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -25,5 +25,4 @@ public class DoctorsService {
 
     @Column
     private BigDecimal price;
-
 }

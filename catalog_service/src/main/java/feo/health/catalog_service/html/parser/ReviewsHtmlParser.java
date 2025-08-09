@@ -1,6 +1,6 @@
 package feo.health.catalog_service.html.parser;
 
-import feo.health.catalog_service.dto.ReviewDto;
+import feo.health.catalog_service.model.dto.ReviewDto;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -44,5 +44,4 @@ public class ReviewsHtmlParser {
 
         return reviews;
     }
-
 }

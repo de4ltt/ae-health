@@ -13,5 +13,4 @@ public class GeneralItemsHtmlClient {
         final String url = String.format("https://prodoctorov.ru/krasnodar/find/?q=%s", query);
         return Jsoup.connect(url).get();
     }
-
 }

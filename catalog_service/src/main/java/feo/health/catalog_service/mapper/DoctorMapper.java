@@ -1,12 +1,13 @@
 package feo.health.catalog_service.mapper;
 
-import feo.health.catalog_service.dto.DoctorDto;
-import feo.health.catalog_service.entity.Doctor;
+import feo.health.catalog_service.model.dto.DoctorDto;
+import feo.health.catalog_service.model.entity.Doctor;
 import feo.health.catalog_service.service.db.doctor.DoctorDatabaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class DoctorMapper {
 
         DoctorDto doctorDto = new DoctorDto();
         doctorDto.setName(doctor.getName());
-        doctorDto.setUri(doctor.getUri());
+        doctorDto.setLink(doctor.getLink());
         doctorDto.setImageUri(doctor.getImageUri());
         doctorDto.setItemType("doctor");
         doctorDto.setExperience(doctor.getExperience());
@@ -42,8 +43,10 @@ public class DoctorMapper {
 
         if (doctorDto == null) return null;
 
-        if (doctorDatabaseService.isDoctorPresentByUrl(doctorDto.getUri())) {
-            Doctor doctor = doctorDatabaseService.getDoctorByUrl(doctorDto.getUri()).get();
+        Optional<Doctor> doctorOptional = doctorDatabaseService.getDoctorByUrl(doctorDto.getLink());
+
+        if (doctorOptional.isPresent()) {
+            Doctor doctor = doctorOptional.get();
             doctor.setRating(doctor.getRating() == null ? doctorDto.getRating() : doctor.getRating());
             doctorDatabaseService.saveDoctor(doctor);
             return doctor;
@@ -51,7 +54,7 @@ public class DoctorMapper {
 
         Doctor doctor = new Doctor();
         doctor.setName(doctorDto.getName());
-        doctor.setUri(doctorDto.getUri());
+        doctor.setLink(doctorDto.getLink());
         doctor.setExperience(doctorDto.getExperience());
         doctor.setImageUri(doctorDto.getImageUri());
         doctor.setSpecialities(specialityMapper.toEntity(doctorDto.getSpecialities()));
@@ -66,8 +69,11 @@ public class DoctorMapper {
     public List<Doctor> toEntity(List<DoctorDto> doctorDtos) {
         return doctorDtos.stream()
                 .map(this::toEntity)
-                .filter(doctor -> doctor.getUri().contains("vrach"))
+                .filter(doctor -> doctor.getLink().contains("-"))
                 .toList();
     }
 
+    public List<DoctorDto> toDto(List<Doctor> doctors) {
+        return doctors.stream().map(this::toDto).toList();
+    }
 }

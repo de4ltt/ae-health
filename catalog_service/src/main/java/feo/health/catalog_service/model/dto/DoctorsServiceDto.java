@@ -1,4 +1,4 @@
-package feo.health.catalog_service.dto;
+package feo.health.catalog_service.model.dto;
 
 import lombok.Data;
 
@@ -10,5 +10,4 @@ public class DoctorsServiceDto {
     private String title;
 
     private BigDecimal price;
-
 }

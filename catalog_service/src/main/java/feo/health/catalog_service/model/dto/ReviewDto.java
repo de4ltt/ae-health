@@ -1,4 +1,4 @@
-package feo.health.catalog_service.dto;
+package feo.health.catalog_service.model.dto;
 
 import lombok.Data;
 
@@ -12,5 +12,4 @@ public class ReviewDto {
     private Date date;
 
     private Float rating;
-
 }

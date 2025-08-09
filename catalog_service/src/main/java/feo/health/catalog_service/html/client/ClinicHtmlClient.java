@@ -19,17 +19,23 @@ public class ClinicHtmlClient {
         return Jsoup.connect(uri).get();
     }
 
-    public Document getClinicPage(String uri) throws IOException {
+    public Document getClinicsByTypePage(String latinLink) throws IOException {
+        String uri = String.format("https://prodoctorov.ru/krasnodar/top/%s/", latinLink);
         return Jsoup.connect(uri).get();
     }
 
-    public Document getClinicsByServicesPage(String uri) throws IOException {
+    public Document getClinicPage(String latinLink) throws IOException {
+        String uri = String.format("https://prodoctorov.ru/krasnodar/lpu/%s/", latinLink);
         return Jsoup.connect(uri).get();
     }
 
-    public Document getClinicReviewsPage(String clinicUri) throws IOException {
-        String uri = clinicUri + "otzivi";
+    public Document getClinicsByServicesPage(String latinLink) throws IOException {
+        String uri = String.format("https://prodoctorov.ru/krasnodar/%s/", latinLink.replace("_", "/"));
         return Jsoup.connect(uri).get();
     }
 
+    public Document getClinicReviewsPage(String latinLink) throws IOException {
+        String uri = String.format("https://prodoctorov.ru/krasnodar/lpu/%s/otzivi", latinLink);
+        return Jsoup.connect(uri).get();
+    }
 }

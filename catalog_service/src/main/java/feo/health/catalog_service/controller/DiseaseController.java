@@ -1,6 +1,6 @@
 package feo.health.catalog_service.controller;
 
-import feo.health.catalog_service.dto.DiseaseDto;
+import feo.health.catalog_service.model.dto.DiseaseDto;
 import feo.health.catalog_service.service.disease.DiseaseService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -17,8 +17,8 @@ public class DiseaseController {
     private final DiseaseService diseaseService;
 
     @GetMapping
-    public ResponseEntity<List<DiseaseDto>> searchDiseases(@RequestParam String query) {
-        return ResponseEntity.ok(diseaseService.searchDiseases(query));
+    public ResponseEntity<List<DiseaseDto>> searchDiseases(@RequestParam String q) {
+        return ResponseEntity.ok(diseaseService.searchDiseases(q));
     }
 
     @GetMapping("/{uri}")

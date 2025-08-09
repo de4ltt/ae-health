@@ -1,8 +1,8 @@
 package feo.health.catalog_service.service.drug;
 
-import feo.health.catalog_service.dto.DrugDto;
 import feo.health.catalog_service.html.client.DrugHtmlClient;
 import feo.health.catalog_service.html.parser.DrugHtmlParser;
+import feo.health.catalog_service.model.dto.DrugDto;
 import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
@@ -32,11 +32,10 @@ public class DrugServiceImpl implements DrugService {
         try {
             Document drugDocument = client.getDrugPage(drugUri);
             DrugDto result = parser.parseDrug(drugDocument);
-            result.setUri(drugUri);
+            result.setLink(drugUri);
             return result;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
 }

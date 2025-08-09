@@ -1,6 +1,6 @@
 package feo.health.catalog_service.service.db.speciality;
 
-import feo.health.catalog_service.entity.Speciality;
+import feo.health.catalog_service.model.entity.Speciality;
 
 import java.util.Optional;
 

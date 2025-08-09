@@ -1,8 +1,8 @@
 package feo.health.catalog_service.mapper;
 
-import feo.health.catalog_service.dto.ReviewDto;
-import feo.health.catalog_service.entity.Doctor;
-import feo.health.catalog_service.entity.Review;
+import feo.health.catalog_service.model.dto.ReviewDto;
+import feo.health.catalog_service.model.entity.Doctor;
+import feo.health.catalog_service.model.entity.Review;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -43,5 +43,4 @@ public class ReviewMapper {
     public List<ReviewDto> toDto(List<Review> reviews) {
         return reviews.stream().map(this::toDto).toList();
     }
-
 }

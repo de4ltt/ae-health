@@ -1,7 +1,7 @@
 package feo.health.catalog_service.html.parser;
 
-import feo.health.catalog_service.dto.ClinicDto;
-import feo.health.catalog_service.dto.ReviewDto;
+import feo.health.catalog_service.model.dto.ClinicDto;
+import feo.health.catalog_service.model.dto.ReviewDto;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -64,7 +64,7 @@ public class ClinicHtmlParser {
             if (titleUriElem == null) continue;
 
             String name = titleUriElem.text();
-            String uri = "https://prodoctorov.ru" + titleUriElem.attr("href");
+            String uri = ClinicDto.clearClinicLink(titleUriElem.attr("href"));
 
             Element addressElem = el.selectFirst("div.d-flex.align-center.ui-text.ui-text_body-1.ui-kit-color-primary.py-2.cursor-pointer.mt-4");
             String address = addressElem != null ? addressElem.text() : null;
@@ -74,7 +74,7 @@ public class ClinicHtmlParser {
 
             ClinicDto clinicDto = new ClinicDto();
             clinicDto.setName(name);
-            clinicDto.setUri(uri);
+            clinicDto.setLink(uri);
             clinicDto.setAddress(address);
             clinicDto.setPhoneNumber(phoneNumber);
 
@@ -92,7 +92,7 @@ public class ClinicHtmlParser {
 
             Element nameLink = el.selectFirst("a[data-qa=lpu_card_heading]");
             if (null != nameLink) {
-                clinicDto.setUri("https://prodoctorov.ru" + nameLink.attr("href"));
+                clinicDto.setLink(ClinicDto.clearClinicLink(nameLink.attr("href")));
                 clinicDto.setName(nameLink.text().trim());
             }
 
@@ -120,7 +120,7 @@ public class ClinicHtmlParser {
 
             ClinicDto clinicDto = new ClinicDto();
 
-            clinicDto.setUri("https://prodoctorov.ru" + el.attr("href"));
+            clinicDto.setLink(ClinicDto.clearClinicLink(el.attr("href")));
 
             Element title = el.selectFirst("span.b-list-icon-link__text");
             clinicDto.setName(title != null ? title.text().trim() : "");
@@ -154,7 +154,7 @@ public class ClinicHtmlParser {
 
         if (nameEl != null) {
             dto.setName(nameEl.text().trim());
-            dto.setUri("https://prodoctorov.ru" + nameEl.attr("href"));
+            dto.setLink(ClinicDto.clearClinicLink(nameEl.attr("href")));
         }
 
         Element img = el.selectFirst("img[data-qa=lpu_card_logo_image]");
@@ -177,7 +177,7 @@ public class ClinicHtmlParser {
         Element name = el.selectFirst("span.b-list-icon-link__text");
 
         dto.setName(name != null ? name.text().trim() : null);
-        dto.setUri("https://prodoctorov.ru" + el.attr("href"));
+        dto.setLink(ClinicDto.clearClinicLink(el.attr("href")));
         dto.setItemType("clinic-type");
 
         return dto;

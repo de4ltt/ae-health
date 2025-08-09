@@ -1,12 +1,14 @@
 package feo.health.catalog_service.html.parser;
 
-import feo.health.catalog_service.dto.DoctorDto;
-import feo.health.catalog_service.dto.SpecialityDto;
+import feo.health.catalog_service.model.dto.DoctorDto;
+import feo.health.catalog_service.model.dto.SpecialityDto;
+import feo.health.catalog_service.model.entity.Speciality;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,13 +24,9 @@ public class DoctorHtmlParser {
         return document.select("section:has(h2:contains(Специальности)), section:has(h2:contains(Врачи))")
                 .select("a.b-list-icon-link.b-section-box__elem, article.b-card")
                 .stream()
-                .map(el -> {
-                    if (el.tagName().equals("article")) {
-                        return parseDoctorCard(el);
-                    } else {
-                        return parseSpecialityLink(el);
-                    }
-                })
+                .map(el ->
+                        el.tagName().equals("article") ?
+                                parseDoctorCard(el) : parseSpecialityLink(el))
                 .toList();
     }
 
@@ -42,7 +40,7 @@ public class DoctorHtmlParser {
             doctorDto.setName(nameElement != null ? nameElement.text().trim() : null);
 
             Element uriElement = doctorElem.selectFirst("a.b-doctor-card__name-link");
-            doctorDto.setUri(uriElement != null ? "https://prodoctorov.ru" + uriElement.attr("href") : null);
+            doctorDto.setLink(uriElement != null ? DoctorDto.clearDoctorLink(uriElement.attr("href")) : null);
 
             String experienceStr = doctorElem.attr("data-experience");
             doctorDto.setExperience(!experienceStr.isEmpty() ? Byte.parseByte(experienceStr) : null);
@@ -88,7 +86,7 @@ public class DoctorHtmlParser {
         doctorDto.setSpecialities(specElems.stream().map(el -> {
             SpecialityDto specialityDto = new SpecialityDto();
             specialityDto.setName(el.text().toLowerCase());
-            specialityDto.setUri("https://prodoctorov.ru" + el.attr("href"));
+            specialityDto.setLink(SpecialityDto.clearSpecialityLink(el.attr("href")));
 
             return specialityDto;
         }).toList());
@@ -110,8 +108,10 @@ public class DoctorHtmlParser {
             DoctorDto doctorDto = new DoctorDto();
 
             Element nameLink = el.selectFirst("a.b-card__name-link, a.b-doctor-card__name-link.text-wrap");
-            doctorDto.setUri(nameLink != null ? "https://prodoctorov.ru" + nameLink.attr("href") : null);
-            doctorDto.setName(nameLink != null ? nameLink.text().trim() : null);
+            if (nameLink != null) {
+                doctorDto.setLink(DoctorDto.clearDoctorLink(nameLink.attr("href")));
+                doctorDto.setName(nameLink.text().trim());
+            }
 
             Element img = el.selectFirst("img.b-card__avatar-img, img[class=b-profile-card__img]");
             doctorDto.setImageUri(img != null ? "https://prodoctorov.ru" + img.attr("src") : null);
@@ -122,7 +122,7 @@ public class DoctorHtmlParser {
                         .map(name -> {
                             SpecialityDto specialityDto = new SpecialityDto();
                             specialityDto.setName(name.toLowerCase());
-                            specialityDto.setUri(null);
+                            specialityDto.setLink(null);
                             return specialityDto;
                         }).toList();
                 doctorDto.setSpecialities(specialityDtos);
@@ -152,20 +152,11 @@ public class DoctorHtmlParser {
 
             DoctorDto doctorDto = new DoctorDto();
 
-            String uri = "https://prodoctorov.ru" + element.attr("href");
-            doctorDto.setUri(uri);
+            String uri = DoctorDto.clearDoctorLink(element.attr("href"));
+            doctorDto.setLink(uri);
 
             Element speciality = element.selectFirst("span.b-list-icon-link__text.ui-text.ui-text_body-1");
-            if (speciality != null && speciality.hasText()) {
-                List<SpecialityDto> specialityDtos = Stream.of(speciality.text().split(", "))
-                        .map(name -> {
-                            SpecialityDto specialityDto = new SpecialityDto();
-                            specialityDto.setName(name.toLowerCase());
-                            specialityDto.setUri(null);
-                            return specialityDto;
-                        }).toList();
-                doctorDto.setSpecialities(specialityDtos);
-            }
+            doctorDto.setName(speciality != null ? speciality.text() : null);
 
             doctorDto.setItemType("speciality");
 
@@ -182,7 +173,7 @@ public class DoctorHtmlParser {
 
         Element nameLink = element.selectFirst("a.b-card__name-link");
         if (nameLink != null) {
-            dto.setUri("https://prodoctorov.ru" + nameLink.attr("href"));
+            dto.setLink(DoctorDto.clearDoctorLink(nameLink.attr("href")));
             dto.setName(nameLink.text().trim());
         }
 
@@ -195,7 +186,7 @@ public class DoctorHtmlParser {
                     .map(name -> {
                         SpecialityDto specialityDto = new SpecialityDto();
                         specialityDto.setName(name.toLowerCase());
-                        specialityDto.setUri(null);
+                        specialityDto.setLink(null);
                         return specialityDto;
                     }).toList();
             dto.setSpecialities(specialityDtos);
@@ -210,7 +201,7 @@ public class DoctorHtmlParser {
 
         DoctorDto doctorDto = new DoctorDto();
 
-        doctorDto.setUri("https://prodoctorov.ru" + element.attr("href"));
+        doctorDto.setLink(DoctorDto.clearDoctorLink(element.attr("href")));
 
         Element speciality = element.selectFirst("span.b-list-icon-link__text.ui-text.ui-text_body-1");
 

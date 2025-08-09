@@ -9,6 +9,7 @@ public record ApiErrorResponse(
         String message,
         LocalDateTime timestamp
 ) {
+
     public static ApiErrorResponse of(HttpStatus status, String message) {
         return new ApiErrorResponse(status.value(), message, LocalDateTime.now());
     }

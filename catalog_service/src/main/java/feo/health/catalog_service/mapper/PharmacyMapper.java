@@ -1,7 +1,7 @@
 package feo.health.catalog_service.mapper;
 
-import feo.health.catalog_service.dto.OverpassPharmaciesResponse;
-import feo.health.catalog_service.dto.PharmacyDto;
+import feo.health.catalog_service.model.dto.OverpassPharmaciesResponse;
+import feo.health.catalog_service.model.dto.PharmacyDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -45,5 +45,4 @@ public class PharmacyMapper {
                 .split("; ")
         ).toList();
     }
-
 }

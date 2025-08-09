@@ -1,11 +1,11 @@
 package feo.health.catalog_service.repository;
 
-import feo.health.catalog_service.entity.Clinic;
+import feo.health.catalog_service.model.entity.Clinic;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
 public interface ClinicRepository extends JpaRepository<Clinic, Long> {
-    Optional<Clinic> findByUri(String uri);
-    Boolean existsByUri(String uri);
+    Optional<Clinic> findByLink(String link);
+    Boolean existsByLink(String link);
 }

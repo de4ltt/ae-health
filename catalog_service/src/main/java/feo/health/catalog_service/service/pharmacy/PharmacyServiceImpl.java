@@ -1,8 +1,8 @@
 package feo.health.catalog_service.service.pharmacy;
 
-import feo.health.catalog_service.dto.OverpassPharmaciesResponse;
-import feo.health.catalog_service.dto.PharmacyDto;
 import feo.health.catalog_service.mapper.PharmacyMapper;
+import feo.health.catalog_service.model.dto.OverpassPharmaciesResponse;
+import feo.health.catalog_service.model.dto.PharmacyDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -43,5 +43,4 @@ public class PharmacyServiceImpl implements PharmacyService {
                         && pharmacyDto.getAddress() != null && !pharmacyDto.getAddress().isBlank()
         ).toList();
     }
-
 }

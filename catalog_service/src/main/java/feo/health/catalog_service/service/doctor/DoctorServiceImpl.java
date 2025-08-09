@@ -1,8 +1,7 @@
 package feo.health.catalog_service.service.doctor;
 
-import feo.health.catalog_service.dto.DoctorDto;
-import feo.health.catalog_service.dto.ReviewDto;
-import feo.health.catalog_service.entity.Doctor;
+import feo.health.catalog_service.model.dto.DoctorDto;
+import feo.health.catalog_service.model.dto.ReviewDto;
 import feo.health.catalog_service.html.client.ClinicHtmlClient;
 import feo.health.catalog_service.html.client.DoctorHtmlClient;
 import feo.health.catalog_service.html.client.ReviewsHtmlClient;
@@ -71,12 +70,7 @@ public class DoctorServiceImpl implements DoctorService {
     public List<DoctorDto> getClinicDoctors(String clinicUri) {
         try {
             Document clinicDoctorsDocument = clinicHtmlClient.getClinicPage(clinicUri);
-            List<DoctorDto> doctorDtos = doctorHtmlParser.parseClinicDoctors(clinicDoctorsDocument);
-
-            List<Doctor> doctors = doctorMapper.toEntity(doctorDtos);
-            doctorDatabaseService.saveDoctors(doctors);
-
-            return doctorDtos;
+            return doctorHtmlParser.parseClinicDoctors(clinicDoctorsDocument);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -96,37 +90,18 @@ public class DoctorServiceImpl implements DoctorService {
 
             List<ReviewDto> reviews = reviewsHtmlParser.parseDoctorReviews(doctorReviewsDocument);
             result.setReviews(reviews);
-            result.setRating(calculateDoctorRating(reviews));
+            result.setRating(DoctorDto.calculateDoctorRating(reviews));
 
             result.setServices(serviceHtmlParser.parseDoctorServices(doctorDocument));
             result.setClinics(clinicHtmlParser.parseDoctorClinics(doctorDocument));
-            result.setUri(doctorUri);
+            result.setLink(doctorUri);
             result.setItemType("doctor");
 
-            saveDoctorToDatabase(result);
+            doctorDatabaseService.saveDoctor(doctorMapper.toEntity(result));
 
             return result;
         } catch (IOException e) {
             throw new RuntimeException("Ошибка при парсинге страницы врача", e);
         }
     }
-
-    private void saveDoctorToDatabase(DoctorDto doctorDto) {
-        if (doctorDatabaseService.isDoctorPresentByUrl(doctorDto.getUri())) return;
-        Doctor doctor = doctorMapper.toEntity(doctorDto);
-        doctorDatabaseService.saveDoctor(doctor);
-    }
-
-    private Float calculateDoctorRating(List<ReviewDto> reviewDtos) {
-        List<Float> ratings = reviewDtos.stream().map(ReviewDto::getRating).toList();
-
-        Integer count = ratings.size();
-        Float sum = 0f;
-
-        for (Float rating : ratings)
-            sum += rating;
-
-        return sum / count;
-    }
-
 }

@@ -1,6 +1,6 @@
 package feo.health.catalog_service.html.parser;
 
-import feo.health.catalog_service.dto.DiseaseDto;
+import feo.health.catalog_service.model.dto.DiseaseDto;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -28,7 +28,7 @@ public class DiseaseHtmlParser {
                     if (nameLinkElem != null) {
                         DiseaseDto diseaseDto = new DiseaseDto();
                         diseaseDto.setName(nameLinkElem.text());
-                        diseaseDto.setUri(nameLinkElem.attr("href").replaceAll("/", ""));
+                        diseaseDto.setLink(DiseaseDto.clearDiseaseLink(nameLinkElem.attr("href")));
 
                         diseaseDtos.add(diseaseDto);
                     }
@@ -70,5 +70,4 @@ public class DiseaseHtmlParser {
 
         return articleBody.html();
     }
-
 }

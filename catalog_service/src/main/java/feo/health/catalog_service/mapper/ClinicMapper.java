@@ -1,7 +1,7 @@
 package feo.health.catalog_service.mapper;
 
-import feo.health.catalog_service.dto.ClinicDto;
-import feo.health.catalog_service.entity.Clinic;
+import feo.health.catalog_service.model.dto.ClinicDto;
+import feo.health.catalog_service.model.entity.Clinic;
 import feo.health.catalog_service.service.db.clinic.ClinicDatabaseService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,18 +21,18 @@ public class ClinicMapper {
         ClinicDto dto = new ClinicDto();
         dto.setName(clinic.getName());
         dto.setAddress(clinic.getAddress());
-        dto.setUri(clinic.getUri());
+        dto.setLink(clinic.getLink());
         dto.setItemType("clinic");
 
         return dto;
     }
 
     public Clinic toEntity(ClinicDto clinicDto) {
-        return clinicDatabaseService.getClinicByUri(clinicDto.getUri())
+        return clinicDatabaseService.getClinicByLink(clinicDto.getLink())
                 .orElseGet(() -> {
                     Clinic clinic = new Clinic();
                     clinic.setName(clinicDto.getName());
-                    clinic.setUri(clinicDto.getUri());
+                    clinic.setLink(clinicDto.getLink());
                     clinic.setAddress(clinicDto.getAddress());
                     clinic.setPhoneNumber(clinicDto.getPhoneNumber());
                     clinic.setImageUri(clinicDto.getImageUri());
@@ -40,13 +40,11 @@ public class ClinicMapper {
                 });
     }
 
-    public List<Clinic> toEntity(List<ClinicDto> clinicDtos) {
-        if (clinicDtos == null) return List.of();
-        return clinicDtos.stream().map(this::toEntity).toList();
-    }
-
     public List<ClinicDto> toDto(List<Clinic> clinics) {
         return clinics.stream().map(this::toDto).toList();
     }
 
+    public List<Clinic> toEntity(List<ClinicDto> clinicDtos) {
+        return clinicDtos.stream().map(this::toEntity).toList();
+    }
 }

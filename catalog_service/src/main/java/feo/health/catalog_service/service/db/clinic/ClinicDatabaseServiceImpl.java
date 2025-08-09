@@ -1,11 +1,10 @@
 package feo.health.catalog_service.service.db.clinic;
 
-import feo.health.catalog_service.entity.Clinic;
+import feo.health.catalog_service.model.entity.Clinic;
 import feo.health.catalog_service.repository.ClinicRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,23 +14,12 @@ public class ClinicDatabaseServiceImpl implements ClinicDatabaseService {
     private ClinicRepository clinicRepository;
 
     @Override
-    public boolean isClinicPresentByUri(String uri) {
-        return clinicRepository.existsByUri(uri);
-    }
-
-    @Override
     public Clinic saveClinic(Clinic clinic) {
         return clinicRepository.save(clinic);
     }
 
     @Override
-    public List<Clinic> saveClinics(List<Clinic> clinics) {
-        return clinicRepository.saveAll(clinics);
+    public Optional<Clinic> getClinicByLink(String link) {
+        return clinicRepository.findByLink(link);
     }
-
-    @Override
-    public Optional<Clinic> getClinicByUri(String uri) {
-        return clinicRepository.findByUri(uri);
-    }
-
 }

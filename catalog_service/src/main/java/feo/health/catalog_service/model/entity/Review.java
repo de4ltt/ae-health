@@ -1,4 +1,4 @@
-package feo.health.catalog_service.entity;
+package feo.health.catalog_service.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;

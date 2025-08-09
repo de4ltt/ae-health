@@ -1,6 +1,6 @@
 package feo.health.catalog_service.service.services;
 
-import feo.health.catalog_service.dto.ServiceDto;
+import feo.health.catalog_service.model.dto.ServiceDto;
 
 import java.util.List;
 

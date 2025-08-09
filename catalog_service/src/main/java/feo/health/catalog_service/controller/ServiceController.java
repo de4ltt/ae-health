@@ -1,7 +1,7 @@
 package feo.health.catalog_service.controller;
 
-import feo.health.catalog_service.dto.ClinicDto;
-import feo.health.catalog_service.dto.ServiceDto;
+import feo.health.catalog_service.model.dto.ClinicDto;
+import feo.health.catalog_service.model.dto.ServiceDto;
 import feo.health.catalog_service.service.clinic.ClinicService;
 import feo.health.catalog_service.service.services.ServicesService;
 import lombok.AllArgsConstructor;

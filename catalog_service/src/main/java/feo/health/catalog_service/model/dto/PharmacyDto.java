@@ -1,4 +1,4 @@
-package feo.health.catalog_service.dto;
+package feo.health.catalog_service.model.dto;
 
 import lombok.Data;
 
@@ -16,5 +16,4 @@ public class PharmacyDto {
     private String address;
 
     private List<String> openingHours;
-
 }

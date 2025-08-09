@@ -1,6 +1,6 @@
 package feo.health.catalog_service.html.parser;
 
-import feo.health.catalog_service.dto.DrugDto;
+import feo.health.catalog_service.model.dto.DrugDto;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -23,7 +23,7 @@ public class DrugHtmlParser {
             dto.setName(nameLink.text().trim());
 
             String href = nameLink.attr("href");
-            dto.setUri(href.replace("//protabletky.ru/", "").replace("/", ""));
+            dto.setLink(DrugDto.clearDrugLink(href));
 
             Element img = row.selectFirst("td:nth-child(2) img");
             if (img != null) {
@@ -107,7 +107,7 @@ public class DrugHtmlParser {
         }
         drugDto.setInstructionSections(sections);
 
-        drugDto.setRating(calculateRating(drugDto));
+        drugDto.setRating(DrugDto.calculateRating(drugDto));
 
         return drugDto;
     }
@@ -121,28 +121,5 @@ public class DrugHtmlParser {
         String style = starSpans.first().attr("style");
         String width = style.replaceAll("[^0-9]", "");
         return width.isEmpty() ? null : (Double.parseDouble(width) / 16);
-    }
-
-    private Double calculateRating(DrugDto drugDto) {
-
-        int count = 0;
-        double score = 0d;
-
-        if (drugDto.getEffectiveness() != null) {
-            count++;
-            score += drugDto.getEffectiveness();
-        }
-
-        if (drugDto.getPriceQuality() != null) {
-            count++;
-            score += drugDto.getPriceQuality();
-        }
-
-        if (drugDto.getSideEffects() != null) {
-            count++;
-            score += drugDto.getSideEffects();
-        }
-
-        return count > 0 ? score / count : null;
     }
 }

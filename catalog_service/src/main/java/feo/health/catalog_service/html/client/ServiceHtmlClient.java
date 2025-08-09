@@ -13,5 +13,4 @@ public class ServiceHtmlClient {
         final String url = String.format("https://prodoctorov.ru/krasnodar/find/?q=%s&filter=services", query);
         return Jsoup.connect(url).get();
     }
-
 }

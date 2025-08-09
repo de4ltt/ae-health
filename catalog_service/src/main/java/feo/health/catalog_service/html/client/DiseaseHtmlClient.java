@@ -18,5 +18,4 @@ public class DiseaseHtmlClient {
         String uri = String.format("https://probolezny.ru/?q=%s", query);
         return Jsoup.connect(uri).get();
     }
-
 }

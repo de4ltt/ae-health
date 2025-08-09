@@ -18,9 +18,12 @@ public class DoctorHtmlClient {
 
     private final WebDriver webDriver;
 
-    public Document getDoctorPage(String doctorUri) throws IOException {
+    public Document getDoctorPage(String latinLink) throws IOException {
         try {
-            webDriver.get(doctorUri);
+
+            String uri = String.format("https://prodoctorov.ru/krasnodar/vrach/%s", latinLink);
+
+            webDriver.get(uri);
 
             new WebDriverWait(webDriver, Duration.ofSeconds(10))
                     .until(ExpectedConditions.presenceOfElementLocated(
@@ -29,7 +32,7 @@ public class DoctorHtmlClient {
             String pageSource = webDriver.getPageSource();
 
             if (pageSource == null)
-                throw new IOException("Couldn't retrieve " + doctorUri);
+                throw new IOException("Couldn't retrieve " + uri);
 
             return Jsoup.parse(pageSource);
         } catch (IOException e) {
@@ -47,7 +50,8 @@ public class DoctorHtmlClient {
         return Jsoup.connect(uri).get();
     }
 
-    public Document getDoctorsBySpecialityPage(String uri) throws IOException {
+    public Document getDoctorsBySpecialityPage(String latinLink) throws IOException {
+        String uri = String.format("https://prodoctorov.ru/krasnodar/%s", latinLink);
         return Jsoup.connect(uri).get();
     }
 }

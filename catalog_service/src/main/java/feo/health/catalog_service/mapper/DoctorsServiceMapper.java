@@ -1,8 +1,8 @@
 package feo.health.catalog_service.mapper;
 
-import feo.health.catalog_service.dto.DoctorsServiceDto;
-import feo.health.catalog_service.entity.Doctor;
-import feo.health.catalog_service.entity.DoctorsService;
+import feo.health.catalog_service.model.dto.DoctorsServiceDto;
+import feo.health.catalog_service.model.entity.Doctor;
+import feo.health.catalog_service.model.entity.DoctorsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -37,5 +37,4 @@ public class DoctorsServiceMapper {
     public List<DoctorsServiceDto> toDto(List<DoctorsService> doctorServices) {
         return doctorServices.stream().map(this::toDto).toList();
     }
-
 }

@@ -1,8 +1,8 @@
 package feo.health.catalog_service.service.services;
 
-import feo.health.catalog_service.dto.ServiceDto;
 import feo.health.catalog_service.html.client.ServiceHtmlClient;
 import feo.health.catalog_service.html.parser.ServiceHtmlParser;
+import feo.health.catalog_service.model.dto.ServiceDto;
 import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
@@ -26,5 +26,4 @@ public class ServicesServiceImpl implements ServicesService {
             throw new RuntimeException(e);
         }
     }
-
 }

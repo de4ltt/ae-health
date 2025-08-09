@@ -1,7 +1,7 @@
 package feo.health.catalog_service.mapper;
 
-import feo.health.catalog_service.dto.SpecialityDto;
-import feo.health.catalog_service.entity.Speciality;
+import feo.health.catalog_service.model.dto.SpecialityDto;
+import feo.health.catalog_service.model.entity.Speciality;
 import feo.health.catalog_service.service.db.speciality.SpecialityDatabaseService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class SpecialityMapper {
         return specialityDatabaseService.findByNameIgnoreCase(specialityDto.getName())
                 .orElseGet(() -> {
                     Speciality speciality = new Speciality();
-                    speciality.setUri(specialityDto.getUri());
+                    speciality.setLink(specialityDto.getLink());
                     speciality.setName(specialityDto.getName());
                     return specialityDatabaseService.saveSpeciality(speciality);
                 });
@@ -28,7 +28,7 @@ public class SpecialityMapper {
         if (speciality == null) return null;
         SpecialityDto specialityDto = new SpecialityDto();
         specialityDto.setName(speciality.getName().toLowerCase());
-        specialityDto.setUri(speciality.getUri());
+        specialityDto.setLink(speciality.getLink());
         return specialityDto;
     }
 
@@ -41,5 +41,4 @@ public class SpecialityMapper {
         if (specialities == null) return List.of();
         return specialities.stream().map(this::toDto).toList();
     }
-
 }

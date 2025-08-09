@@ -1,10 +1,10 @@
 package feo.health.catalog_service.service.clinic;
 
-import feo.health.catalog_service.dto.ClinicDto;
-import feo.health.catalog_service.entity.Clinic;
 import feo.health.catalog_service.html.client.ClinicHtmlClient;
 import feo.health.catalog_service.html.parser.ClinicHtmlParser;
 import feo.health.catalog_service.mapper.ClinicMapper;
+import feo.health.catalog_service.model.dto.ClinicDto;
+import feo.health.catalog_service.model.entity.Clinic;
 import feo.health.catalog_service.service.db.clinic.ClinicDatabaseService;
 import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
@@ -37,12 +37,17 @@ public class ClinicServiceImpl implements ClinicService {
             result.addAll(htmlParser.parseClinics(clinicsPage));
             result.addAll(htmlParser.parseClinicTypes(clinicTypesPage));
 
-            result = located ? removeLocationFromNames(result) : result;
+            return located ? ClinicDto.removeLocationFromNames(result) : result;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-            List<Clinic> clinics = clinicMapper.toEntity(result);
-            clinicDatabaseService.saveClinics(clinics);
-
-            return result;
+    @Override
+    public List<ClinicDto> getClinicsByType(String uri) {
+        try {
+            Document clinicsPage = htmlClient.getClinicsByTypePage(uri);
+            return htmlParser.parseClinics(clinicsPage);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -52,12 +57,7 @@ public class ClinicServiceImpl implements ClinicService {
     public List<ClinicDto> getClinicsByService(String uri) {
         try {
             Document clinicsPage = htmlClient.getClinicsByServicesPage(uri);
-            List<ClinicDto> result = htmlParser.parseClinics(clinicsPage);
-
-            List<Clinic> clinics = clinicMapper.toEntity(result);
-            clinicDatabaseService.saveClinics(clinics);
-
-            return result;
+            return htmlParser.parseClinics(clinicsPage);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -66,32 +66,23 @@ public class ClinicServiceImpl implements ClinicService {
     @Override
     public ClinicDto getClinicInfo(String uri, Boolean located) {
         try {
+            Optional<Clinic> clinic = clinicDatabaseService.getClinicByLink(uri);
 
-            Optional<Clinic> clinic = clinicDatabaseService.getClinicByUri(uri);
-
-            if (clinic.isPresent() && clinic.get().isFullInfo())
+            if (clinic.isPresent())
                 return clinicMapper.toDto(clinic.get());
 
             Document clinicDocument = htmlClient.getClinicPage(uri);
             Document clinicReviewsDocument = htmlClient.getClinicReviewsPage(uri);
 
             ClinicDto clinicDto = htmlParser.parseClinic(clinicDocument, clinicReviewsDocument);
-            clinicDto.setUri(uri);
+            clinicDto.setLink(uri);
             clinicDto.setItemType("clinic");
+
+            clinicDatabaseService.saveClinic(clinicMapper.toEntity(clinicDto));
 
             return clinicDto;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private List<ClinicDto> removeLocationFromNames(List<ClinicDto> clinicDtos) {
-        return clinicDtos.stream().map(this::removeLocationFromName).toList();
-    }
-
-    private ClinicDto removeLocationFromName(ClinicDto clinicDto) {
-        if (clinicDto.getName().contains(" на "))
-            clinicDto.setName(clinicDto.getName().substring(0, clinicDto.getName().indexOf(" на ")).trim());
-        return clinicDto;
     }
 }

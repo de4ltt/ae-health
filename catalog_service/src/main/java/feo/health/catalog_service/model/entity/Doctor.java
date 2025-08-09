@@ -1,4 +1,4 @@
-package feo.health.catalog_service.entity;
+package feo.health.catalog_service.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class Doctor {
     private String name;
 
     @Column(unique = true, nullable = false)
-    private String uri;
+    private String link;
 
     @Column
     private Byte experience;

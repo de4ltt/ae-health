@@ -1,7 +1,7 @@
 package feo.health.catalog_service.controller;
 
-import feo.health.catalog_service.dto.ClinicDto;
-import feo.health.catalog_service.dto.DoctorDto;
+import feo.health.catalog_service.model.dto.ClinicDto;
+import feo.health.catalog_service.model.dto.DoctorDto;
 import feo.health.catalog_service.service.clinic.ClinicService;
 import feo.health.catalog_service.service.doctor.DoctorService;
 import lombok.AllArgsConstructor;
@@ -24,6 +24,11 @@ public class ClinicController {
             @RequestParam(defaultValue = "true") Boolean located
     ) {
         return ResponseEntity.ok(clinicService.searchClinics(q, located));
+    }
+
+    @GetMapping("/{uri}/clinics")
+    public ResponseEntity<List<ClinicDto>> getClinicsByType(@PathVariable String uri) {
+        return ResponseEntity.ok(clinicService.getClinicsByType(uri));
     }
 
     @GetMapping("/{uri}")

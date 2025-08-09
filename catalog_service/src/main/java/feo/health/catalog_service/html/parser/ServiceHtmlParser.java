@@ -1,7 +1,7 @@
 package feo.health.catalog_service.html.parser;
 
-import feo.health.catalog_service.dto.DoctorsServiceDto;
-import feo.health.catalog_service.dto.ServiceDto;
+import feo.health.catalog_service.model.dto.DoctorsServiceDto;
+import feo.health.catalog_service.model.dto.ServiceDto;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -42,7 +42,7 @@ public class ServiceHtmlParser {
                 .stream()
                 .map(el -> {
                     ServiceDto dto = new ServiceDto();
-                    dto.setUri("https://prodoctorov.ru" + el.attr("href"));
+                    dto.setLink(ServiceDto.clearServiceLink(el.attr("href")));
                     Element name = el.selectFirst("span.b-list-icon-link__text");
                     dto.setName(name != null ? name.text().trim() : null);
                     return dto;

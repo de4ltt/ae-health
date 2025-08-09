@@ -1,4 +1,4 @@
-package feo.health.catalog_service.entity;
+package feo.health.catalog_service.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class Clinic {
     private String name;
 
     @Column
-    private String uri;
+    private String link;
 
     @Column
     private String address;
@@ -31,10 +31,5 @@ public class Clinic {
 
     @OneToMany(mappedBy = "clinic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
-
-    public boolean isFullInfo() {
-        return address != null && imageUri != null;
-    }
-
 }
 

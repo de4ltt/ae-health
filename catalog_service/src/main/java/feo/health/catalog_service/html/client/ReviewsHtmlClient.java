@@ -10,8 +10,7 @@ import java.io.IOException;
 public class ReviewsHtmlClient {
 
     public Document getDoctorReviewsPage(String doctorUri) throws IOException {
-        final String reviewsUrl = doctorUri + "otzivi/";
+        final String reviewsUrl = String.format("https://prodoctorov.ru/krasnodar/vrach/%s/otzivi", doctorUri);
         return Jsoup.connect(reviewsUrl).get();
     }
-
 }

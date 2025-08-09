@@ -18,5 +18,4 @@ public class DrugHtmlClient {
         String uri = String.format("https://protabletky.ru/%s", nameUri);
         return Jsoup.connect(uri).get();
     }
-
 }
