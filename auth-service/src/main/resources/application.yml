@@ -1,12 +1,12 @@
 server:
-  port: 8081
+  port: ${PORT_AUTH:8081}
 
 grpc:
   server:
-    port: 9081
+    port: ${GRPC_PORT_AUTH:9081}
   client:
     user-service:
-      address: static://user-service:9082
+      address: ${USER_SERVICE_GRPC_URL}
       negotiation-type: plaintext
 
 jwt:
@@ -19,7 +19,7 @@ jwt:
 
 spring:
   datasource:
-    url: ${DB_URL}
+    url: ${DB_URL_AUTH}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
   jpa:

@@ -1,17 +1,17 @@
 server:
-  port: 8083
+  port: ${PORT_CATALOG:8083}
 
 grpc:
+  server:
+    port: ${GRPC_PORT_CATALOG:9083}
   client:
     user-service:
-      address: static://catalog-service:9082
+      address: ${USER_SERVICE_GRPC_URL}
       negotiation-type: plaintext
-  server:
-    port: 9083
 
 spring:
   datasource:
-    url: ${DB_URL}
+    url: ${DB_URL_CATALOG}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
   jpa:

@@ -1,9 +1,9 @@
 server:
-  port: 8084
+  port: ${PORT_AI:8084}
 
 spring:
   application:
-    name: ai_service
+    name: ai-service
 
 openai:
   proxy: ${OPENAI_PROXY}
@@ -13,5 +13,5 @@ openai:
 grpc:
   client:
     user-service:
-      address: static://catalog-service:9082
+      address: ${USER_SERVICE_GRPC_URL}
       negotiation-type: plaintext
