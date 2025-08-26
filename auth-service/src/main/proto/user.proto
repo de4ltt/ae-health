@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package user;
+
+service UserService {
+    rpc SaveUser (SaveUserRequest) returns (UserIdResponse);
+    rpc GetUserIdByEmailIfExists(UserByEmailRequest) returns (UserIdResponse);
+}
+
+message UserByEmailRequest {
+    string email = 1;
+}
+
+message UserIdResponse {
+    int64 user_id = 1;
+}
+
+message SaveUserRequest {
+    string name = 1;
+    string email = 2;
+    string date_of_birth = 3;
+}
