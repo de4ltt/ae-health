@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface ClinicRepository extends JpaRepository<Clinic, Long> {
     Optional<Clinic> findByLink(String link);
-    Boolean existsByLink(String link);
 }
