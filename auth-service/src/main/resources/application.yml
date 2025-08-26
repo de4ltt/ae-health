@@ -1,0 +1,30 @@
+server:
+  port: 8081
+
+grpc:
+  server:
+    port: 9081
+  client:
+    user-service:
+      address: static://user-service:9082
+      negotiation-type: plaintext
+
+jwt:
+  access:
+    secret: ${JWT_ACCESS}
+    ttl-minutes: ${JWT_ACC_TTL_MINS}
+  refresh:
+    secret: ${JWT_REFRESH}
+    ttl-days: ${JWT_REF_TTL_DAYS}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://auth-db:5432/auth-db
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  application:
+    name: auth-service
