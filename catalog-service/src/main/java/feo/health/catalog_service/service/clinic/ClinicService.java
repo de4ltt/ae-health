@@ -8,5 +8,5 @@ public interface ClinicService {
     List<ClinicDto> searchClinics(String query, Boolean located);
     List<ClinicDto> getClinicsByType(String uri);
     List<ClinicDto> getClinicsByService(String uri);
-    ClinicDto getClinicInfo(String query, Boolean located);
+    ClinicDto getClinicInfo(String query, Boolean located, Long userId);
 }

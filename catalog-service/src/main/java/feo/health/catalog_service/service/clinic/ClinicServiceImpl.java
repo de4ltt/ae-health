@@ -5,10 +5,12 @@ import feo.health.catalog_service.html.parser.ClinicHtmlParser;
 import feo.health.catalog_service.mapper.ClinicMapper;
 import feo.health.catalog_service.model.dto.ClinicDto;
 import feo.health.catalog_service.model.entity.Clinic;
-import feo.health.catalog_service.service.db.clinic.ClinicDatabaseService;
+import feo.health.catalog_service.repository.ClinicRepository;
+import feo.health.catalog_service.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,9 +24,11 @@ public class ClinicServiceImpl implements ClinicService {
     private final ClinicHtmlClient htmlClient;
     private final ClinicHtmlParser htmlParser;
 
-    private final ClinicDatabaseService clinicDatabaseService;
+    private final ClinicRepository clinicRepository;
 
     private final ClinicMapper clinicMapper;
+
+    private final UserService userService;
 
     @Override
     public List<ClinicDto> searchClinics(String query, Boolean located) {
@@ -64,12 +68,16 @@ public class ClinicServiceImpl implements ClinicService {
     }
 
     @Override
-    public ClinicDto getClinicInfo(String uri, Boolean located) {
+    @Transactional
+    public ClinicDto getClinicInfo(String uri, Boolean located, Long userId) {
         try {
-            Optional<Clinic> clinic = clinicDatabaseService.getClinicByLink(uri);
+            Optional<Clinic> _clinic = clinicRepository.findByLink(uri);
 
-            if (clinic.isPresent())
-                return clinicMapper.toDto(clinic.get());
+            if (_clinic.isPresent()) {
+                Clinic clinic = _clinic.get();
+                userService.saveToHistory(clinicMapper.toHistoryRequest(clinic, userId));
+                return clinicMapper.toDto(clinic);
+            }
 
             Document clinicDocument = htmlClient.getClinicPage(uri);
             Document clinicReviewsDocument = htmlClient.getClinicReviewsPage(uri);
@@ -78,7 +86,8 @@ public class ClinicServiceImpl implements ClinicService {
             clinicDto.setLink(uri);
             clinicDto.setItemType("clinic");
 
-            clinicDatabaseService.saveClinic(clinicMapper.toEntity(clinicDto));
+            Clinic clinic = clinicRepository.save(clinicMapper.toEntity(clinicDto));
+            userService.saveToHistory(clinicMapper.toHistoryRequest(clinic, userId));
 
             return clinicDto;
         } catch (IOException e) {
