@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package user;
+
+service UserService {
+    rpc GetUserParamsById (GetUserParamsByIdRequest) returns (GetUserParamsByIdResponse);
+}
+
+message GetUserParamsByIdRequest {
+    int64 user_id = 1;
+}
+
+message GetUserParamsByIdResponse {
+    double weight_kg = 1;
+    int32 height_cm = 2;
+    int32 age = 3;
+}
