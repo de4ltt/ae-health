@@ -1,0 +1,17 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: ai_service
+
+openai:
+  proxy: ${OPENAI_PROXY}
+  key: ${OPENAI_KEY}
+  model: ${OPENAI_MODEL}
+
+grpc:
+  client:
+    user-service:
+      address: static://catalog-service:9082
+      negotiation-type: plaintext
