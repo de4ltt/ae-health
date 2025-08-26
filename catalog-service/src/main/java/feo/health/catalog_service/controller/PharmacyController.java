@@ -4,10 +4,7 @@ import feo.health.catalog_service.model.dto.PharmacyDto;
 import feo.health.catalog_service.service.pharmacy.PharmacyService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +23,19 @@ public class PharmacyController {
     ) {
         return ResponseEntity.ok(pharmacyService.searchPharmacies(radius, lat, lon));
     }
+
+    @PostMapping("/visit")
+    public ResponseEntity<Void> visitPharmacy(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestBody PharmacyDto pharmacyDto
+    ) {
+        pharmacyService.visitPharmacy(pharmacyDto, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PharmacyDto> getPharmacyById(
+            @PathVariable Long id
+    ) { return ResponseEntity.ok(pharmacyService.getPharmacyById(id)); }
 }
 
