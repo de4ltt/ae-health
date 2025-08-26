@@ -1,5 +1,6 @@
 package feo.health.catalog_service.controller;
 
+import feo.health.catalog_service.model.dto.ClinicDto;
 import feo.health.catalog_service.model.dto.DoctorDto;
 import feo.health.catalog_service.service.doctor.DoctorService;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,15 @@ public class DoctorController {
     }
 
     @GetMapping("/{uri}")
-    public ResponseEntity<DoctorDto> getDoctor(@PathVariable String uri) {
-        return ResponseEntity.ok(doctorService.getDoctorInfo(uri));
+    public ResponseEntity<DoctorDto> getDoctor(
+            @RequestHeader("X-User-Id") Long userId,
+            @PathVariable String uri
+    ) {
+        return ResponseEntity.ok(doctorService.getDoctorInfo(uri, userId));
+    }
+
+    @GetMapping("/{uri}/clinics")
+    public ResponseEntity<List<ClinicDto>> getDoctorClinics(@PathVariable String uri) {
+        return ResponseEntity.ok(doctorService.getDoctorClinics(uri));
     }
 }
