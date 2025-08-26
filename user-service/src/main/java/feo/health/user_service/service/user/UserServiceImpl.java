@@ -96,11 +96,16 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
         Double weight = user.getWeightKg();
         Integer height = user.getHeightCm();
 
-        User.GetUserParamsByIdResponse response = User.GetUserParamsByIdResponse.newBuilder()
-                .setAge(age)
-                .setHeightCm(height)
-                .setWeightKg(weight)
-                .build();
+        User.GetUserParamsByIdResponse.Builder responseBuilder = User.GetUserParamsByIdResponse.newBuilder()
+                .setAge(age);
+
+        if (weight != null)
+            responseBuilder.setWeightKg(weight);
+
+        if (height != null)
+            responseBuilder.setHeightCm(height);
+
+        User.GetUserParamsByIdResponse response = responseBuilder.build();
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();

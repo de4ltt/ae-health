@@ -6,9 +6,9 @@ import "google/protobuf/empty.proto";
 
 service UserService {
     rpc SaveUser (SaveUserRequest) returns (UserIdResponse);
-    rpc GetUserIdByEmailIfExists(UserByEmailRequest) returns (UserIdResponse);
-    rpc SaveToHistory(SaveToHistoryRequest) returns (google.protobuf.Empty);
-    rpc GetUserParamsById(GetUserParamsByIdRequest) returns (GetUserParamsByIdResponse);
+    rpc GetUserIdByEmailIfExists (UserByEmailRequest) returns (UserIdResponse);
+    rpc SaveToHistory (SaveToHistoryRequest) returns (google.protobuf.Empty);
+    rpc GetUserParamsById (GetUserParamsByIdRequest) returns (GetUserParamsByIdResponse);
 }
 
 message UserByEmailRequest {
@@ -36,7 +36,7 @@ message GetUserParamsByIdRequest {
 }
 
 message GetUserParamsByIdResponse {
-    double weight_kg = 1;
-    int32 height_cm = 2;
-    int32 age = 3;
+    int32 age = 1;
+    optional double weight_kg = 2;
+    optional int32 height_cm = 3;
 }

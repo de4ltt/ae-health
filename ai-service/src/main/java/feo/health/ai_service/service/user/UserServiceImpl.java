@@ -1,11 +1,13 @@
 package feo.health.ai_service.service.user;
 
 import feo.health.ai_service.model.response.UserParamsDto;
+import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 import user.User;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     @GrpcClient("user-service")
@@ -22,8 +24,8 @@ public class UserServiceImpl implements UserService {
 
         return UserParamsDto.builder()
                 .age(response.getAge())
-                .heightCm(response.getHeightCm())
-                .weightKg(response.getWeightKg())
+                .heightCm(response.isInitialized() ? response.getHeightCm() : null)
+                .weightKg(response.isInitialized() ? response.getWeightKg() : null)
                 .build();
     }
 }
