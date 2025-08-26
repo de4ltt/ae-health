@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package catalog;
+
+service CatalogService {
+    rpc GetCatalogItemId (CatalogItemIdRequest) returns (CatalogItemIdResponse);
+    rpc GetCatalogItems (CatalogItemsRequest) returns (CatalogItemsResponse);
+}
+
+message CatalogItemIdRequest {
+    string link = 1;
+    string type = 2;
+}
+
+message CatalogItemIdResponse {
+    int64 id = 1;
+}
+
+message CatalogItemsRequest {
+    repeated int64 ids = 1;
+    string type = 2;
+}
+
+message CatalogItemsResponse {
+    repeated CatalogItem items = 1;
+}
+
+message CatalogItem {
+    string name = 1;
+    string type = 2;
+    string link = 3;
+    string image_uri = 4;
+}
