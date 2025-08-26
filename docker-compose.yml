@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway-service
+    ports:
+      - "${PORT_GATEWAY}:${PORT_GATEWAY}"
+    networks:
+      - backend
+    env_file:
+      - ./.env
+    depends_on:
+      - auth-service
+      - user-service
+      - catalog-service
+      - ai-service
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    networks:
+      - backend
+    expose:
+      - "${PORT_AUTH}"
+      - "${GRPC_PORT_AUTH}"
+    env_file:
+      - ./.env
+    depends_on:
+      - auth-db
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    networks:
+      - backend
+    expose:
+      - "${PORT_USER}"
+      - "${GRPC_PORT_USER}"
+    env_file:
+      - ./.env
+    depends_on:
+      - user-db
+
+  catalog-service:
+    build:
+      context: ./catalog-service
+      dockerfile: Dockerfile
+    container_name: catalog-service
+    networks:
+      - backend
+    expose:
+      - "${PORT_CATALOG}"
+      - "${GRPC_PORT_CATALOG}"
+    env_file:
+      - ./.env
+    depends_on:
+      - catalog-db
+
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: ai-service
+    networks:
+      - backend
+    expose:
+      - "${PORT_AI}"
+    env_file:
+      - ./.env
+    depends_on:
+      - user-service
+
+  auth-db:
+    image: postgres:16
+    container_name: auth-db
+    environment:
+      POSTGRES_DB: auth-db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - backend
+    volumes:
+      - auth-data:/var/lib/postgresql/data
+
+  user-db:
+    image: postgres:16
+    container_name: user-db
+    environment:
+      POSTGRES_DB: user-db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - backend
+    volumes:
+      - user-data:/var/lib/postgresql/data
+
+  catalog-db:
+    image: postgres:16
+    container_name: catalog-db
+    environment:
+      POSTGRES_DB: catalog-db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - backend
+    volumes:
+      - catalog-data:/var/lib/postgresql/data
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  auth-data:
+  user-data:
+  catalog-data:
