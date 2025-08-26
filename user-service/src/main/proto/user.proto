@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package user;
+
+import "google/protobuf/empty.proto";
+
+service UserService {
+    rpc SaveUser (SaveUserRequest) returns (UserIdResponse);
+    rpc GetUserIdByEmailIfExists(UserByEmailRequest) returns (UserIdResponse);
+    rpc SaveToHistory(SaveToHistoryRequest) returns (google.protobuf.Empty);
+    rpc GetUserParamsById(GetUserParamsByIdRequest) returns (GetUserParamsByIdResponse);
+}
+
+message UserByEmailRequest {
+    string email = 1;
+}
+
+message UserIdResponse {
+    int64 user_id = 1;
+}
+
+message SaveUserRequest {
+    string name = 1;
+    string email = 2;
+    string date_of_birth = 3;
+}
+
+message SaveToHistoryRequest {
+    int64 user_id = 1;
+    int64 item_id = 2;
+    string item_type = 3;
+}
+
+message GetUserParamsByIdRequest {
+    int64 user_id = 1;
+}
+
+message GetUserParamsByIdResponse {
+    double weight_kg = 1;
+    int32 height_cm = 2;
+    int32 age = 3;
+}
