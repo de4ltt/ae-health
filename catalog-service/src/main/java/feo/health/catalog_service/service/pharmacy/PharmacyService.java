@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface PharmacyService {
     List<PharmacyDto> searchPharmacies(Integer radius, Double lat, Double lon);
+    void visitPharmacy(PharmacyDto pharmacyDto, Long userId);
+    PharmacyDto getPharmacyById(Long id);
 }
