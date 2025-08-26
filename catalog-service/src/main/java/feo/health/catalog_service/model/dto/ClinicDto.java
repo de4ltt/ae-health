@@ -14,16 +14,12 @@ public class ClinicDto {
 
     @NotNull
     private String link;
-
     private String address;
-
     private String phoneNumber;
-
     private String imageUri;
 
     @NotNull
     private String itemType;
-
     private List<ReviewDto> reviews;
 
     public static List<ClinicDto> removeLocationFromNames(List<ClinicDto> clinicDtos) {
@@ -41,7 +37,7 @@ public class ClinicDto {
         return link
                 .replace("https://prodoctorov.ru/", "")
                 .replace("krasnodar", "")
-                .replace("lpu", "")
+                .replaceFirst("lpu", "")
                 .replace("top", "")
                 .replaceAll("/", "");
     }

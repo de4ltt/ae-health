@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 public class ServiceDto {
 
-    @NotNull
     final String itemType = "service";
 
     @NotNull
@@ -19,7 +18,7 @@ public class ServiceDto {
         String result = link
                 .replace("https://prodoctorov.ru/", "")
                 .replace("krasnodar/", "")
-                .replace("uslugi", "")
+                .replaceFirst("uslugi", "")
                 .replaceFirst("/", "");
         if (result.indexOf("/") == 0) result = result.substring(1, result.length() - 1);
         if (result.lastIndexOf("/") == result.length() - 1) result = result.substring(0, result.length() - 1);

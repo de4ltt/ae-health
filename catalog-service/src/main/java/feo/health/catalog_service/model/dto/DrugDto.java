@@ -9,17 +9,13 @@ public class DrugDto {
 
     private String name;
     private String latinName;
-
     private String link;
     private String imageUri;
-
     private Double effectiveness;
-
     private Double rating;
     private Double priceQuality;
     private Double sideEffects;
     private Integer reviewsCount;
-
     private List<DrugFormDto> forms;
     private List<InstructionSectionDto> instructionSections;
 

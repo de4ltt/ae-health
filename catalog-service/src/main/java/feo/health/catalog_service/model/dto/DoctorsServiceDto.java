@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 
 @Data
 public class DoctorsServiceDto {
-
     private String title;
-
     private BigDecimal price;
 }

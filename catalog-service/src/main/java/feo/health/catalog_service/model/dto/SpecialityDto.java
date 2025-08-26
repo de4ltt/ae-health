@@ -3,15 +3,15 @@ package feo.health.catalog_service.model.dto;
 import lombok.Data;
 
 @Data
-public class DiseaseDto {
+public class SpecialityDto {
 
     private String name;
-
     private String link;
 
-    public static String clearDiseaseLink(String link) {
+    public static String clearSpecialityLink(String link) {
         return link
-                .replace("https://probolezny.ru/", "")
+                .replace("https://prodoctorov.ru/", "")
+                .replace("krasnodar", "")
                 .replaceAll("/", "");
     }
 }
