@@ -1,8 +1,8 @@
 package feo.health.catalog_service.service.disease;
 
-import feo.health.catalog_service.model.dto.DiseaseDto;
 import feo.health.catalog_service.html.client.DiseaseHtmlClient;
 import feo.health.catalog_service.html.parser.DiseaseHtmlParser;
+import feo.health.catalog_service.model.dto.DiseaseDto;
 import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
