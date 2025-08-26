@@ -1,10 +1,12 @@
 package feo.health.catalog_service.mapper;
 
+import catalog.Catalog;
 import feo.health.catalog_service.model.dto.DoctorDto;
 import feo.health.catalog_service.model.entity.Doctor;
-import feo.health.catalog_service.service.db.doctor.DoctorDatabaseService;
+import feo.health.catalog_service.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import user.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,12 +15,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DoctorMapper {
 
-    private final ClinicMapper clinicMapper;
     private final SpecialityMapper specialityMapper;
     private final ReviewMapper reviewMapper;
     private final DoctorsServiceMapper doctorsServiceMapper;
 
-    private final DoctorDatabaseService doctorDatabaseService;
+    private final DoctorRepository doctorRepository;
 
     public DoctorDto toDto(Doctor doctor) {
 
@@ -33,22 +34,29 @@ public class DoctorMapper {
         doctorDto.setSpecialities(specialityMapper.toDto(doctor.getSpecialities()));
         doctorDto.setReviews(reviewMapper.toDto(doctor.getReviews()));
         doctorDto.setServices(doctorsServiceMapper.toDto(doctor.getServices()));
-        doctorDto.setClinics(clinicMapper.toDto(doctor.getClinics()));
         doctorDto.setRating(doctor.getRating());
 
         return doctorDto;
+    }
+
+    public User.SaveToHistoryRequest toHistoryRequest(Doctor doctor, Long userId) {
+        return User.SaveToHistoryRequest.newBuilder()
+                .setItemId(doctor.getId())
+                .setItemType("doctor")
+                .setUserId(userId)
+                .build();
     }
 
     public Doctor toEntity(DoctorDto doctorDto) {
 
         if (doctorDto == null) return null;
 
-        Optional<Doctor> doctorOptional = doctorDatabaseService.getDoctorByUrl(doctorDto.getLink());
+        Optional<Doctor> doctorOptional = doctorRepository.findByLink(doctorDto.getLink());
 
         if (doctorOptional.isPresent()) {
             Doctor doctor = doctorOptional.get();
             doctor.setRating(doctor.getRating() == null ? doctorDto.getRating() : doctor.getRating());
-            doctorDatabaseService.saveDoctor(doctor);
+            doctorRepository.save(doctor);
             return doctor;
         }
 
@@ -60,20 +68,21 @@ public class DoctorMapper {
         doctor.setSpecialities(specialityMapper.toEntity(doctorDto.getSpecialities()));
         doctor.setReviews(reviewMapper.toEntity(doctorDto.getReviews(), doctor));
         doctor.setServices(doctorsServiceMapper.toEntity(doctorDto.getServices(), doctor));
-        doctor.setClinics(clinicMapper.toEntity(doctorDto.getClinics()));
         doctor.setRating(doctorDto.getRating());
 
         return doctor;
     }
 
-    public List<Doctor> toEntity(List<DoctorDto> doctorDtos) {
-        return doctorDtos.stream()
-                .map(this::toEntity)
-                .filter(doctor -> doctor.getLink().contains("-"))
-                .toList();
+    public Catalog.CatalogItem toCatalogItem(Doctor doctor) {
+        return Catalog.CatalogItem.newBuilder()
+                .setName(doctor.getName())
+                .setLink(doctor.getLink())
+                .setImageUri(doctor.getImageUri())
+                .setType("doctor")
+                .build();
     }
 
-    public List<DoctorDto> toDto(List<Doctor> doctors) {
-        return doctors.stream().map(this::toDto).toList();
+    public List<Catalog.CatalogItem> toCatalogItem(List<Doctor> doctors) {
+        return doctors.stream().map(this::toCatalogItem).toList();
     }
 }

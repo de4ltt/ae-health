@@ -1,10 +1,12 @@
 package feo.health.catalog_service.mapper;
 
+import catalog.Catalog;
 import feo.health.catalog_service.model.dto.ClinicDto;
 import feo.health.catalog_service.model.entity.Clinic;
-import feo.health.catalog_service.service.db.clinic.ClinicDatabaseService;
+import feo.health.catalog_service.repository.ClinicRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import user.User;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ClinicMapper {
 
-    private ClinicDatabaseService clinicDatabaseService;
+    private ClinicRepository clinicRepository;
 
     public ClinicDto toDto(Clinic clinic) {
 
@@ -28,7 +30,7 @@ public class ClinicMapper {
     }
 
     public Clinic toEntity(ClinicDto clinicDto) {
-        return clinicDatabaseService.getClinicByLink(clinicDto.getLink())
+        return clinicRepository.findByLink(clinicDto.getLink())
                 .orElseGet(() -> {
                     Clinic clinic = new Clinic();
                     clinic.setName(clinicDto.getName());
@@ -40,11 +42,24 @@ public class ClinicMapper {
                 });
     }
 
-    public List<ClinicDto> toDto(List<Clinic> clinics) {
-        return clinics.stream().map(this::toDto).toList();
+    public User.SaveToHistoryRequest toHistoryRequest(Clinic clinic, Long userId) {
+        return User.SaveToHistoryRequest.newBuilder()
+                .setItemId(clinic.getId())
+                .setItemType("clinic")
+                .setUserId(userId)
+                .build();
     }
 
-    public List<Clinic> toEntity(List<ClinicDto> clinicDtos) {
-        return clinicDtos.stream().map(this::toEntity).toList();
+    public Catalog.CatalogItem toCatalogItem(Clinic clinic) {
+        return Catalog.CatalogItem.newBuilder()
+                .setName(clinic.getName())
+                .setLink(clinic.getLink())
+                .setImageUri(clinic.getImageUri())
+                .setType("clinic")
+                .build();
+    }
+
+    public List<Catalog.CatalogItem> toCatalogItem(List<Clinic> clinics) {
+        return clinics.stream().map(this::toCatalogItem).toList();
     }
 }
