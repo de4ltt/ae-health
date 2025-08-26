@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package user;
+
+import "google/protobuf/empty.proto";
+
+service UserService {
+    rpc SaveToHistory(SaveToHistoryRequest) returns (google.protobuf.Empty);
+}
+
+message SaveToHistoryRequest {
+    int64 user_id = 1;
+    int64 item_id = 2;
+    string item_type = 3;
+}
