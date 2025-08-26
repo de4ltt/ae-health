@@ -33,10 +33,11 @@ public class ClinicController {
 
     @GetMapping("/{uri}")
     public ResponseEntity<ClinicDto> getClinic(
+            @RequestHeader("X-User-Id") Long userId,
             @PathVariable String uri,
             @RequestParam(defaultValue = "true") Boolean located
     ) {
-        return ResponseEntity.ok(clinicService.getClinicInfo(uri, located));
+        return ResponseEntity.ok(clinicService.getClinicInfo(uri, located, userId));
     }
 
     @GetMapping("/{uri}/doctors")
