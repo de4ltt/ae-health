@@ -30,7 +30,7 @@ public class Review {
     @ManyToOne
     private Clinic clinic;
 
-    @AssertTrue(message = "Отзыв должен быть либо у врача, либо у доктора")
+    @AssertTrue(message = "Review has to be assigned either to doctor or clinic.")
     public boolean isValidTarget() {
         return (doctor != null) ^ (clinic != null);
     }

@@ -42,12 +42,4 @@ public class Doctor {
             inverseJoinColumns = @JoinColumn(name = "speciality_id")
     )
     private List<Speciality> specialities;
-
-    @ManyToMany
-    @JoinTable(
-            name = "doctor_clinics",
-            joinColumns = @JoinColumn(name = "doctor_id"),
-            inverseJoinColumns = @JoinColumn(name = "clinic_id")
-    )
-    private List<Clinic> clinics;
 }
