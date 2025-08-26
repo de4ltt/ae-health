@@ -1,7 +1,5 @@
 package feo.health.catalog_service.service.doctor;
 
-import feo.health.catalog_service.model.dto.DoctorDto;
-import feo.health.catalog_service.model.dto.ReviewDto;
 import feo.health.catalog_service.html.client.ClinicHtmlClient;
 import feo.health.catalog_service.html.client.DoctorHtmlClient;
 import feo.health.catalog_service.html.client.ReviewsHtmlClient;
@@ -10,20 +8,27 @@ import feo.health.catalog_service.html.parser.DoctorHtmlParser;
 import feo.health.catalog_service.html.parser.ReviewsHtmlParser;
 import feo.health.catalog_service.html.parser.ServiceHtmlParser;
 import feo.health.catalog_service.mapper.DoctorMapper;
-import feo.health.catalog_service.service.db.doctor.DoctorDatabaseService;
+import feo.health.catalog_service.model.dto.ClinicDto;
+import feo.health.catalog_service.model.dto.DoctorDto;
+import feo.health.catalog_service.model.dto.ReviewDto;
+import feo.health.catalog_service.model.entity.Doctor;
+import feo.health.catalog_service.repository.DoctorRepository;
+import feo.health.catalog_service.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class DoctorServiceImpl implements DoctorService {
 
-    private final DoctorDatabaseService doctorDatabaseService;
+    private final DoctorRepository doctorRepository;
 
     private final DoctorMapper doctorMapper;
 
@@ -38,6 +43,8 @@ public class DoctorServiceImpl implements DoctorService {
     private final ServiceHtmlParser serviceHtmlParser;
 
     private final ClinicHtmlParser clinicHtmlParser;
+
+    private final UserService userService;
 
     @Override
     public List<DoctorDto> searchDoctors(String query) {
@@ -69,7 +76,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public List<DoctorDto> getClinicDoctors(String clinicUri) {
         try {
-            Document clinicDoctorsDocument = clinicHtmlClient.getClinicPage(clinicUri);
+            Document clinicDoctorsDocument = clinicHtmlClient.getClinicDoctorsPage(clinicUri);
             return doctorHtmlParser.parseClinicDoctors(clinicDoctorsDocument);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -77,31 +84,44 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public DoctorDto getDoctorInfo(String doctorUri) {
-        try {
-            DoctorDto result = doctorMapper.toDto(doctorDatabaseService.getDoctorByUrl(doctorUri).orElse(null));
+    public List<ClinicDto> getDoctorClinics(String uri) {
+        Document doctorDocument = doctorHtmlClient.getDoctorClinicsPage(uri);
+        return clinicHtmlParser.parseDoctorClinics(doctorDocument);
+    }
 
-            if (result != null) return result;
+    @Override
+    @Transactional
+    public DoctorDto getDoctorInfo(String doctorUri, Long userId) {
+        try {
+
+            Optional<Doctor> doctorOptional = doctorRepository.findByLink(doctorUri);
+
+            if (doctorOptional.isPresent()) {
+                Doctor doctor = doctorOptional.get();
+                userService.saveToHistory(doctorMapper.toHistoryRequest(doctor, userId));
+                return doctorMapper.toDto(doctor);
+            }
 
             Document doctorDocument = doctorHtmlClient.getDoctorPage(doctorUri);
-            result = doctorHtmlParser.parseDoctor(doctorDocument);
+            DoctorDto doctorDto = doctorHtmlParser.parseDoctor(doctorDocument);
 
-            Document doctorReviewsDocument = reviewsHtmlClient.getDoctorReviewsPage(doctorUri);
+            try {
+                Document doctorReviewsDocument = reviewsHtmlClient.getDoctorReviewsPage(doctorUri);
+                List<ReviewDto> reviews = reviewsHtmlParser.parseDoctorReviews(doctorReviewsDocument);
+                doctorDto.setReviews(reviews);
+                doctorDto.setRating(DoctorDto.calculateDoctorRating(reviews));
+            } catch (Exception ignored) {}
 
-            List<ReviewDto> reviews = reviewsHtmlParser.parseDoctorReviews(doctorReviewsDocument);
-            result.setReviews(reviews);
-            result.setRating(DoctorDto.calculateDoctorRating(reviews));
+            doctorDto.setServices(serviceHtmlParser.parseDoctorServices(doctorDocument));
+            doctorDto.setLink(doctorUri);
+            doctorDto.setItemType("doctor");
 
-            result.setServices(serviceHtmlParser.parseDoctorServices(doctorDocument));
-            result.setClinics(clinicHtmlParser.parseDoctorClinics(doctorDocument));
-            result.setLink(doctorUri);
-            result.setItemType("doctor");
+            Doctor doctor = doctorRepository.save(doctorMapper.toEntity(doctorDto));
+            userService.saveToHistory(doctorMapper.toHistoryRequest(doctor, userId));
 
-            doctorDatabaseService.saveDoctor(doctorMapper.toEntity(result));
-
-            return result;
+            return doctorDto;
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при парсинге страницы врача", e);
+            throw new RuntimeException(e);
         }
     }
 }
