@@ -58,7 +58,6 @@ public class JwtAuthenticationFilter implements GlobalFilter {
             exchange = exchange.mutate()
                     .request(r -> r
                             .header("X-User-Id", String.valueOf(userId))
-                            .header("X-User-Email", email)
                     )
                     .build();
 
