@@ -30,14 +30,16 @@ public class ReviewsHtmlParser {
                 dto.setDate(Date.valueOf(rawDate));
             }
 
-            Element ratingElem = card.selectFirst(".review-card-tooltips__stars span.ui-text_subtitle-2");
-            if (ratingElem != null) {
-                try {
-                    float rating = Float.parseFloat(ratingElem.text().replace(',', '.'));
-                    dto.setRating(rating);
-                } catch (Exception ignored) {
+            Element ratingElemFirst = card.selectFirst("span.text-subtitle-2.text--text.ml-1");
+            if (null == ratingElemFirst) {
+                Element ratingElem = card.selectFirst(".review-card-tooltips__stars, span.ui-text_subtitle-2");
+                if (ratingElem != null) {
+                    try {
+                        float rating = Float.parseFloat(ratingElem.text().replace(',', '.'));
+                        dto.setRating(rating);
+                    } catch (Exception ignored) {}
                 }
-            }
+            } else dto.setRating(Float.parseFloat(ratingElemFirst.text()));
 
             reviews.add(dto);
         }

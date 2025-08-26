@@ -53,37 +53,6 @@ public class ClinicHtmlParser {
         return clinicDto;
     }
 
-
-    public List<ClinicDto> parseDoctorClinics(Document document) {
-        List<ClinicDto> clinics = new ArrayList<>();
-
-        Elements clinicElements = document.select("div.doctor-page-list-lpu.pa-6");
-
-        for (Element el : clinicElements) {
-            Element titleUriElem = el.selectFirst("a.ui-text.ui-text_subtitle-1.ui-kit-color-primary.text-decoration-none");
-            if (titleUriElem == null) continue;
-
-            String name = titleUriElem.text();
-            String uri = ClinicDto.clearClinicLink(titleUriElem.attr("href"));
-
-            Element addressElem = el.selectFirst("div.d-flex.align-center.ui-text.ui-text_body-1.ui-kit-color-primary.py-2.cursor-pointer.mt-4");
-            String address = addressElem != null ? addressElem.text() : null;
-
-            Element phoneElem = el.selectFirst("div.d-flex.align-center.text-decoration-none.ui-text.ui-text_body-1.py-2.mt-2");
-            String phoneNumber = phoneElem != null ? phoneElem.text() : null;
-
-            ClinicDto clinicDto = new ClinicDto();
-            clinicDto.setName(name);
-            clinicDto.setLink(uri);
-            clinicDto.setAddress(address);
-            clinicDto.setPhoneNumber(phoneNumber);
-
-            clinics.add(clinicDto);
-        }
-
-        return clinics;
-    }
-
     public List<ClinicDto> parseClinics(Document document) {
 
         final Function<Element, ClinicDto> extractSingleClinic = el -> {
@@ -146,6 +115,30 @@ public class ClinicHtmlParser {
                 })
                 .toList();
     }
+
+    public List<ClinicDto> parseDoctorClinics(Document document) {
+        return document.select("div.doctor-page-list-lpu.pa-6").stream().map(clinic -> {
+
+            Element nameElem = clinic.selectFirst("a.text-subtitle-1.primary--text.text-decoration-none");
+            String link = nameElem != null ? ClinicDto.clearClinicLink(nameElem.attr("href")) : null;
+            String name = nameElem != null ? nameElem.text() : null;
+
+            Element addressElem = clinic.selectFirst("div.d-flex.align-center.text-body-1.primary--text.py-2.cursor-pointer.mt-4");
+            String address = addressElem != null ? addressElem.text() : null;
+
+            Element phoneElem = clinic.selectFirst("div.d-flex.align-center.text-decoration-none.text-body-1.py-2.mt-2");
+            String phone = phoneElem != null ? phoneElem.text() : null;
+
+            ClinicDto clinicDto = new ClinicDto();
+            clinicDto.setName(name);
+            clinicDto.setLink(link);
+            clinicDto.setAddress(address);
+            clinicDto.setPhoneNumber(phone);
+
+            return clinicDto;
+        }).toList();
+    }
+
 
     private ClinicDto parseClinicCard(Element el) {
         ClinicDto dto = new ClinicDto();
