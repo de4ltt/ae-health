@@ -4,11 +4,12 @@ import feo.health.catalog_service.model.dto.ClinicDto;
 import feo.health.catalog_service.model.dto.DoctorDto;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface DoctorService {
-    List<DoctorDto> searchDoctors(String query);
-    DoctorDto getDoctorInfo(String doctorUri, Long userId);
-    List<DoctorDto> getDoctorsBySpeciality(String specialityUri);
-    List<DoctorDto> getClinicDoctors(String clinicUri);
-    List<ClinicDto> getDoctorClinics(String uri);
+    CompletableFuture<List<DoctorDto>> searchDoctors(String query);
+    CompletableFuture<DoctorDto> getDoctorInfo(String doctorUri, Long userId);
+    CompletableFuture<List<DoctorDto>> getDoctorsBySpeciality(String specialityUri);
+    CompletableFuture<List<DoctorDto>> getClinicDoctors(String clinicUri);
+    CompletableFuture<List<ClinicDto>> getDoctorClinics(String uri);
 }

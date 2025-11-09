@@ -35,7 +35,7 @@ public class ClinicHtmlClient {
     }
 
     public Document getClinicsByServicesPage(String latinLink) throws IOException {
-        String uri = String.format("https://prodoctorov.ru/krasnodar/%s/", latinLink.replace("_", "/"));
+        String uri = String.format("https://prodoctorov.ru/krasnodar/uslugi/%s/", latinLink.replace("_", "/"));
         return Jsoup.connect(uri).get();
     }
 

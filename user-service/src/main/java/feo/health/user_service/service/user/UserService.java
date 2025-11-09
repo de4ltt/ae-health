@@ -3,9 +3,11 @@ package feo.health.user_service.service.user;
 import feo.health.user_service.model.dto.ChangePasswordRequest;
 import feo.health.user_service.model.dto.UserDto;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface UserService {
-    UserDto getUserInfo(Long userId);
-    UserDto updateUserInfo(Long userId, UserDto userDto);
-    void deleteUser(Long id);
-    void changePassword(Long userId, ChangePasswordRequest request);
+    CompletableFuture<UserDto> getUserInfo(Long userId);
+    CompletableFuture<UserDto> updateUserInfo(Long userId, UserDto userDto);
+    CompletableFuture<Void> deleteUser(Long id);
+    CompletableFuture<Void> changePassword(Long userId, ChangePasswordRequest request);
 }

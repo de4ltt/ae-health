@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/catalog/clinics")
@@ -19,30 +20,33 @@ public class ClinicController {
     private final DoctorService doctorService;
 
     @GetMapping
-    public ResponseEntity<List<ClinicDto>> searchClinics(
+    public CompletableFuture<ResponseEntity<List<ClinicDto>>> searchClinics(
             @RequestParam String q,
             @RequestParam(defaultValue = "true") Boolean located
     ) {
-        return ResponseEntity.ok(clinicService.searchClinics(q, located));
+        return clinicService.searchClinics(q, located)
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{uri}/clinics")
-    public ResponseEntity<List<ClinicDto>> getClinicsByType(@PathVariable String uri) {
-        return ResponseEntity.ok(clinicService.getClinicsByType(uri));
+    public CompletableFuture<ResponseEntity<List<ClinicDto>>> getClinicsByType(@PathVariable String uri) {
+        return clinicService.getClinicsByType(uri)
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{uri}")
-    public ResponseEntity<ClinicDto> getClinic(
+    public CompletableFuture<ResponseEntity<ClinicDto>> getClinic(
             @RequestHeader("X-User-Id") Long userId,
             @PathVariable String uri,
             @RequestParam(defaultValue = "true") Boolean located
     ) {
-        return ResponseEntity.ok(clinicService.getClinicInfo(uri, located, userId));
+        return clinicService.getClinicInfo(uri, located, userId)
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{uri}/doctors")
-    public ResponseEntity<List<DoctorDto>> getClinicDoctors(@PathVariable String uri) {
-        return ResponseEntity.ok(doctorService.getClinicDoctors(uri));
+    public CompletableFuture<ResponseEntity<List<DoctorDto>>> getClinicDoctors(@PathVariable String uri) {
+        return doctorService.getClinicDoctors(uri)
+                .thenApply(ResponseEntity::ok);
     }
 }
-

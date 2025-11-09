@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/catalog/services")
@@ -19,12 +20,14 @@ public class ServiceController {
     private final ClinicService clinicService;
 
     @GetMapping
-    public ResponseEntity<List<ServiceDto>> searchServices(@RequestParam String q) {
-        return ResponseEntity.ok(servicesService.searchServices(q));
+    public CompletableFuture<ResponseEntity<List<ServiceDto>>> searchServices(@RequestParam String q) {
+        return servicesService.searchServices(q)
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{uri}/clinics")
-    public ResponseEntity<List<ClinicDto>> getClinicsByService(@PathVariable String uri) {
-        return ResponseEntity.ok(clinicService.getClinicsByService(uri));
+    public CompletableFuture<ResponseEntity<List<ClinicDto>>> getClinicsByService(@PathVariable String uri) {
+        return clinicService.getClinicsByService(uri)
+                .thenApply(ResponseEntity::ok);
     }
 }

@@ -27,4 +27,4 @@ spring:
                 - Path=/api/v1/ai/**
 
 jwt:
-  secret: ${JWT_ACCESS}
+  secret: ${JWT_PUBLIC_KEY}

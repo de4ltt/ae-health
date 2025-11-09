@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/catalog/diseases")
@@ -17,15 +18,16 @@ public class DiseaseController {
     private final DiseaseService diseaseService;
 
     @GetMapping
-    public ResponseEntity<List<DiseaseDto>> searchDiseases(@RequestParam String q) {
-        return ResponseEntity.ok(diseaseService.searchDiseases(q));
+    public CompletableFuture<ResponseEntity<List<DiseaseDto>>> searchDiseases(@RequestParam String q) {
+        return diseaseService.searchDiseases(q)
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{uri}")
-    public ResponseEntity<String> getDiseaseInfo(@PathVariable String uri) {
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.TEXT_HTML)
-                .body(diseaseService.getDiseaseArticle(uri));
+    public CompletableFuture<ResponseEntity<String>> getDiseaseInfo(@PathVariable String uri) {
+        return diseaseService.getDiseaseArticle(uri)
+                .thenApply(article -> ResponseEntity.ok()
+                        .contentType(MediaType.TEXT_HTML)
+                        .body(article));
     }
 }

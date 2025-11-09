@@ -12,7 +12,7 @@ public class History {
     @EmbeddedId
     private HistoryId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @MapsId("userId")
     private User user;
 }

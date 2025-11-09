@@ -4,8 +4,11 @@ import feo.health.auth_service.model.dto.SignInRequest;
 import feo.health.auth_service.model.dto.SignUpRequest;
 import feo.health.auth_service.model.dto.TokenResponse;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface AuthService {
-    void signUp(SignUpRequest request);
-    TokenResponse signIn(SignInRequest request);
-    TokenResponse refresh(String refreshToken);
+    CompletableFuture<Void> signUp(SignUpRequest request);
+    CompletableFuture<TokenResponse> signIn(SignInRequest request);
+    CompletableFuture<TokenResponse> refresh(String refreshToken);
 }
+

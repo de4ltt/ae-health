@@ -9,36 +9,36 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/user/favourites")
 @AllArgsConstructor
 public class FavouritesController {
 
-    private final FavouriteService favouriteService;
+    private final FavouriteService service;
 
     @PostMapping
-    ResponseEntity<Void> addFavourite(
+    CompletableFuture<ResponseEntity<Void>> addFavourite(
             @RequestHeader("X-User-Id") Long userId,
             @RequestBody CatalogItemRequest request
     ) {
-        favouriteService.addFavourite(userId, request);
-        return ResponseEntity.ok().build();
+        return service.addFavourite(userId, request).thenApply(v -> ResponseEntity.ok().build());
     }
 
     @DeleteMapping
-    ResponseEntity<Void> deleteFavourite(
+    CompletableFuture<ResponseEntity<Void>> deleteFavourite(
             @RequestHeader("X-User-Id") Long userId,
             @RequestBody CatalogItemRequest request
     ) {
-        favouriteService.deleteFavourite(userId, request);
-        return ResponseEntity.ok().build();
+        return service.deleteFavourite(userId, request).thenApply(v -> ResponseEntity.ok().build());
     }
 
     @GetMapping
-    ResponseEntity<Map<String, List<CatalogItemDto>>> getFavourites(
+    CompletableFuture<ResponseEntity<Map<String, List<CatalogItemDto>>>> getFavourites(
             @RequestHeader("X-User-Id") Long userId
     ) {
-        return ResponseEntity.ok(favouriteService.getFavourites(userId));
+        return service.getFavourites(userId).thenApply(ResponseEntity::ok);
     }
 }
+

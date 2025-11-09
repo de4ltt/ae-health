@@ -20,7 +20,7 @@ public class PharmacyMapper {
 
     private final PharmacyRepository pharmacyRepository;
 
-    public List<PharmacyDto> toDtoFromOverpassDto(OverpassPharmaciesResponse response) {
+    public static List<PharmacyDto> toDtoFromOverpassDto(OverpassPharmaciesResponse response) {
         if (response == null || response.getElements() == null) return List.of();
 
         return response.getElements().stream()
@@ -84,6 +84,7 @@ public class PharmacyMapper {
                 .setType("pharmacy")
                 .setLink(String.valueOf(pharmacy.getId()))
                 .setName(pharmacy.getName())
+                .setId(pharmacy.getId())
                 .build();
     }
 
@@ -91,7 +92,7 @@ public class PharmacyMapper {
         return pharmacies.stream().map(this::toCatalogItem).toList();
     }
 
-    private List<String> translateOpeningHours(String openingHours) {
+    private static List<String> translateOpeningHours(String openingHours) {
         if (openingHours == null) return null;
         return Arrays.stream(openingHours
                 .replaceAll("Mo", "Пн")

@@ -2,7 +2,6 @@ package feo.health.auth_service.service.auth;
 
 import auth.Auth;
 import auth.AuthServiceGrpc;
-import com.google.common.hash.Hashing;
 import com.google.protobuf.Empty;
 import feo.health.auth_service.model.dto.SignInRequest;
 import feo.health.auth_service.model.dto.SignUpRequest;
@@ -15,98 +14,98 @@ import feo.health.auth_service.repository.UserCredentialsRepository;
 import feo.health.auth_service.service.jwt.JwtService;
 import feo.health.auth_service.service.user.UserService;
 import io.grpc.stub.StreamObserver;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
+// AuthServiceImpl.java
 @GrpcService
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthServiceImpl extends AuthServiceGrpc.AuthServiceImplBase implements AuthService {
 
     private final UserService userService;
     private final JwtService jwtService;
     private final RefreshTokenRepository refreshTokenRepository;
-
-    private UserCredentialsRepository userCredentialsRepository;
-
-    private PasswordEncoder passwordEncoder;
+    private final UserCredentialsRepository userCredentialsRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public void changeUserPassword(Auth.ChangeUserPasswordRequest request, StreamObserver<Empty> responseObserver) {
-
-        UserCredentials userCredentials = userCredentialsRepository.findById(request.getUserId())
-                .orElseThrow(EntityNotFoundException::new);
-
-        if (!passwordEncoder.matches(request.getOldPassword(), userCredentials.getPasswordEncoded()))
+        // This path is gRPC-internal. Keep it fast, wrap blocking in virtual thread via @Transactional + VT.
+        UserCredentials creds = userCredentialsRepository.findById(request.getUserId())
+                .orElseThrow(jakarta.persistence.EntityNotFoundException::new);
+        if (!passwordEncoder.matches(request.getOldPassword(), creds.getPasswordEncoded()))
             throw new RuntimeException("Wrong password.");
-
-        userCredentials.setPasswordEncoded(passwordEncoder.encode(request.getNewPassword()));
-        userCredentialsRepository.save(userCredentials);
-
+        creds.setPasswordEncoded(passwordEncoder.encode(request.getNewPassword()));
+        userCredentialsRepository.save(creds);
         responseObserver.onNext(Empty.getDefaultInstance());
         responseObserver.onCompleted();
     }
 
-    @Override
+    @Async
     @Transactional
-    public void signUp(SignUpRequest request) {
-
-        if (userService.getUserIdByEmailIfExists(request.getEmail()).isPresent())
-            throw new RuntimeException("User already exists.");
-
-        userService.saveUser(request);
+    @Override
+    public CompletableFuture<Void> signUp(SignUpRequest request) {
+        return userService.getUserIdByEmailIfExists(request.getEmail())
+                .thenCompose(opt -> {
+                    if (opt.isPresent()) {
+                        CompletableFuture<Void> f = new CompletableFuture<>();
+                        f.completeExceptionally(new RuntimeException("User already exists."));
+                        return f;
+                    }
+                    return userService.saveUser(request);
+                });
     }
 
+    @Async
     @Override
-    public TokenResponse signIn(SignInRequest request) {
-
-        Optional<Long> userIdOptional = userService.getUserIdByEmailIfExists(request.getEmail());
-
-        if (userIdOptional.isEmpty())
-            throw new RuntimeException("User does not exist.");
-
-        Long userId = userIdOptional.get();
-        UserCredentials userCredentials = userCredentialsRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User does not exist."));
-
-        if (passwordEncoder.matches(request.getPassword(), userCredentials.getPasswordEncoded()))
-            return issueTokens(userId, request.getEmail());
-
-        throw new RuntimeException("Incorrect password.");
+    public CompletableFuture<TokenResponse> signIn(SignInRequest request) {
+        return userService.getUserIdByEmailIfExists(request.getEmail())
+                .thenCompose(opt -> {
+                    if (opt.isEmpty()) {
+                        CompletableFuture<TokenResponse> f = new CompletableFuture<>();
+                        f.completeExceptionally(new RuntimeException("User does not exist."));
+                        return f;
+                    }
+                    Long userId = opt.get();
+                    return CompletableFuture.supplyAsync(() ->
+                            userCredentialsRepository.findById(userId)
+                                    .orElseThrow(() -> new RuntimeException("User does not exist."))
+                    ).thenApply(creds -> {
+                        if (passwordEncoder.matches(request.getPassword(), creds.getPasswordEncoded()))
+                            return issueTokens(userId, request.getEmail());
+                        throw new RuntimeException("Incorrect password.");
+                    });
+                });
     }
 
-    @Override
+    @Async
     @Transactional
-    public TokenResponse refresh(String refreshToken) {
-
-        ParsedToken parsed = jwtService.parseRefresh(refreshToken);
-
-        RefreshToken stored = refreshTokenRepository.findByIdAndUserId(parsed.jti(), parsed.userId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-
-        if (stored.isRevoked() || stored.getExpiresAt().isBefore(Instant.now())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-
-        stored.setRevoked(true);
-
-        return issueTokens(parsed.userId(), parsed.email());
+    @Override
+    public CompletableFuture<TokenResponse> refresh(String refreshToken) {
+        return CompletableFuture.supplyAsync(() -> {
+            ParsedToken parsed = jwtService.parseRefresh(refreshToken);
+            RefreshToken stored = refreshTokenRepository.findByIdAndUserId(parsed.jti(), parsed.userId())
+                    .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(HttpStatus.UNAUTHORIZED));
+            if (stored.isRevoked() || stored.getExpiresAt().isBefore(Instant.now())) {
+                throw new org.springframework.web.server.ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            }
+            stored.setRevoked(true);
+            // JPA will flush on transaction commit
+            return issueTokens(parsed.userId(), parsed.email());
+        });
     }
 
-    @Transactional
     private TokenResponse issueTokens(Long userId, String email) {
-
         String access = jwtService.generateAccessToken(userId, email);
         String jti = UUID.randomUUID().toString();
         String refresh = jwtService.generateRefreshToken(userId, email, jti);
@@ -114,7 +113,8 @@ public class AuthServiceImpl extends AuthServiceGrpc.AuthServiceImplBase impleme
         RefreshToken rt = new RefreshToken();
         rt.setId(jti);
         rt.setUserId(userId);
-        rt.setTokenHash(Hashing.sha256().hashString(refresh, StandardCharsets.UTF_8).toString());
+        rt.setTokenHash(com.google.common.hash.Hashing.sha256()
+                .hashString(refresh, java.nio.charset.StandardCharsets.UTF_8).toString());
         rt.setExpiresAt(Instant.now().plus(7, ChronoUnit.DAYS));
         rt.setRevoked(false);
         rt.setCreatedAt(Instant.now());

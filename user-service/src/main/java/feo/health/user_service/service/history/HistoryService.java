@@ -5,9 +5,11 @@ import feo.health.user_service.model.dto.DeleteHistoryItemRequest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public interface HistoryService {
-    void deleteHistoryItem(Long userId, DeleteHistoryItemRequest request);
-    Map<String, List<CatalogItemDto>> getHistory(Long userId);
+    CompletableFuture<Void> deleteHistoryItem(Long userId, DeleteHistoryItemRequest request);
+    CompletableFuture<Map<String, List<CatalogItemDto>>> getHistory(Long userId);
 }
+
 

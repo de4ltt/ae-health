@@ -15,12 +15,14 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
+import org.springframework.scheduling.annotation.Async;
 import user.User;
 import user.UserServiceGrpc;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @GrpcService
 @RequiredArgsConstructor
@@ -28,15 +30,13 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-
     private final HistoryRepository historyRepository;
 
     @GrpcClient("auth-service")
-    private AuthServiceGrpc.AuthServiceBlockingStub stub;
+    private AuthServiceGrpc.AuthServiceFutureStub stub;
 
     @Override
     public void saveUser(User.SaveUserRequest request, StreamObserver<User.UserIdResponse> responseObserver) {
-
         var user = userRepository.save(userMapper.toEntity(request));
 
         User.UserIdResponse response = User.UserIdResponse.newBuilder()
@@ -49,17 +49,13 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
 
     @Override
     public void getUserIdByEmailIfExists(User.UserByEmailRequest request, StreamObserver<User.UserIdResponse> responseObserver) {
+        Optional<feo.health.user_service.model.entity.User> u = userRepository.findByEmail(request.getEmail());
 
-        String email = request.getEmail();
-        Optional<feo.health.user_service.model.entity.User> userOptional = userRepository.findByEmail(email);
+        long id = u.map(feo.health.user_service.model.entity.User::getId).orElse(-1L);
 
-        long userId = userOptional.isPresent() ? userOptional.get().getId() : -1L;
-
-        User.UserIdResponse response = User.UserIdResponse.newBuilder()
-                .setUserId(userId)
-                .build();
-
-        responseObserver.onNext(response);
+        responseObserver.onNext(
+                User.UserIdResponse.newBuilder().setUserId(id).build()
+        );
         responseObserver.onCompleted();
     }
 
@@ -69,14 +65,14 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
         var user = userRepository.findById(request.getUserId())
                 .orElseThrow(EntityNotFoundException::new);
 
+        HistoryId id = new HistoryId(
+                user.getId(),
+                request.getItemId(),
+                request.getItemType(),
+                LocalDateTime.now()
+        );
+
         History history = new History();
-
-        HistoryId id = new HistoryId();
-        id.setUserId(user.getId());
-        id.setItemId(request.getItemId());
-        id.setType(request.getItemType());
-        id.setDateTime(LocalDateTime.now());
-
         history.setId(id);
         history.setUser(user);
 
@@ -89,55 +85,72 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
     @Override
     public void getUserParamsById(User.GetUserParamsByIdRequest request, StreamObserver<User.GetUserParamsByIdResponse> responseObserver) {
 
-        Long userId = request.getUserId();
-        var user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        var user = userRepository.findById(request.getUserId())
+                .orElseThrow(EntityNotFoundException::new);
 
         int age = user.getDateOfBirth().toLocalDate().until(LocalDate.now()).getYears();
-        Double weight = user.getWeightKg();
-        Integer height = user.getHeightCm();
 
-        User.GetUserParamsByIdResponse.Builder responseBuilder = User.GetUserParamsByIdResponse.newBuilder()
-                .setAge(age);
+        var b = User.GetUserParamsByIdResponse.newBuilder().setAge(age);
 
-        if (weight != null)
-            responseBuilder.setWeightKg(weight);
+        if (user.getWeightKg() != null) b.setWeightKg(user.getWeightKg());
+        if (user.getHeightCm() != null) b.setHeightCm(user.getHeightCm());
 
-        if (height != null)
-            responseBuilder.setHeightCm(height);
-
-        User.GetUserParamsByIdResponse response = responseBuilder.build();
-
-        responseObserver.onNext(response);
+        responseObserver.onNext(b.build());
         responseObserver.onCompleted();
     }
 
+    @Async
     @Override
-    public UserDto getUserInfo(Long userId) {
-        return userMapper.toDto(userRepository.findById(userId).orElseThrow(EntityNotFoundException::new));
+    public CompletableFuture<UserDto> getUserInfo(Long userId) {
+        return CompletableFuture.supplyAsync(() ->
+                userMapper.toDto(
+                        userRepository.findById(userId).orElseThrow(EntityNotFoundException::new)
+                )
+        );
     }
 
+    @Async
     @Override
-    public UserDto updateUserInfo(Long userId, UserDto userDto) {
-
-        var user = userMapper.toEntity(userDto);
-        user.setId(userId);
-
-        return userMapper.toDto(userRepository.save(user));
+    public CompletableFuture<UserDto> updateUserInfo(Long userId, UserDto userDto) {
+        return CompletableFuture.supplyAsync(() -> {
+            var entity = userMapper.toEntity(userDto);
+            entity.setId(userId);
+            return userMapper.toDto(userRepository.save(entity));
+        });
     }
 
+    @Async
     @Override
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public CompletableFuture<Void> deleteUser(Long id) {
+        return CompletableFuture.runAsync(() -> userRepository.deleteById(id));
     }
 
+    @Async
     @Override
-    public void changePassword(Long userId, ChangePasswordRequest request) {
-        Auth.ChangeUserPasswordRequest changeUserPasswordRequest = Auth.ChangeUserPasswordRequest.newBuilder()
+    public CompletableFuture<Void> changePassword(Long userId, ChangePasswordRequest req) {
+        Auth.ChangeUserPasswordRequest grpcReq = Auth.ChangeUserPasswordRequest.newBuilder()
                 .setUserId(userId)
-                .setOldPassword(request.getOldPassword())
-                .setNewPassword(request.getNewPassword())
+                .setOldPassword(req.getOldPassword())
+                .setNewPassword(req.getNewPassword())
                 .build();
 
-        stub.changeUserPassword(changeUserPasswordRequest);
+        return toCF(stub.changeUserPassword(grpcReq)).thenApply(v -> null);
+    }
+
+
+    private static <T> CompletableFuture<T> toCF(
+            com.google.common.util.concurrent.ListenableFuture<T> lf
+    ) {
+        CompletableFuture<T> cf = new CompletableFuture<>();
+        com.google.common.util.concurrent.Futures.addCallback(
+                lf,
+                new com.google.common.util.concurrent.FutureCallback<>() {
+                    @Override public void onSuccess(T r) { cf.complete(r); }
+                    @Override public void onFailure(Throwable t) { cf.completeExceptionally(t); }
+                },
+                com.google.common.util.concurrent.MoreExecutors.directExecutor()
+        );
+        return cf;
     }
 }
+

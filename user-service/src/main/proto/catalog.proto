@@ -30,4 +30,5 @@ message CatalogItem {
     string type = 2;
     string link = 3;
     string image_uri = 4;
+    int64 id = 5;
 }

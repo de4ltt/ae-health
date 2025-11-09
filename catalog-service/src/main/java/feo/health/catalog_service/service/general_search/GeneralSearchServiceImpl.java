@@ -10,40 +10,44 @@ import feo.health.catalog_service.model.dto.SearchDto;
 import feo.health.catalog_service.model.dto.ServiceDto;
 import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @AllArgsConstructor
 public class GeneralSearchServiceImpl implements GeneralSearchService {
 
     private final GeneralItemsHtmlClient generalItemsHtmlClient;
-
     private final DoctorHtmlParser doctorHtmlParser;
     private final ServiceHtmlParser serviceHtmlParser;
     private final ClinicHtmlParser clinicHtmlParser;
 
     @Override
-    public SearchDto search(String query, Boolean located) {
-        try {
-            Document generalItemsDocument = generalItemsHtmlClient.getGeneralItemsPage(query);
-            SearchDto result = new SearchDto();
+    @Async
+    public CompletableFuture<SearchDto> search(String query, Boolean located) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Document generalItemsDocument = generalItemsHtmlClient.getGeneralItemsPage(query);
+                SearchDto result = new SearchDto();
 
-            List<DoctorDto> doctorDtos = doctorHtmlParser.parseDoctorsAndSpecialities(generalItemsDocument);
-            List<ServiceDto> serviceDtos = serviceHtmlParser.parseServices(generalItemsDocument);
-            List<ClinicDto> clinicDtos = clinicHtmlParser.parseClinicsAndClinicTypes(generalItemsDocument);
+                List<DoctorDto> doctorDtos = doctorHtmlParser.parseDoctorsAndSpecialities(generalItemsDocument);
+                List<ServiceDto> serviceDtos = serviceHtmlParser.parseServices(generalItemsDocument);
+                List<ClinicDto> clinicDtos = clinicHtmlParser.parseClinicsAndClinicTypes(generalItemsDocument);
 
-            clinicDtos = !located ? ClinicDto.removeLocationFromNames(clinicDtos) : clinicDtos;
+                clinicDtos = located ? clinicDtos : ClinicDto.removeLocationFromNames(clinicDtos);
 
-            result.setDoctors(doctorDtos);
-            result.setServices(serviceDtos);
-            result.setClinics(clinicDtos);
+                result.setDoctors(doctorDtos);
+                result.setServices(serviceDtos);
+                result.setClinics(clinicDtos);
 
-            return result;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+                return result;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

@@ -5,9 +5,11 @@ import feo.health.user_service.model.dto.CatalogItemRequest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public interface FavouriteService {
-    void addFavourite(Long userId, CatalogItemRequest item);
-    void deleteFavourite(Long userId, CatalogItemRequest item);
-    Map<String, List<CatalogItemDto>>  getFavourites(Long userId);
+    CompletableFuture<Void> addFavourite(Long userId, CatalogItemRequest item);
+    CompletableFuture<Void> deleteFavourite(Long userId, CatalogItemRequest item);
+    CompletableFuture<Map<String, List<CatalogItemDto>>> getFavourites(Long userId);
 }
+

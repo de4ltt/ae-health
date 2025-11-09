@@ -2,71 +2,82 @@ package feo.health.gateway.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import javax.crypto.SecretKey;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 @Component
-public class JwtAuthenticationFilter implements GlobalFilter {
+public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAuthenticationFilter.Config> {
 
-    private final SecretKey accessSecretKey;
+    @Value("${jwt.public-key}")
+    private String publicKeyPem;
 
-    public JwtAuthenticationFilter(@Value("${jwt.secret}") String secret) {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        this.accessSecretKey = Keys.hmacShaKeyFor(keyBytes);
+    public JwtAuthenticationFilter() {
+        super(Config.class);
     }
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String path = exchange.getRequest().getURI().getPath();
-
-        if (path.startsWith("/api/v1/auth"))
-            return chain.filter(exchange);
-
-        String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }
-
-        String token = authHeader.substring(7);
-
-        try {
-            Claims claims = Jwts.parser()
-                    .verifyWith(accessSecretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-
-            String type = claims.get("type", String.class);
-            if (!"access".equals(type)) {
-                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                return exchange.getResponse().setComplete();
+    public GatewayFilter apply(Config config) {
+        return (exchange, chain) -> {
+            ServerHttpRequest request = exchange.getRequest();
+            if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+                return onError(exchange, "No Authorization header", HttpStatus.UNAUTHORIZED);
             }
 
-            Long userId = claims.get("userId", Long.class);
-            String email = claims.getSubject();
+            String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return onError(exchange, "Invalid Authorization header", HttpStatus.UNAUTHORIZED);
+            }
 
-            exchange = exchange.mutate()
-                    .request(r -> r
-                            .header("X-User-Id", String.valueOf(userId))
-                    )
-                    .build();
+            String token = authHeader.substring(7);
+            try {
+                PublicKey publicKey = getPublicKey();
+                Claims claims = Jwts.parser()
+                        .verifyWith(publicKey)
+                        .build()
+                        .parseSignedClaims(token)
+                        .getPayload();
 
-        } catch (Exception e) {
-            e.printStackTrace(System.out);
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }
+                ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                        .header("X-User-Id", claims.getSubject())
+                        .build();
 
-        return chain.filter(exchange);
+                return chain.filter(exchange.mutate().request(mutatedRequest).build());
+            } catch (Exception e) {
+                return onError(exchange, "Invalid JWT token: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+            }
+        };
     }
+
+    private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(httpStatus);
+        return response.setComplete();
+    }
+
+    private PublicKey getPublicKey() throws Exception {
+        String cleanedKey = publicKeyPem
+                .replace("-----BEGIN PUBLIC KEY-----", "")
+                .replace("-----END PUBLIC KEY-----", "")
+                .replaceAll("\\s+", "");
+
+        byte[] decoded = Base64.getDecoder().decode(cleanedKey);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decoded);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        return keyFactory.generatePublic(keySpec);
+    }
+
+    public static class Config { }
 }

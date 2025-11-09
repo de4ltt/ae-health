@@ -9,58 +9,69 @@ import feo.health.catalog_service.service.user.UserService;
 import jakarta.persistence.EntityExistsException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import user.User;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @AllArgsConstructor
 public class PharmacyServiceImpl implements PharmacyService {
 
-    private final RestTemplate restTemplate;
-
+    private final WebClient webClient;
     private final UserService userService;
-
     private final PharmacyMapper pharmacyMapper;
     private final PharmacyRepository pharmacyRepository;
 
-    public List<PharmacyDto> searchPharmacies(Integer radius, Double lat, Double lon) {
+    @Override
+    @Async
+    public CompletableFuture<List<PharmacyDto>> searchPharmacies(Integer radius, Double lat, Double lon) {
 
         String query = String.format(
                 Locale.US,
                 "[out:json];node[amenity=pharmacy](around:%d,%.6f,%.6f);out;",
                 radius, lat, lon
         );
-
         String overpassUrl = "https://overpass-api.de/api/interpreter?data=%s".formatted(query);
 
-        ResponseEntity<OverpassPharmaciesResponse> response = restTemplate
-                .getForEntity(overpassUrl, OverpassPharmaciesResponse.class);
-
-        return filterIncorrectPharmacies(pharmacyMapper.toDtoFromOverpassDto(response.getBody()));
+        return webClient.get()
+                .uri(overpassUrl)
+                .retrieve()
+                .bodyToMono(OverpassPharmaciesResponse.class)
+                .map(PharmacyMapper::toDtoFromOverpassDto)
+                .map(this::filterIncorrectPharmacies)
+                .toFuture();
     }
 
     @Override
+    @Async
     @Transactional
-    public void visitPharmacy(PharmacyDto pharmacyDto, Long userId) {
-        Pharmacy pharmacy = pharmacyRepository.save(pharmacyMapper.toEntity(pharmacyDto));
-        User.SaveToHistoryRequest request = pharmacyMapper.toHistoryRequest(pharmacy, userId);
-        userService.saveToHistory(request);
+    public CompletableFuture<Void> visitPharmacy(PharmacyDto pharmacyDto, Long userId) {
+        return CompletableFuture.runAsync(() -> {
+            Pharmacy pharmacy = pharmacyRepository.save(pharmacyMapper.toEntity(pharmacyDto));
+            User.SaveToHistoryRequest request = pharmacyMapper.toHistoryRequest(pharmacy, userId);
+            userService.saveToHistory(request);
+        });
     }
 
     @Override
-    public PharmacyDto getPharmacyById(Long id) {
-        return pharmacyMapper.toDto(pharmacyRepository.findById(id).orElseThrow(EntityExistsException::new));
+    @Async
+    public CompletableFuture<PharmacyDto> getPharmacyById(Long id) {
+        return CompletableFuture.supplyAsync(() ->
+                pharmacyMapper.toDto(pharmacyRepository.findById(id).orElseThrow(EntityExistsException::new))
+        );
     }
 
     private List<PharmacyDto> filterIncorrectPharmacies(List<PharmacyDto> pharmacyDtos) {
-        return pharmacyDtos.stream().filter(pharmacyDto ->
-                pharmacyDto.getName() != null && !pharmacyDto.getName().isBlank()
-                        && pharmacyDto.getAddress() != null && !pharmacyDto.getAddress().isBlank()
-        ).toList();
+        return pharmacyDtos.stream()
+                .filter(dto -> dto.getName() != null && !dto.getName().isBlank()
+                        && dto.getAddress() != null && !dto.getAddress().isBlank())
+                .toList();
     }
 }

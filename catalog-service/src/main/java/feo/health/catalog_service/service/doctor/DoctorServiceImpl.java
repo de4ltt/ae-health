@@ -16,6 +16,7 @@ import feo.health.catalog_service.repository.DoctorRepository;
 import feo.health.catalog_service.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,105 +24,112 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @AllArgsConstructor
 public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
-
     private final DoctorMapper doctorMapper;
-
     private final DoctorHtmlClient doctorHtmlClient;
     private final DoctorHtmlParser doctorHtmlParser;
-
     private final ClinicHtmlClient clinicHtmlClient;
-
     private final ReviewsHtmlClient reviewsHtmlClient;
     private final ReviewsHtmlParser reviewsHtmlParser;
-
     private final ServiceHtmlParser serviceHtmlParser;
-
     private final ClinicHtmlParser clinicHtmlParser;
-
     private final UserService userService;
 
     @Override
-    public List<DoctorDto> searchDoctors(String query) {
-        try {
-            List<DoctorDto> result = new ArrayList<>(List.of());
-
-            final Document specialitiesDocument = doctorHtmlClient.getDoctorSpecialitiesPage(query);
-            final Document doctorsDocument = doctorHtmlClient.getDoctorsPage(query);
-
-            result.addAll(doctorHtmlParser.parseDoctorSpecialities(specialitiesDocument));
-            result.addAll(doctorHtmlParser.parseDoctors(doctorsDocument));
-
-            return result;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public List<DoctorDto> getDoctorsBySpeciality(String specialityUri) {
-        try {
-            final Document doctorsDocument = doctorHtmlClient.getDoctorsBySpecialityPage(specialityUri);
-            return doctorHtmlParser.parseDoctors(doctorsDocument);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public List<DoctorDto> getClinicDoctors(String clinicUri) {
-        try {
-            Document clinicDoctorsDocument = clinicHtmlClient.getClinicDoctorsPage(clinicUri);
-            return doctorHtmlParser.parseClinicDoctors(clinicDoctorsDocument);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public List<ClinicDto> getDoctorClinics(String uri) {
-        Document doctorDocument = doctorHtmlClient.getDoctorClinicsPage(uri);
-        return clinicHtmlParser.parseDoctorClinics(doctorDocument);
-    }
-
-    @Override
-    @Transactional
-    public DoctorDto getDoctorInfo(String doctorUri, Long userId) {
-        try {
-
-            Optional<Doctor> doctorOptional = doctorRepository.findByLink(doctorUri);
-
-            if (doctorOptional.isPresent()) {
-                Doctor doctor = doctorOptional.get();
-                userService.saveToHistory(doctorMapper.toHistoryRequest(doctor, userId));
-                return doctorMapper.toDto(doctor);
-            }
-
-            Document doctorDocument = doctorHtmlClient.getDoctorPage(doctorUri);
-            DoctorDto doctorDto = doctorHtmlParser.parseDoctor(doctorDocument);
-
+    @Async
+    public CompletableFuture<List<DoctorDto>> searchDoctors(String query) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
-                Document doctorReviewsDocument = reviewsHtmlClient.getDoctorReviewsPage(doctorUri);
-                List<ReviewDto> reviews = reviewsHtmlParser.parseDoctorReviews(doctorReviewsDocument);
-                doctorDto.setReviews(reviews);
-                doctorDto.setRating(DoctorDto.calculateDoctorRating(reviews));
-            } catch (Exception ignored) {}
+                List<DoctorDto> result = new ArrayList<>();
+                Document specialitiesDocument = doctorHtmlClient.getDoctorSpecialitiesPage(query);
+                Document doctorsDocument = doctorHtmlClient.getDoctorsPage(query);
 
-            doctorDto.setServices(serviceHtmlParser.parseDoctorServices(doctorDocument));
-            doctorDto.setLink(doctorUri);
-            doctorDto.setItemType("doctor");
+                result.addAll(doctorHtmlParser.parseDoctorSpecialities(specialitiesDocument));
+                result.addAll(doctorHtmlParser.parseDoctors(doctorsDocument));
 
-            Doctor doctor = doctorRepository.save(doctorMapper.toEntity(doctorDto));
-            userService.saveToHistory(doctorMapper.toHistoryRequest(doctor, userId));
+                return result;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 
-            return doctorDto;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    @Async
+    public CompletableFuture<List<DoctorDto>> getDoctorsBySpeciality(String specialityUri) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Document doctorsDocument = doctorHtmlClient.getDoctorsBySpecialityPage(specialityUri);
+                return doctorHtmlParser.parseDoctors(doctorsDocument);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Override
+    @Async
+    public CompletableFuture<List<DoctorDto>> getClinicDoctors(String clinicUri) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Document clinicDoctorsDocument = clinicHtmlClient.getClinicDoctorsPage(clinicUri);
+                return doctorHtmlParser.parseClinicDoctors(clinicDoctorsDocument);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Override
+    @Async
+    public CompletableFuture<List<ClinicDto>> getDoctorClinics(String uri) {
+        return CompletableFuture.supplyAsync(() -> {
+            Document doctorDocument = doctorHtmlClient.getDoctorClinicsPage(uri);
+            return clinicHtmlParser.parseDoctorClinics(doctorDocument);
+        });
+    }
+
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<DoctorDto> getDoctorInfo(String doctorUri, Long userId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Optional<Doctor> doctorOptional = doctorRepository.findByLink(doctorUri);
+
+                if (doctorOptional.isPresent()) {
+                    Doctor doctor = doctorOptional.get();
+                    userService.saveToHistory(doctorMapper.toHistoryRequest(doctor, userId));
+                    return doctorMapper.toDto(doctor);
+                }
+
+                Document doctorDocument = doctorHtmlClient.getDoctorPage(doctorUri);
+                DoctorDto doctorDto = doctorHtmlParser.parseDoctor(doctorDocument);
+
+                try {
+                    Document doctorReviewsDocument = reviewsHtmlClient.getDoctorReviewsPage(doctorUri);
+                    List<ReviewDto> reviews = reviewsHtmlParser.parseDoctorReviews(doctorReviewsDocument);
+                    doctorDto.setReviews(reviews);
+                    doctorDto.setRating(DoctorDto.calculateDoctorRating(reviews));
+                } catch (Exception ignored) {}
+
+                doctorDto.setServices(serviceHtmlParser.parseDoctorServices(doctorDocument));
+                doctorDto.setLink(doctorUri);
+                doctorDto.setItemType("doctor");
+
+                Doctor doctor = doctorRepository.save(doctorMapper.toEntity(doctorDto));
+                userService.saveToHistory(doctorMapper.toHistoryRequest(doctor, userId));
+
+                return doctorDto;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

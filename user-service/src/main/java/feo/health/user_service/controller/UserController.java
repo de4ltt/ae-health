@@ -7,40 +7,44 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 @RequestMapping("/api/v1/user")
 @AllArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserService service;
 
     @GetMapping
-    ResponseEntity<UserDto> getUserInfo(@RequestHeader("X-User-Id") Long userId) {
-        return ResponseEntity.ok(userService.getUserInfo(userId));
+    CompletableFuture<ResponseEntity<UserDto>> getUserInfo(
+            @RequestHeader("X-User-Id") Long userId
+    ) {
+        return service.getUserInfo(userId).thenApply(ResponseEntity::ok);
     }
 
     @PutMapping
-    ResponseEntity<UserDto> updateUserInfo(
+    CompletableFuture<ResponseEntity<UserDto>> updateUserInfo(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestBody UserDto newData
+            @RequestBody UserDto dto
     ) {
-        return ResponseEntity.ok(userService.updateUserInfo(userId, newData));
+        return service.updateUserInfo(userId, dto).thenApply(ResponseEntity::ok);
     }
 
     @DeleteMapping
-    ResponseEntity<Void> deleteUser(
+    CompletableFuture<ResponseEntity<Void>> deleteUser(
             @RequestHeader("X-User-Id") Long userId
     ) {
-        userService.deleteUser(userId);
-        return ResponseEntity.ok().build();
+        return service.deleteUser(userId).thenApply(v -> ResponseEntity.ok().build());
     }
 
     @PostMapping("/password")
-    ResponseEntity<Void> changePassword(
+    CompletableFuture<ResponseEntity<Void>> changePassword(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestBody ChangePasswordRequest request
+            @RequestBody ChangePasswordRequest req
     ) {
-        userService.changePassword(userId, request);
-        return ResponseEntity.ok().build();
+        return service.changePassword(userId, req)
+                .thenApply(v -> ResponseEntity.ok().build());
     }
 }
+

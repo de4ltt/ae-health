@@ -56,6 +56,7 @@ public class ClinicMapper {
                 .setLink(clinic.getLink())
                 .setImageUri(clinic.getImageUri())
                 .setType("clinic")
+                .setId(clinic.getId())
                 .build();
     }
 

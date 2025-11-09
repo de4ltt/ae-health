@@ -1,5 +1,9 @@
 server:
   port: ${PORT_CATALOG:8083}
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 20
 
 grpc:
   server:
@@ -10,6 +14,8 @@ grpc:
       negotiation-type: plaintext
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: ${DB_URL_CATALOG}
     username: ${DB_USER}
@@ -20,3 +26,13 @@ spring:
     show-sql: true
   application:
     name: catalog-service
+  threads:
+    virtual:
+      enabled: true
+  task:
+    execution:
+      pool:
+        core-size: 20
+        max-size: 200
+        queue-capacity: 500
+        keep-alive: 60s

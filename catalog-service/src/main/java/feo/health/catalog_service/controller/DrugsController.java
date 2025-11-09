@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/catalog/drugs")
@@ -16,12 +17,14 @@ public class DrugsController {
     final DrugService drugService;
 
     @GetMapping
-    public ResponseEntity<List<DrugDto>> searchDrugs(@RequestParam String q) {
-        return ResponseEntity.ok(drugService.searchDrugs(q));
+    public CompletableFuture<ResponseEntity<List<DrugDto>>> searchDrugs(@RequestParam String q) {
+        return drugService.searchDrugs(q)
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{uri}")
-    public ResponseEntity<DrugDto> getDrugInfo(@PathVariable String uri) {
-        return ResponseEntity.ok(drugService.getDrugInfo(uri));
+    public CompletableFuture<ResponseEntity<DrugDto>> getDrugInfo(@PathVariable String uri) {
+        return drugService.getDrugInfo(uri)
+                .thenApply(ResponseEntity::ok);
     }
 }

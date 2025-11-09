@@ -7,8 +7,11 @@ import feo.health.ai_service.model.response.DiseaseGuessResponse;
 import feo.health.ai_service.model.response.ProcedureDescriptionResponse;
 import feo.health.ai_service.model.response.SuggestionResponse;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface AIService {
-    DiseaseGuessResponse getDiseaseGuess(Long userId, DiseaseGuessRequest request);
-    ProcedureDescriptionResponse getProcedureDescription(Long userId, ProcedureDescriptionRequest request);
-    SuggestionResponse getSuggestion(Long userId, SuggestionRequest request);
+    CompletableFuture<DiseaseGuessResponse> getDiseaseGuess(Long userId, DiseaseGuessRequest req);
+    CompletableFuture<ProcedureDescriptionResponse> getProcedureDescription(Long userId, ProcedureDescriptionRequest req);
+    CompletableFuture<SuggestionResponse> getSuggestion(Long userId, SuggestionRequest req);
 }
+

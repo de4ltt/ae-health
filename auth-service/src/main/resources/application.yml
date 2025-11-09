@@ -1,5 +1,7 @@
 server:
-  port: ${PORT_AUTH:8081}
+  port: ${PORT_AUTH:8441}
+  ssl:
+    enabled: false
 
 grpc:
   server:
@@ -10,11 +12,12 @@ grpc:
       negotiation-type: plaintext
 
 jwt:
+  issuer: ${JWT_ISSUER}
+  public-key: ${JWT_PUBLIC_KEY}
+  private-key: ${JWT_PRIVATE_KEY}
   access:
-    secret: ${JWT_ACCESS}
     ttl-minutes: ${JWT_ACC_TTL_MINS}
   refresh:
-    secret: ${JWT_REFRESH}
     ttl-days: ${JWT_REF_TTL_DAYS}
 
 spring:

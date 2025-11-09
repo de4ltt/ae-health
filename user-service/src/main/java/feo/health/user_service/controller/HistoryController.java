@@ -9,27 +9,27 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/user/history")
 @AllArgsConstructor
 public class HistoryController {
 
-    private final HistoryService historyService;
+    private final HistoryService service;
 
     @DeleteMapping
-    ResponseEntity<Void> deleteHistoryItem(
+    CompletableFuture<ResponseEntity<Void>> deleteHistory(
             @RequestHeader("X-User-Id") Long userId,
             @RequestBody DeleteHistoryItemRequest request
     ) {
-        historyService.deleteHistoryItem(userId, request);
-        return ResponseEntity.ok().build();
+        return service.deleteHistoryItem(userId, request).thenApply(v -> ResponseEntity.ok().build());
     }
 
     @GetMapping
-    ResponseEntity<Map<String, List<CatalogItemDto>>> getHistory(
+    CompletableFuture<ResponseEntity<Map<String, List<CatalogItemDto>>>> getHistory(
             @RequestHeader("X-User-Id") Long userId
     ) {
-        return ResponseEntity.ok(historyService.getHistory(userId));
+        return service.getHistory(userId).thenApply(ResponseEntity::ok);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/catalog/pharmacies")
@@ -16,26 +17,27 @@ public class PharmacyController {
     private final PharmacyService pharmacyService;
 
     @GetMapping
-    public ResponseEntity<List<PharmacyDto>> searchPharmacies(
+    public CompletableFuture<ResponseEntity<List<PharmacyDto>>> searchPharmacies(
             @RequestParam Double lat,
             @RequestParam Double lon,
             @RequestParam(defaultValue = "500") Integer radius
     ) {
-        return ResponseEntity.ok(pharmacyService.searchPharmacies(radius, lat, lon));
+        return pharmacyService.searchPharmacies(radius, lat, lon)
+                .thenApply(ResponseEntity::ok);
     }
 
     @PostMapping("/visit")
-    public ResponseEntity<Void> visitPharmacy(
+    public CompletableFuture<ResponseEntity<Void>> visitPharmacy(
             @RequestHeader("X-User-Id") Long userId,
             @RequestBody PharmacyDto pharmacyDto
     ) {
-        pharmacyService.visitPharmacy(pharmacyDto, userId);
-        return ResponseEntity.ok().build();
+        return pharmacyService.visitPharmacy(pharmacyDto, userId)
+                .thenApply(v -> ResponseEntity.ok().build());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PharmacyDto> getPharmacyById(
-            @PathVariable Long id
-    ) { return ResponseEntity.ok(pharmacyService.getPharmacyById(id)); }
+    public CompletableFuture<ResponseEntity<PharmacyDto>> getPharmacyById(@PathVariable Long id) {
+        return pharmacyService.getPharmacyById(id)
+                .thenApply(ResponseEntity::ok);
+    }
 }
-

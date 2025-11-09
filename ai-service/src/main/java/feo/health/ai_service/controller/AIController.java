@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 @RequestMapping("/api/v1/ai")
 @AllArgsConstructor
@@ -18,21 +20,31 @@ public class AIController {
 
     private final AIService aiService;
 
-    @GetMapping("/disease")
-    ResponseEntity<DiseaseGuessResponse> getDiseaseGuess(
+    @PostMapping("/disease")
+    public CompletableFuture<ResponseEntity<DiseaseGuessResponse>> getDiseaseGuess(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestBody DiseaseGuessRequest request
-    ) { return ResponseEntity.ok(aiService.getDiseaseGuess(userId, request)); }
+            @RequestBody DiseaseGuessRequest req
+    ) {
+        return aiService.getDiseaseGuess(userId, req)
+                .thenApply(ResponseEntity::ok);
+    }
 
-    @GetMapping("/suggestion")
-    ResponseEntity<SuggestionResponse> getSuggestion(
+    @PostMapping("/suggestion")
+    public CompletableFuture<ResponseEntity<SuggestionResponse>> getSuggestion(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestBody SuggestionRequest request
-    ) { return ResponseEntity.ok(aiService.getSuggestion(userId, request)); }
+            @RequestBody SuggestionRequest req
+    ) {
+        return aiService.getSuggestion(userId, req)
+                .thenApply(ResponseEntity::ok);
+    }
 
-    @GetMapping("/procedure")
-    ResponseEntity<ProcedureDescriptionResponse> getProcedureDescription(
+    @PostMapping("/procedure")
+    public CompletableFuture<ResponseEntity<ProcedureDescriptionResponse>> getProcedureDescription(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestBody ProcedureDescriptionRequest request
-    ) { return ResponseEntity.ok(aiService.getProcedureDescription(userId, request)); }
+            @RequestBody ProcedureDescriptionRequest req
+    ) {
+        return aiService.getProcedureDescription(userId, req)
+                .thenApply(ResponseEntity::ok);
+    }
 }
+

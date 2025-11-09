@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/catalog/doctors")
@@ -17,25 +18,29 @@ public class DoctorController {
     private final DoctorService doctorService;
 
     @GetMapping
-    public ResponseEntity<List<DoctorDto>> searchDoctors(@RequestParam(required = false) String q) {
-        return ResponseEntity.ok(doctorService.searchDoctors(q));
+    public CompletableFuture<ResponseEntity<List<DoctorDto>>> searchDoctors(@RequestParam(required = false) String q) {
+        return doctorService.searchDoctors(q)
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/speciality/{uri}")
-    public ResponseEntity<List<DoctorDto>> getBySpeciality(@PathVariable String uri) {
-        return ResponseEntity.ok(doctorService.getDoctorsBySpeciality(uri));
+    public CompletableFuture<ResponseEntity<List<DoctorDto>>> getBySpeciality(@PathVariable String uri) {
+        return doctorService.getDoctorsBySpeciality(uri)
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{uri}")
-    public ResponseEntity<DoctorDto> getDoctor(
+    public CompletableFuture<ResponseEntity<DoctorDto>> getDoctor(
             @RequestHeader("X-User-Id") Long userId,
             @PathVariable String uri
     ) {
-        return ResponseEntity.ok(doctorService.getDoctorInfo(uri, userId));
+        return doctorService.getDoctorInfo(uri, userId)
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{uri}/clinics")
-    public ResponseEntity<List<ClinicDto>> getDoctorClinics(@PathVariable String uri) {
-        return ResponseEntity.ok(doctorService.getDoctorClinics(uri));
+    public CompletableFuture<ResponseEntity<List<ClinicDto>>> getDoctorClinics(@PathVariable String uri) {
+        return doctorService.getDoctorClinics(uri)
+                .thenApply(ResponseEntity::ok);
     }
 }

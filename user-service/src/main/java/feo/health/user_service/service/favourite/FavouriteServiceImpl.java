@@ -12,11 +12,14 @@ import feo.health.user_service.repository.FavouriteRepository;
 import feo.health.user_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,93 +27,116 @@ import java.util.stream.Collectors;
 public class FavouriteServiceImpl implements FavouriteService {
 
     @GrpcClient("catalog-service")
-    private CatalogServiceGrpc.CatalogServiceBlockingStub stub;
+    private CatalogServiceGrpc.CatalogServiceFutureStub stub;
 
-    private final CatalogItemMapper catalogItemMapper;
+    private final CatalogItemMapper mapper;
+    private final FavouriteRepository repo;
+    private final UserRepository userRepo;
 
-    private final FavouriteRepository favouriteRepository;
-    private final UserRepository userRepository;
-
+    @Async
     @Override
-    public void addFavourite(Long userId, CatalogItemRequest item) {
+    public CompletableFuture<Void> addFavourite(Long userId, CatalogItemRequest item) {
 
-        Catalog.CatalogItemIdRequest request = Catalog.CatalogItemIdRequest.newBuilder()
+        Catalog.CatalogItemIdRequest req = Catalog.CatalogItemIdRequest.newBuilder()
                 .setType(item.getType())
                 .setLink(item.getLink())
                 .build();
 
-        Catalog.CatalogItemIdResponse response = stub.getCatalogItemId(request);
+        return toCF(stub.getCatalogItemId(req)).thenAccept(resp -> {
+            User user = userRepo.findById(userId).orElseThrow();
 
-        User user = userRepository.findById(userId).orElseThrow();
+            FavouriteId id = new FavouriteId(userId, resp.getId(), item.getType());
 
-        FavouriteId id = new FavouriteId();
-        id.setType(item.getType());
-        id.setItemId(response.getId());
-        id.setUserId(userId);
+            Favourite fav = Favourite.builder()
+                    .user(user)
+                    .id(id)
+                    .dateTime(LocalDateTime.now())
+                    .build();
 
-        Favourite favourite = Favourite.builder()
-                .user(user)
-                .id(id)
-                .dateTime(LocalDateTime.now())
-                .build();
-
-        favouriteRepository.save(favourite);
+            repo.save(fav);
+        });
     }
 
+    @Async
     @Override
-    public void deleteFavourite(Long userId, CatalogItemRequest item) {
+    public CompletableFuture<Void> deleteFavourite(Long userId, CatalogItemRequest item) {
 
-        Catalog.CatalogItemIdRequest request = Catalog.CatalogItemIdRequest.newBuilder()
+        Catalog.CatalogItemIdRequest req = Catalog.CatalogItemIdRequest.newBuilder()
                 .setType(item.getType())
                 .setLink(item.getLink())
                 .build();
 
-        Catalog.CatalogItemIdResponse response = stub.getCatalogItemId(request);
-
-        FavouriteId favouriteId = new FavouriteId(userId, response.getId(), item.getType());
-
-        favouriteRepository.deleteById(favouriteId);
+        return toCF(stub.getCatalogItemId(req)).thenAccept(resp -> {
+            FavouriteId id = new FavouriteId(userId, resp.getId(), item.getType());
+            repo.deleteById(id);
+        });
     }
 
+    @Async
     @Override
-    public Map<String, List<CatalogItemDto>> getFavourites(Long userId) {
+    public CompletableFuture<Map<String, List<CatalogItemDto>>> getFavourites(Long userId) {
 
-        Map<String, List<Favourite>> typesIdsList = favouriteRepository.findByUserId(userId).stream()
-                .collect(Collectors.groupingBy(favourite -> favourite.getId().getType()));
+        return CompletableFuture.supplyAsync(() -> {
+            Map<String, List<Favourite>> groups = repo.findByUserId(userId).stream()
+                    .collect(Collectors.groupingBy(f -> f.getId().getType()));
 
-        return typesIdsList.entrySet().parallelStream()
-                .map(entry -> {
-                    String type = entry.getKey();
-                    List<Favourite> values = entry.getValue();
+            return groups.entrySet().parallelStream()
+                    .map(entry -> {
+                        String type = entry.getKey();
+                        List<Long> ids = entry.getValue().stream()
+                                .map(f -> f.getId().getItemId())
+                                .toList();
 
-                    List<Long> ids = values.stream().map(
-                            h -> h.getId().getItemId()
-                    ).toList();
+                        Catalog.CatalogItemsRequest req = Catalog.CatalogItemsRequest.newBuilder()
+                                .addAllIds(ids)
+                                .setType(type)
+                                .build();
 
-                    Catalog.CatalogItemsRequest request = Catalog.CatalogItemsRequest.newBuilder()
-                            .addAllIds(ids)
-                            .setType(type)
-                            .build();
+                        Catalog.CatalogItemsResponse resp;
 
-                    Catalog.CatalogItemsResponse response = stub.getCatalogItems(request);
+                        try {
+                            resp = stub.getCatalogItems(req).get();
 
-                    Map<String, CatalogItemDto> itemsMap = response.getItemsList().stream().collect(
-                            Collectors.toMap(Catalog.CatalogItem::getType, catalogItemMapper::toDto)
-                    );
+                            Map<String, CatalogItemDto> itemMap = resp.getItemsList().stream()
+                                    .collect(Collectors.toMap(
+                                            Catalog.CatalogItem::getType,
+                                            mapper::toDto
+                                    ));
 
-                    List<CatalogItemDto> favouriteList = values.parallelStream().map(
-                            item -> {
-                                CatalogItemDto result = itemsMap.get(item.getId().getType());
-                                result.setDateTime(item.getDateTime());
-                                return result;
-                            }
-                    ).toList();
+                            List<CatalogItemDto> list = entry.getValue().stream()
+                                    .map(f -> {
+                                        CatalogItemDto dto = itemMap.get(f.getId().getType());
+                                        dto.setDateTime(f.getDateTime());
+                                        return dto;
+                                    })
+                                    .toList();
 
-                    return Map.entry(
-                            type,
-                            favouriteList
-                    );
+                            return Map.entry(type, list);
+                        } catch (InterruptedException | ExecutionException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        });
+    }
 
-                }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    private static <T> CompletableFuture<T> toCF(com.google.common.util.concurrent.ListenableFuture<T> lf) {
+        CompletableFuture<T> cf = new CompletableFuture<>();
+        com.google.common.util.concurrent.Futures.addCallback(
+                lf,
+                new com.google.common.util.concurrent.FutureCallback<>() {
+                    @Override
+                    public void onSuccess(T r) {
+                        cf.complete(r);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        cf.completeExceptionally(t);
+                    }
+                },
+                com.google.common.util.concurrent.MoreExecutors.directExecutor()
+        );
+        return cf;
     }
 }

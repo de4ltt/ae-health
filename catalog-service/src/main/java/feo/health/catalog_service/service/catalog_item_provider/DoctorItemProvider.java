@@ -5,10 +5,12 @@ import feo.health.catalog_service.mapper.DoctorMapper;
 import feo.health.catalog_service.model.entity.Doctor;
 import feo.health.catalog_service.repository.DoctorRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @AllArgsConstructor
@@ -23,13 +25,20 @@ public class DoctorItemProvider implements CatalogItemProvider {
     }
 
     @Override
-    public List<Catalog.CatalogItem> getCatalogItems(List<Long> ids) {
-        return doctorMapper.toCatalogItem(doctorRepository.findAllById(ids));
+    @Async
+    public CompletableFuture<List<Catalog.CatalogItem>> getCatalogItems(List<Long> ids) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<Doctor> doctors = doctorRepository.findAllById(ids);
+            return doctorMapper.toCatalogItem(doctors);
+        });
     }
 
     @Override
-    public Long getCatalogItemId(String link) {
-        Optional<Doctor> clinic = doctorRepository.findByLink(link);
-        return clinic.map(Doctor::getId).orElse(null);
+    @Async
+    public CompletableFuture<Long> getCatalogItemId(String link) {
+        return CompletableFuture.supplyAsync(() -> {
+            Optional<Doctor> doctor = doctorRepository.findByLink(link);
+            return doctor.map(Doctor::getId).orElse(null);
+        });
     }
 }

@@ -79,6 +79,7 @@ public class DoctorMapper {
                 .setLink(doctor.getLink())
                 .setImageUri(doctor.getImageUri())
                 .setType("doctor")
+                .setId(doctor.getId())
                 .build();
     }
 
