@@ -1,12 +1,14 @@
 package feo.health.catalog_service.model.dto;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 import java.util.function.Function;
 
 @Data
+@Builder
 public class ClinicDto {
 
     @NotNull

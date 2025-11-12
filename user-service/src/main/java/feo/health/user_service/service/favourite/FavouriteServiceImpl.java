@@ -11,7 +11,9 @@ import feo.health.user_service.model.entity.id_class.FavouriteId;
 import feo.health.user_service.repository.FavouriteRepository;
 import feo.health.user_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
 public class FavouriteServiceImpl implements FavouriteService {
 
     @GrpcClient("catalog-service")
-    private CatalogServiceGrpc.CatalogServiceFutureStub stub;
+    private final CatalogServiceGrpc.CatalogServiceFutureStub stub;
 
     private final CatalogItemMapper mapper;
     private final FavouriteRepository repo;

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 @RestController
 @RequestMapping("/api/v1/ai")
@@ -26,7 +27,10 @@ public class AIController {
             @RequestBody DiseaseGuessRequest req
     ) {
         return aiService.getDiseaseGuess(userId, req)
-                .thenApply(ResponseEntity::ok);
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(ex -> {
+                    throw new CompletionException(ex);
+                });
     }
 
     @PostMapping("/suggestion")

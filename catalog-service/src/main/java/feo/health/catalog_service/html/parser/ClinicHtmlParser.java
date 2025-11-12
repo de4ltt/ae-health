@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class ClinicHtmlParser {
 
     public ClinicDto parseClinic(Document document, Document reviewsDocument) {
-        ClinicDto clinicDto = new ClinicDto();
+        ClinicDto clinicDto = ClinicDto.builder().build();
 
         Element nameElem = document.selectFirst("[data-qa=lpu_card_heading_lpu_name]");
         clinicDto.setName(nameElem != null ? nameElem.text().trim() : null);
@@ -57,7 +57,7 @@ public class ClinicHtmlParser {
 
         final Function<Element, ClinicDto> extractSingleClinic = el -> {
 
-            ClinicDto clinicDto = new ClinicDto();
+            ClinicDto clinicDto = ClinicDto.builder().build();
 
             Element nameLink = el.selectFirst("a[data-qa=lpu_card_heading]");
             if (null != nameLink) {
@@ -87,7 +87,7 @@ public class ClinicHtmlParser {
 
         final Function<Element, ClinicDto> extractSingleClinicType = el -> {
 
-            ClinicDto clinicDto = new ClinicDto();
+            ClinicDto clinicDto = ClinicDto.builder().build();
 
             clinicDto.setLink(ClinicDto.clearClinicLink(el.attr("href")));
 
@@ -129,7 +129,7 @@ public class ClinicHtmlParser {
             Element phoneElem = clinic.selectFirst("div.d-flex.align-center.text-decoration-none.text-body-1.py-2.mt-2");
             String phone = phoneElem != null ? phoneElem.text() : null;
 
-            ClinicDto clinicDto = new ClinicDto();
+            ClinicDto clinicDto = ClinicDto.builder().build();
             clinicDto.setName(name);
             clinicDto.setLink(link);
             clinicDto.setAddress(address);
@@ -141,7 +141,7 @@ public class ClinicHtmlParser {
 
 
     private ClinicDto parseClinicCard(Element el) {
-        ClinicDto dto = new ClinicDto();
+        ClinicDto dto = ClinicDto.builder().build();
 
         Element nameEl = el.selectFirst("a[data-qa=lpu_card_heading]");
 
@@ -165,7 +165,7 @@ public class ClinicHtmlParser {
     }
 
     private ClinicDto parseClinicTypeLink(Element el) {
-        ClinicDto dto = new ClinicDto();
+        ClinicDto dto = ClinicDto.builder().build();
 
         Element name = el.selectFirst("span.b-list-icon-link__text");
 

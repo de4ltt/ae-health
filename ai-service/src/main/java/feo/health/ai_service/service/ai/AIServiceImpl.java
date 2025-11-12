@@ -8,8 +8,8 @@ import feo.health.ai_service.model.response.ProcedureDescriptionResponse;
 import feo.health.ai_service.model.response.SuggestionResponse;
 import feo.health.ai_service.service.openai.OpenAIService;
 import feo.health.ai_service.service.user.UserService;
-import feo.health.ai_service.util.AIRequestStrings;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +22,22 @@ public class AIServiceImpl implements AIService {
     private final OpenAIService openAIService;
     private final UserService userService;
 
+    @Value("${prompts.disease-guess}")
+    private final String DISEASE_GUESS_REQUEST;
+
+    @Value("${prompts.procedure-description}")
+    private final String PROCEDURE_DESCRIPTION_REQUEST;
+
+    @Value("${prompts.suggestions}")
+    private final String SUGGESTIONS_REQUEST;
+
     @Async
     @Override
     public CompletableFuture<DiseaseGuessResponse> getDiseaseGuess(Long userId, DiseaseGuessRequest req) {
         return userService.getUserParamsById(userId)
                 .thenCompose(params -> {
                     String input = req + ". " + params;
-                    return openAIService.sendRequest(AIRequestStrings.DISEASE_GUESS_REQUEST, input);
+                    return openAIService.sendRequest(DISEASE_GUESS_REQUEST, input);
                 })
                 .thenApply(DiseaseGuessResponse::from);
     }
@@ -42,7 +51,7 @@ public class AIServiceImpl implements AIService {
         return userService.getUserParamsById(userId)
                 .thenCompose(params -> {
                     String input = req + ". " + params;
-                    return openAIService.sendRequest(AIRequestStrings.PROCEDURE_DESCRIPTION_REQUEST, input);
+                    return openAIService.sendRequest(PROCEDURE_DESCRIPTION_REQUEST, input);
                 })
                 .thenApply(ProcedureDescriptionResponse::from);
     }
@@ -53,7 +62,7 @@ public class AIServiceImpl implements AIService {
         return userService.getUserParamsById(userId)
                 .thenCompose(params -> {
                     String input = req + ". " + params;
-                    return openAIService.sendRequest(AIRequestStrings.SUGGESTIONS_REQUEST, input);
+                    return openAIService.sendRequest(SUGGESTIONS_REQUEST, input);
                 })
                 .thenApply(SuggestionResponse::from);
     }

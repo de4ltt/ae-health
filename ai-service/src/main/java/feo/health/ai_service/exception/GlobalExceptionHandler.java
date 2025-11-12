@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -25,16 +26,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApiErrorResponse> handleRuntime(RuntimeException ex) {
-        ex.printStackTrace(System.out);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiErrorResponse.of(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    public ResponseEntity<ApiErrorResponse> handleRuntimeException(RuntimeException ex) {
+        ApiErrorResponse error = new ApiErrorResponse(
+                500,
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleOther(Exception ex) {
-        ex.printStackTrace(System.out);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"));
+    public ResponseEntity<ApiErrorResponse> handleAll(Exception ex) {
+        ApiErrorResponse error = new ApiErrorResponse(500, ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

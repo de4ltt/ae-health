@@ -20,7 +20,7 @@ public class ClinicMapper {
 
         if (clinic == null) return null;
 
-        ClinicDto dto = new ClinicDto();
+        ClinicDto dto = ClinicDto.builder().build();
         dto.setName(clinic.getName());
         dto.setAddress(clinic.getAddress());
         dto.setLink(clinic.getLink());

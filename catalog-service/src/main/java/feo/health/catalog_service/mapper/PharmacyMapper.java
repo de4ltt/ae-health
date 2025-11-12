@@ -26,7 +26,7 @@ public class PharmacyMapper {
         return response.getElements().stream()
                 .map(element -> {
                     Map<String, String> tags = element.getTags();
-                    PharmacyDto dto = new PharmacyDto();
+                    PharmacyDto dto = PharmacyDto.builder().build();
 
                     dto.setName(tags.getOrDefault("name", null));
                     dto.setPhoneNumber(tags.getOrDefault("phone", null));
@@ -68,7 +68,7 @@ public class PharmacyMapper {
 
     public PharmacyDto toDto(Pharmacy pharmacy) {
 
-        PharmacyDto pharmacyDto = new PharmacyDto();
+        PharmacyDto pharmacyDto = PharmacyDto.builder().build();
 
         pharmacyDto.setName(pharmacy.getName());
         pharmacyDto.setAddress(pharmacy.getAddress());

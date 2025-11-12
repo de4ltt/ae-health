@@ -110,7 +110,7 @@ public class DoctorHtmlParser {
         Elements clinicElems = document.select("div.doctor-page-lpu-list");
         List<ClinicDto> clinics = new ArrayList<>();
         for (Element el : clinicElems) {
-            ClinicDto clinic = new ClinicDto();
+            ClinicDto clinic = ClinicDto.builder().build();
             clinic.setName(el.text());
             clinic.setLink(el.attr("href"));
 
